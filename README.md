@@ -18,10 +18,11 @@ npm install
 
 ### 2. 建立 Supabase 專案
 
-1. 到 [supabase.com](https://supabase.com) 建立新專案
-2. 在 SQL Editor 執行 `supabase/schema.sql`（建立 tables + RLS）
+1. 到 [supabase.com](https://supabase.com) 建立新專案（或沿用既有專案）
+2. 在 SQL Editor 執行 `supabase/schema.sql`（建立 `learning` schema、tables、RLS）
 3. 執行 `supabase/generate_monthly_review.sql`（月度檢核 RPC）
-4. 在 Storage 建立 bucket `mistake-photos`（private），再去 SQL Editor
+4. **Settings → API → Exposed schemas** 把 `learning` 加進去（PostgREST 才會公開這個 schema 給 JS client）
+5. 在 Storage 建立 bucket `mistake-photos`（private），再去 SQL Editor
    把 `schema.sql` 末段被註解的 storage policy 解開執行
 
 ### 3. 環境變數
@@ -39,7 +40,7 @@ cp .env.example .env.local
 然後在 SQL Editor 建立對應 profile：
 
 ```sql
-insert into public.profiles (id, role, display_name) values
+insert into learning.profiles (id, role, display_name) values
   ('<student-user-uuid>', 'student', '兒子的名字'),
   ('<parent-user-uuid>',  'parent',  '媽媽');
 ```
@@ -90,8 +91,8 @@ npm run dev
 select cron.schedule(
   'monthly-review',
   '0 1 1 * *',  -- 每月 1 號凌晨 1 點，產上個月的報告
-  $$ select public.generate_monthly_review(p.id, (now() - interval '1 month')::date)
-     from public.profiles p where p.role = 'student' $$
+  $$ select learning.generate_monthly_review(p.id, (now() - interval '1 month')::date)
+     from learning.profiles p where p.role = 'student' $$
 );
 ```
 
@@ -101,9 +102,9 @@ MVP 階段先手動呼叫即可。
 
 ## 部署到 Vercel
 
-1. 在 Vercel 匯入這個 repo
-2. **Root Directory** 設成 `learning-tracker`
-3. 環境變數設好 Supabase URL / anon key
+1. 在 Vercel 匯入這個 repo（`evelynytliu/learning-tracker`）
+2. **Root Directory** 留空（這個 repo 已經是獨立的,程式碼就在根目錄）
+3. 環境變數設好 Supabase URL / anon key / service role key
 4. Deploy
 
 ---

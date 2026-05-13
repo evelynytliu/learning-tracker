@@ -5,17 +5,17 @@
 --   題庫練習有做：數學題庫勾選率 >= 80%
 -- 三項都達標 → passed = true
 --
--- 用法：select public.generate_monthly_review('uuid-of-student', date '2026-05-01');
+-- 用法：select learning.generate_monthly_review('uuid-of-student', date '2026-05-01');
 -- 之後可加 pg_cron 在每月底自動執行。
 
-create or replace function public.generate_monthly_review(
+create or replace function learning.generate_monthly_review(
   p_user_id uuid,
   p_month date
 )
-returns public.monthly_reviews
+returns learning.monthly_reviews
 language plpgsql
 security definer
-set search_path = public
+set search_path = learning, public
 as $$
 declare
   v_start date := date_trunc('month', p_month)::date;
@@ -25,26 +25,26 @@ declare
   v_practice_rate numeric(5,2);
   v_mistakes int;
   v_passed boolean;
-  v_row public.monthly_reviews;
+  v_row learning.monthly_reviews;
 begin
   select
     coalesce(round(100.0 * sum(case when homework_done then 1 else 0 end) / nullif(v_days, 0), 2), 0),
     coalesce(round(100.0 * sum(case when math_practice_done then 1 else 0 end) / nullif(v_days, 0), 2), 0)
   into v_homework_rate, v_practice_rate
-  from public.daily_checkins
+  from learning.daily_checkins
   where user_id = p_user_id
     and date >= v_start
     and date < v_end;
 
   select count(*) into v_mistakes
-  from public.mistakes
+  from learning.mistakes
   where user_id = p_user_id
     and created_at >= v_start
     and created_at < v_end;
 
   v_passed := v_homework_rate >= 90 and v_mistakes >= 8 and v_practice_rate >= 80;
 
-  insert into public.monthly_reviews
+  insert into learning.monthly_reviews
     (user_id, month, homework_completion_rate, mistake_log_count, practice_completion_rate, passed)
   values
     (p_user_id, v_start, v_homework_rate, v_mistakes, v_practice_rate, v_passed)
@@ -60,4 +60,4 @@ begin
 end;
 $$;
 
-grant execute on function public.generate_monthly_review(uuid, date) to authenticated;
+grant execute on function learning.generate_monthly_review(uuid, date) to authenticated;
