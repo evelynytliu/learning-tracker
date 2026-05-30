@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Camera } from 'lucide-react';
+import { Camera, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { SUBJECTS, MISTAKE_REASONS, cn } from '@/lib/utils';
 
@@ -59,9 +60,15 @@ export default function NewMistakePage() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-5 pb-12 pt-6">
-      <h1 className="text-2xl font-bold">新增錯題</h1>
-      <p className="mt-1 text-sm text-gray-500">記下原因比寫對題目更重要</p>
+    <main className="mx-auto min-h-[100dvh] max-w-md bg-slate-50 px-5 pb-12 pt-6">
+      <Link
+        href="/mistakes"
+        className="mb-3 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
+      >
+        <ArrowLeft size={16} /> 回錯題本
+      </Link>
+      <h1 className="text-2xl font-bold text-slate-800">新增錯題</h1>
+      <p className="mt-1 text-sm text-slate-500">記下原因比寫對題目更重要</p>
 
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-6">
         <section>
@@ -75,8 +82,8 @@ export default function NewMistakePage() {
                 className={cn(
                   'rounded-full border-2 px-4 py-2 text-sm',
                   subject === s
-                    ? 'border-blue-600 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 bg-white',
+                    ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
+                    : 'border-slate-200 bg-white',
                 )}
               >
                 {s}
@@ -99,7 +106,7 @@ export default function NewMistakePage() {
                   'rounded-full border-2 px-4 py-2 text-sm',
                   reason === r
                     ? 'border-red-500 bg-red-50 text-red-700'
-                    : 'border-gray-200 bg-white',
+                    : 'border-slate-200 bg-white',
                 )}
               >
                 {r}
@@ -115,12 +122,12 @@ export default function NewMistakePage() {
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             placeholder="可以直接打字，或下面拍照上傳"
-            className="w-full rounded-xl border px-4 py-3"
+            className="w-full rounded-xl border bg-white px-4 py-3"
           />
         </section>
 
         <section>
-          <label className="flex items-center gap-2 rounded-xl border-2 border-dashed border-gray-300 px-4 py-6 text-sm text-gray-600">
+          <label className="flex items-center gap-2 rounded-xl border-2 border-dashed border-slate-300 px-4 py-6 text-sm text-slate-600">
             <Camera size={20} />
             <span>{file ? file.name : '拍照 / 選圖片上傳'}</span>
             <input
