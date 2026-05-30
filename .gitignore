@@ -37,3 +37,6 @@ next-env.d.ts
 
 # claude code local settings
 .claude/settings.local.json
+
+# 外部參考資料（教科書版本表等，不進 repo）
+外部參考資料/
