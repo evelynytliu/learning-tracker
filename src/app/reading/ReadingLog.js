@@ -185,15 +185,17 @@ function BookCard({ book, onFinish, onRate, onRemove, readOnly }) {
       {book.note && <p className="mt-2 text-sm text-slate-600">{book.note}</p>}
 
       <div className="mt-2 flex items-center justify-between">
-        <div className="flex gap-0.5">
+        <div className="flex">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
               key={n}
               disabled={readOnly}
               onClick={() => onRate(n)}
-              className={n <= (book.rating || 0) ? 'text-amber-400' : 'text-slate-200'}
+              className={`flex h-9 w-9 items-center justify-center ${
+                n <= (book.rating || 0) ? 'text-amber-400' : 'text-slate-200'
+              }`}
             >
-              <Star size={18} fill="currentColor" />
+              <Star size={22} fill="currentColor" />
             </button>
           ))}
         </div>

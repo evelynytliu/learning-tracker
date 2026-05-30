@@ -105,13 +105,13 @@ export default function WeeklyGoals({ userId, weekStart, initial, readOnly }) {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setProgress(g, g.progress - 1)}
-                      className="h-8 w-8 rounded-full bg-gray-100 text-lg font-bold text-gray-600"
+                      className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-xl font-bold text-slate-600"
                     >
                       −
                     </button>
                     <button
                       onClick={() => setProgress(g, g.progress + 1)}
-                      className="h-8 w-8 rounded-full bg-blue-600 text-lg font-bold text-white"
+                      className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 text-xl font-bold text-white"
                     >
                       ＋
                     </button>

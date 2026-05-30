@@ -229,8 +229,8 @@ export default async function HomePage() {
         </div>
         {todayClasses && todayClasses.length > 0 ? (
           <ul className="grid gap-1.5 sm:grid-cols-2">
-            {todayClasses.slice(0, 8).map((c, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm">
+            {todayClasses.slice(0, 8).map((c) => (
+              <li key={c.period} className="flex items-center gap-2 text-sm">
                 <span className="w-6 text-slate-400">{c.period}</span>
                 <span className="font-medium text-slate-700">{c.subject}</span>
                 {c.start_time && <span className="text-slate-400">{c.start_time.slice(0, 5)}</span>}

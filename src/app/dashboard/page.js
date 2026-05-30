@@ -1,19 +1,10 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { isDayComplete, computeStreakFromSummary } from '@/lib/streak';
-import { toYMD } from '@/lib/date';
+import { toYMD, weekStart as weekStartDate, weekStartYMD } from '@/lib/date';
 import AppShell from '@/components/AppShell';
 
 export const dynamic = 'force-dynamic';
-
-function startOfWeek(d) {
-  const x = new Date(d);
-  const day = x.getDay(); // 0 = Sun
-  const diff = (day + 6) % 7; // make Monday the start
-  x.setDate(x.getDate() - diff);
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -38,7 +29,9 @@ export default async function DashboardPage() {
     );
   }
 
-  const weekStart = startOfWeek(new Date()).toISOString().slice(0, 10);
+  const weekStart = weekStartYMD(); // 本週週一（本地時區）
+  // mistakes.created_at 是 timestamptz，用週一的本地 00:00 當下界
+  const weekStartTs = weekStartDate().toISOString();
 
   const [{ data: checkins }, { data: mistakes }] = await Promise.all([
     supabase
@@ -50,12 +43,12 @@ export default async function DashboardPage() {
       .from('mistakes')
       .select('id, subject, reason, created_at')
       .eq('user_id', student.id)
-      .gte('created_at', weekStart),
+      .gte('created_at', weekStartTs),
   ]);
 
   const fullDays = (checkins || []).filter(isDayComplete).length;
   const today = new Date();
-  const daysSoFar = Math.min(7, Math.floor((today - startOfWeek(today)) / 86400000) + 1);
+  const daysSoFar = Math.min(7, Math.floor((today - weekStartDate()) / 86400000) + 1);
   const rate = daysSoFar ? Math.round((fullDays / daysSoFar) * 100) : 0;
 
   const light =

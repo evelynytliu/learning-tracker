@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { Check, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import AppShell from '@/components/AppShell';
+import { toYMD } from '@/lib/date';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,7 +33,7 @@ export default async function MonthlyReviewPage() {
   }
 
   const start = monthStart();
-  const startISO = start.toISOString().slice(0, 10);
+  const startISO = toYMD(start); // 本地時區的月初日期
   const today = new Date();
   const daysSoFar = Math.min(
     today.getDate(),

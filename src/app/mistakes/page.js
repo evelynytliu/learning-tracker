@@ -26,6 +26,18 @@ export default async function MistakesPage() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
+  // image_url 存的是 Storage 路徑（私有 bucket），要換成有時效的簽名網址才看得到
+  const paths = (mistakes || []).filter((m) => m.image_url).map((m) => m.image_url);
+  const signedMap = {};
+  if (paths.length > 0) {
+    const { data: signed } = await supabase.storage
+      .from('mistake-photos')
+      .createSignedUrls(paths, 60 * 60);
+    for (const s of signed ?? []) {
+      if (s.signedUrl) signedMap[s.path] = s.signedUrl;
+    }
+  }
+
   return (
     <AppShell role={profile?.role ?? 'student'} email={user.email} displayName={profile?.display_name}>
       <div className="flex items-center justify-between">
@@ -60,9 +72,9 @@ export default async function MistakesPage() {
               {m.description && (
                 <p className="mt-2 text-sm text-slate-700">{m.description}</p>
               )}
-              {m.image_url && (
+              {m.image_url && signedMap[m.image_url] && (
                 <img
-                  src={m.image_url}
+                  src={signedMap[m.image_url]}
                   alt=""
                   className="mt-2 max-h-48 w-full rounded-lg object-cover"
                 />

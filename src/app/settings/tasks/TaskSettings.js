@@ -233,7 +233,7 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
                   key={dow}
                   type="button"
                   onClick={() => togglePDraftWeekday(dow)}
-                  className={`h-8 w-8 rounded-full text-xs ${
+                  className={`h-10 w-10 rounded-full text-sm ${
                     on ? 'bg-indigo-600 font-semibold text-white' : 'bg-slate-100 text-slate-500'
                   }`}
                 >
@@ -343,7 +343,7 @@ function TaskSetCard({ set, open, onToggleOpen, onToggleWeekday, onRename, onDel
                 <button
                   key={dow}
                   onClick={() => onToggleWeekday(dow)}
-                  className={`h-8 w-8 rounded-full text-xs ${
+                  className={`h-10 w-10 rounded-full text-sm ${
                     on ? 'bg-indigo-600 font-semibold text-white' : 'bg-slate-100 text-slate-500'
                   }`}
                 >

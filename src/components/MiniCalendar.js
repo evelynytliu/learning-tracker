@@ -114,7 +114,7 @@ export default function MiniCalendar({ events = [], doneDates, todayStr, onSelec
                 {isDone && <span className={isToday ? 'text-white' : 'text-green-500'}>·</span>}
               </span>
               {!compact && dayEvents.length > 0 && (
-                <span className="mt-0.5 w-full truncate px-1 text-[10px] leading-tight">
+                <span className="mt-0.5 w-full truncate px-1 text-xs leading-tight">
                   <span
                     className={`rounded px-1 ${
                       isToday ? 'bg-white/20' : 'bg-amber-100 text-amber-700'

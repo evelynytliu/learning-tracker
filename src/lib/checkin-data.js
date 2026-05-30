@@ -52,6 +52,26 @@ export async function loadDayCheckin(supabase, userId, ymd) {
     }
   }
 
+  // 對帳：以「目前生效清單」重算完成數，若和已存的摘要不一致就寫回，
+  // 避免清單改過之後 daily_checkins 的 tasks_total/done 停在舊值。
+  const total = tasks.length;
+  const done = tasks.filter((t) => doneMap[t.id]).length;
+  const summaryStale =
+    summary && (summary.tasks_total !== total || summary.tasks_done !== done);
+  if (summaryStale) {
+    await supabase.from('daily_checkins').upsert(
+      {
+        user_id: userId,
+        date: ymd,
+        is_rest_day: !!summary.is_rest_day,
+        pinxuetang_done: !!summary.pinxuetang_done,
+        tasks_total: total,
+        tasks_done: done,
+      },
+      { onConflict: 'user_id,date' },
+    );
+  }
+
   return {
     setName: reason,
     tasks,
