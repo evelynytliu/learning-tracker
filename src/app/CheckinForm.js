@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Check } from 'lucide-react';
+import { Check, BookOpen, ExternalLink } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { CHECKIN_TASKS, cn } from '@/lib/utils';
+import { EXTERNAL_LINKS } from '@/lib/links';
 
 const EMPTY = {
   homework_done: false,
@@ -12,6 +13,7 @@ const EMPTY = {
   math_practice_done: false,
   reading_done: false,
   is_rest_day: false,
+  pinxuetang_done: false,
 };
 
 export default function CheckinForm({ initialRow, userId, date }) {
@@ -37,16 +39,16 @@ export default function CheckinForm({ initialRow, userId, date }) {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between rounded-2xl bg-blue-50 px-5 py-4">
+      <div className="mb-6 flex items-center justify-between rounded-2xl bg-indigo-50 px-5 py-4">
         <div>
-          <p className="text-xs text-blue-900/70">今日進度</p>
-          <p className="text-2xl font-bold text-blue-900">{completed} / {total}</p>
+          <p className="text-xs text-indigo-900/70">今日進度</p>
+          <p className="text-2xl font-bold text-indigo-900">{completed} / {total}</p>
         </div>
         <button
           onClick={() => toggle('is_rest_day')}
           className={cn(
             'rounded-full px-3 py-1 text-xs',
-            row.is_rest_day ? 'bg-amber-500 text-white' : 'bg-white text-gray-600',
+            row.is_rest_day ? 'bg-amber-500 text-white' : 'bg-white text-slate-600',
           )}
         >
           {row.is_rest_day ? '免讀日 ✓' : '使用免讀日'}
@@ -64,23 +66,21 @@ export default function CheckinForm({ initialRow, userId, date }) {
                 disabled={isReadingOnRest}
                 className={cn(
                   'flex w-full items-center gap-4 rounded-2xl border-2 px-5 py-4 text-left transition active:scale-[0.98]',
-                  done
-                    ? 'border-green-500 bg-green-50'
-                    : 'border-gray-200 bg-white',
+                  done ? 'border-green-500 bg-green-50' : 'border-slate-200 bg-white',
                   isReadingOnRest && 'opacity-40',
                 )}
               >
                 <span
                   className={cn(
                     'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
-                    done ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-300',
+                    done ? 'bg-green-500 text-white' : 'bg-slate-100 text-slate-300',
                   )}
                 >
                   <Check size={20} strokeWidth={3} />
                 </span>
                 <span className="flex-1">
                   <span className="block font-semibold">{task.label}</span>
-                  <span className="block text-xs text-gray-500">{task.hint}</span>
+                  <span className="block text-xs text-slate-500">{task.hint}</span>
                 </span>
               </button>
             </li>
@@ -88,7 +88,45 @@ export default function CheckinForm({ initialRow, userId, date }) {
         })}
       </ul>
 
-      <p className="mt-6 text-center text-xs text-gray-400">
+      {/* 品學堂閱讀素養 — 加分項，不計入核心 5 項 */}
+      <div className="mt-6">
+        <p className="mb-2 text-xs font-semibold text-slate-400">加分挑戰</p>
+        <div
+          className={cn(
+            'rounded-2xl border-2 p-4 transition',
+            row.pinxuetang_done ? 'border-violet-400 bg-violet-50' : 'border-slate-200 bg-white',
+          )}
+        >
+          <button
+            onClick={() => toggle('pinxuetang_done')}
+            className="flex w-full items-center gap-4 text-left active:scale-[0.98]"
+          >
+            <span
+              className={cn(
+                'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
+                row.pinxuetang_done ? 'bg-violet-500 text-white' : 'bg-slate-100 text-slate-300',
+              )}
+            >
+              <BookOpen size={18} strokeWidth={2.5} />
+            </span>
+            <span className="flex-1">
+              <span className="block font-semibold">品學堂閱讀素養</span>
+              <span className="block text-xs text-slate-500">每天一篇，練閱讀理解（不算進 5 項，純加分）</span>
+            </span>
+          </button>
+          <a
+            href={EXTERNAL_LINKS.pinxuetang}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center justify-center gap-1.5 rounded-xl bg-violet-600 py-2.5 text-sm font-semibold text-white"
+          >
+            前往品學堂讀一篇
+            <ExternalLink size={15} />
+          </a>
+        </div>
+      </div>
+
+      <p className="mt-6 text-center text-xs text-slate-400">
         {saving ? '儲存中…' : '已自動儲存'}
       </p>
     </div>

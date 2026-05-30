@@ -4,6 +4,7 @@ import Link from 'next/link';
 import AppShell from '@/components/AppShell';
 import { isCheckinComplete, CHECKIN_TASKS } from '@/lib/utils';
 import { toYMD, weekStartYMD, isoDayOfWeek, DAY_LABELS } from '@/lib/date';
+import { EXTERNAL_LINKS } from '@/lib/links';
 
 export const dynamic = 'force-dynamic';
 
@@ -151,6 +152,13 @@ export default async function HomePage() {
         <FeatureCard href="/streak" icon="🔥" title="連續紀錄" subtitle="看火焰" />
         <FeatureCard href="/schedule" icon="📅" title="課表" subtitle="編輯每週課" />
         <FeatureCard href="/weekly" icon="🎯" title="週進度" subtitle="本週目標" />
+        <FeatureCard
+          href={EXTERNAL_LINKS.pinxuetang}
+          external
+          icon="📕"
+          title="品學堂"
+          subtitle="閱讀素養"
+        />
         <FeatureCard icon="📚" title="教材重點" soon />
         <FeatureCard icon="📖" title="課外閱讀" soon />
         <FeatureCard icon="✏️" title="筆記" soon />
@@ -162,7 +170,7 @@ export default async function HomePage() {
   );
 }
 
-function FeatureCard({ href, icon, title, subtitle, soon }) {
+function FeatureCard({ href, icon, title, subtitle, soon, external }) {
   const inner = (
     <div
       className={`flex h-full flex-col rounded-2xl border p-4 transition ${
@@ -179,6 +187,13 @@ function FeatureCard({ href, icon, title, subtitle, soon }) {
     </div>
   );
   if (soon || !href) return inner;
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className="block">
+        {inner}
+      </a>
+    );
+  }
   return (
     <Link href={href} className="block">
       {inner}
