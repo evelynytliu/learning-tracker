@@ -9,6 +9,7 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  viewportFit: 'cover', // 讓 env(safe-area-inset-*) 在 iOS 生效
 };
 
 export default function RootLayout({ children }) {

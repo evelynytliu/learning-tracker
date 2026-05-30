@@ -35,7 +35,10 @@ export default function AppShell({
   }
 
   return (
-    <div className="lg:flex lg:h-screen lg:overflow-hidden">
+    // 手機：整個畫面是高度 100dvh 的直向 flex，底部列是「在文件流裡」的最後一個子元素，
+    // 不用 position:fixed，所以 iOS Chrome 的工具列收合時不會浮起來。
+    // 桌面：改為左右 flex（側邊欄 + 內容）。
+    <div className="flex h-[100dvh] flex-col overflow-hidden lg:flex-row">
       {/* ===== 桌面側邊欄 ===== */}
       <aside
         className={`hidden flex-shrink-0 border-r border-slate-200 bg-white transition-all duration-200 lg:block ${
@@ -74,9 +77,9 @@ export default function AppShell({
       </aside>
 
       {/* ===== 右側：頂部列 + 內容 ===== */}
-      <div className="flex min-w-0 flex-1 flex-col lg:overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* 桌面頂部列 */}
-        <header className="hidden h-16 items-center justify-between border-b border-slate-200 bg-white px-6 lg:flex">
+        <header className="hidden h-16 flex-shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6 lg:flex">
           <button
             onClick={() => setCollapsed((c) => !c)}
             className="rounded-lg p-2 text-slate-600 hover:bg-slate-100"
@@ -99,7 +102,7 @@ export default function AppShell({
         </header>
 
         {/* 手機頂部列 */}
-        <header className="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 lg:hidden">
+        <header className="flex h-14 flex-shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 lg:hidden">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
               學
@@ -115,18 +118,21 @@ export default function AppShell({
           </button>
         </header>
 
-        {/* 內容 */}
-        <main className="flex-1 bg-slate-50 lg:overflow-y-auto">
+        {/* 內容（唯一會滾動的區域） */}
+        <main className="flex-1 overflow-y-auto bg-slate-50">
           <div
-            className={`mx-auto w-full px-5 pb-24 pt-6 lg:px-8 lg:pb-10 lg:pt-8 ${maxW}`}
+            className={`mx-auto w-full px-5 pb-10 pt-6 lg:px-8 lg:pt-8 ${maxW}`}
           >
             {children}
           </div>
         </main>
       </div>
 
-      {/* ===== 手機底部列 ===== */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 border-t border-slate-200 bg-white/95 backdrop-blur lg:hidden">
+      {/* ===== 手機底部列（在文件流內，貼著 dvh 底部）===== */}
+      <nav
+        className="flex-shrink-0 border-t border-slate-200 bg-white lg:hidden"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
         <div className="mx-auto flex max-w-md">
           {mobileNav.map((item) => {
             const Icon = item.icon;
