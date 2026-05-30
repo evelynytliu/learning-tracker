@@ -2,9 +2,11 @@ import {
   Home,
   CheckCircle2,
   CalendarDays,
+  CalendarRange,
   Target,
   NotebookPen,
   Flame,
+  Settings2,
   LayoutDashboard,
 } from 'lucide-react';
 
@@ -12,20 +14,29 @@ import {
 export const STUDENT_NAV = [
   { href: '/', label: '首頁', icon: Home, exact: true },
   { href: '/checkin', label: '打卡', icon: CheckCircle2 },
+  { href: '/calendar', label: '行事曆', icon: CalendarRange },
   { href: '/schedule', label: '課表', icon: CalendarDays },
   { href: '/weekly', label: '週進度', icon: Target },
   { href: '/mistakes', label: '錯題', icon: NotebookPen },
   { href: '/streak', label: '連續', icon: Flame },
+  { href: '/settings/tasks', label: '打卡設定', icon: Settings2 },
 ];
 
-// 學生：手機底部列（最多 5 個，連續紀錄從首頁卡片進入）
-export const STUDENT_NAV_MOBILE = STUDENT_NAV.slice(0, 5);
+// 學生：手機底部列（首頁/打卡/行事曆/課表/錯題）
+export const STUDENT_NAV_MOBILE = [
+  { href: '/', label: '首頁', icon: Home, exact: true },
+  { href: '/checkin', label: '打卡', icon: CheckCircle2 },
+  { href: '/calendar', label: '行事曆', icon: CalendarRange },
+  { href: '/schedule', label: '課表', icon: CalendarDays },
+  { href: '/mistakes', label: '錯題', icon: NotebookPen },
+];
 
 // 家長
 export const PARENT_NAV = [
   { href: '/dashboard', label: '總覽', icon: LayoutDashboard, exact: true },
   { href: '/dashboard/mistakes', label: '錯題', icon: NotebookPen },
   { href: '/dashboard/monthly', label: '月報', icon: CalendarDays },
+  { href: '/calendar', label: '行事曆', icon: CalendarRange },
 ];
 
 export function isActive(pathname, item) {

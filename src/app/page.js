@@ -2,28 +2,12 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import AppShell from '@/components/AppShell';
-import { isCheckinComplete, CHECKIN_TASKS } from '@/lib/utils';
+import MiniCalendar from '@/components/MiniCalendar';
 import { toYMD, weekStartYMD, isoDayOfWeek, DAY_LABELS } from '@/lib/date';
 import { EXTERNAL_LINKS } from '@/lib/links';
+import { isDayComplete, computeStreakFromSummary } from '@/lib/streak';
 
 export const dynamic = 'force-dynamic';
-
-const CHECKIN_KEYS = CHECKIN_TASKS.map((t) => t.key);
-
-function computeStreak(checkins, todayStr) {
-  // checkins: 由新到舊。沿用 isCheckinComplete（免讀日也算達標）。
-  const doneDates = new Set(
-    checkins.filter(isCheckinComplete).map((c) => c.date),
-  );
-  let streak = 0;
-  const cursor = new Date(todayStr + 'T00:00:00');
-  if (!doneDates.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
-  while (doneDates.has(toYMD(cursor))) {
-    streak += 1;
-    cursor.setDate(cursor.getDate() - 1);
-  }
-  return streak;
-}
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -43,6 +27,8 @@ export default async function HomePage() {
   const today = toYMD();
   const wkStart = weekStartYMD();
   const dow = isoDayOfWeek();
+  const since = new Date();
+  since.setMonth(since.getMonth() - 2);
 
   const [
     { data: todayCheckin },
@@ -50,11 +36,17 @@ export default async function HomePage() {
     { data: goals },
     { data: todayClasses },
     { count: mistakeCount },
+    { data: events },
   ] = await Promise.all([
-    supabase.from('daily_checkins').select('*').eq('user_id', user.id).eq('date', today).maybeSingle(),
     supabase
       .from('daily_checkins')
-      .select('date, homework_done, platform_task_done, english_input_done, math_practice_done, reading_done, is_rest_day')
+      .select('tasks_total, tasks_done, is_rest_day')
+      .eq('user_id', user.id)
+      .eq('date', today)
+      .maybeSingle(),
+    supabase
+      .from('daily_checkins')
+      .select('date, tasks_total, tasks_done, is_rest_day')
       .eq('user_id', user.id)
       .order('date', { ascending: false })
       .limit(120),
@@ -66,25 +58,38 @@ export default async function HomePage() {
       .eq('day_of_week', dow)
       .order('period', { ascending: true }),
     supabase.from('mistakes').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+    supabase
+      .from('calendar_events')
+      .select('id, title, event_date, end_date')
+      .eq('user_id', user.id)
+      .gte('event_date', toYMD(since)),
   ]);
 
-  const doneCount = todayCheckin ? CHECKIN_KEYS.filter((k) => todayCheckin[k]).length : 0;
-  const streak = computeStreak(checkins ?? [], today);
+  const total = todayCheckin?.tasks_total ?? 0;
+  const doneCount = todayCheckin?.tasks_done ?? 0;
+  const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+  const streak = computeStreakFromSummary(checkins ?? [], today);
   const goalsTotal = goals?.length ?? 0;
   const goalsDone = (goals ?? []).filter((g) => g.progress >= g.target).length;
+
+  const doneDates = (checkins ?? []).filter(isDayComplete).map((c) => c.date);
+
+  // 接下來的行程（今天起，最多 4 筆）
+  const upcoming = (events ?? [])
+    .filter((e) => (e.end_date || e.event_date) >= today)
+    .sort((a, b) => a.event_date.localeCompare(b.event_date))
+    .slice(0, 4);
 
   return (
     <AppShell role={profile?.role ?? 'student'} email={user.email} displayName={profile?.display_name}>
       <header className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-800">
-          嗨，{profile?.display_name} 👋
-        </h1>
+        <h1 className="text-2xl font-bold text-slate-800">嗨，{profile?.display_name} 👋</h1>
         <p className="text-sm text-slate-500">
           {today}（{DAY_LABELS[dow - 1]}）
         </p>
       </header>
 
-      {/* 第一排：打卡（桌面佔兩格）+ 連續 + 週目標 */}
+      {/* 第一排：打卡 + 連續 + 週目標 */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Link
           href="/checkin"
@@ -92,16 +97,13 @@ export default async function HomePage() {
         >
           <div className="flex items-center justify-between">
             <span className="text-sm opacity-90">今日打卡</span>
-            <span className="text-sm opacity-90">{doneCount}/5</span>
+            <span className="text-sm opacity-90">{doneCount}/{total || '—'}</span>
           </div>
           <div className="mt-2 text-2xl font-bold">
-            {doneCount === 5 ? '今天完成了！🎉' : '去打卡 →'}
+            {total > 0 && doneCount >= total ? '今天完成了！🎉' : '去打卡 →'}
           </div>
           <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/30">
-            <div
-              className="h-full rounded-full bg-white transition-all"
-              style={{ width: `${(doneCount / 5) * 100}%` }}
-            />
+            <div className="h-full rounded-full bg-white transition-all" style={{ width: `${pct}%` }} />
           </div>
         </Link>
 
@@ -122,6 +124,39 @@ export default async function HomePage() {
         </Link>
       </div>
 
+      {/* 行事曆 + 接下來行程 */}
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-semibold text-slate-800">📆 行事曆</span>
+            <Link href="/calendar" className="text-xs text-slate-400">管理 →</Link>
+          </div>
+          <MiniCalendar events={events ?? []} doneDates={doneDates} todayStr={today} compact />
+          <p className="mt-2 text-xs text-slate-400">· 綠點=打卡完成　· 黃點=有行程</p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-semibold text-slate-800">🗓️ 接下來</span>
+            <Link href="/calendar" className="text-xs text-slate-400">新增 →</Link>
+          </div>
+          {upcoming.length > 0 ? (
+            <ul className="flex flex-col gap-2">
+              {upcoming.map((e) => (
+                <li key={e.id} className="flex items-center gap-3 text-sm">
+                  <span className="rounded-lg bg-amber-100 px-2 py-1 text-xs font-medium text-amber-700">
+                    {e.event_date.slice(5)}
+                  </span>
+                  <span className="font-medium text-slate-700">{e.title}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-slate-400">還沒有登記行程，點「新增」加上去</p>
+          )}
+        </div>
+      </div>
+
       {/* 今日課表 */}
       <Link href="/schedule" className="mt-4 block rounded-2xl border border-slate-200 bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
@@ -134,9 +169,7 @@ export default async function HomePage() {
               <li key={i} className="flex items-center gap-2 text-sm">
                 <span className="w-6 text-slate-400">{c.period}</span>
                 <span className="font-medium text-slate-700">{c.subject}</span>
-                {c.start_time && (
-                  <span className="text-slate-400">{c.start_time.slice(0, 5)}</span>
-                )}
+                {c.start_time && <span className="text-slate-400">{c.start_time.slice(0, 5)}</span>}
               </li>
             ))}
           </ul>
@@ -148,6 +181,7 @@ export default async function HomePage() {
       {/* 功能格 */}
       <h2 className="mb-3 mt-7 text-sm font-semibold text-slate-500">所有功能</h2>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <FeatureCard href="/calendar" icon="📆" title="行事曆" subtitle="登記行程" />
         <FeatureCard href="/mistakes" icon="📝" title="錯題本" subtitle={`${mistakeCount ?? 0} 筆`} />
         <FeatureCard href="/streak" icon="🔥" title="連續紀錄" subtitle="看火焰" />
         <FeatureCard href="/schedule" icon="📅" title="課表" subtitle="編輯每週課" />
@@ -159,10 +193,10 @@ export default async function HomePage() {
           title="品學堂"
           subtitle="閱讀素養"
         />
+        <FeatureCard href="/settings/tasks" icon="⚙️" title="打卡設定" subtitle="自訂清單" />
         <FeatureCard icon="📚" title="教材重點" soon />
         <FeatureCard icon="📖" title="課外閱讀" soon />
         <FeatureCard icon="✏️" title="筆記" soon />
-        <FeatureCard icon="🏃" title="運動時間" soon />
         <FeatureCard icon="🏆" title="成就榜" soon />
         <FeatureCard icon="💬" title="留言板" soon />
       </div>

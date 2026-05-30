@@ -1,0 +1,26 @@
+import { isoDayOfWeek, toYMD } from './date';
+
+// 決定某一天該套用哪一份打卡清單。
+// 優先序：特殊期間(日期區間) > 星期對應的清單 > 第一份清單 > null。
+export function resolveTaskSet({ date = new Date(), taskSets = [], specialPeriods = [] }) {
+  const ymd = toYMD(date);
+
+  // 1. 特殊期間（取最後一個符合的，後建立的覆蓋先建立的）
+  const matchedPeriod = specialPeriods
+    .filter((p) => ymd >= p.start_date && ymd <= p.end_date)
+    .at(-1);
+  if (matchedPeriod) {
+    const set = taskSets.find((s) => s.id === matchedPeriod.task_set_id);
+    if (set) return { set, reason: matchedPeriod.name };
+  }
+
+  // 2. 星期對應
+  const dow = isoDayOfWeek(date);
+  const byWeekday = taskSets.find((s) => (s.weekdays || []).includes(dow));
+  if (byWeekday) return { set: byWeekday, reason: byWeekday.name };
+
+  // 3. 退而求其次：第一份
+  if (taskSets.length > 0) return { set: taskSets[0], reason: taskSets[0].name };
+
+  return { set: null, reason: null };
+}

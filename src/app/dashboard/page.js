@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { isCheckinComplete } from '@/lib/utils';
+import { isDayComplete, computeStreakFromSummary } from '@/lib/streak';
+import { toYMD } from '@/lib/date';
 import AppShell from '@/components/AppShell';
 
 export const dynamic = 'force-dynamic';
@@ -52,7 +53,7 @@ export default async function DashboardPage() {
       .gte('created_at', weekStart),
   ]);
 
-  const fullDays = (checkins || []).filter(isCheckinComplete).length;
+  const fullDays = (checkins || []).filter(isDayComplete).length;
   const today = new Date();
   const daysSoFar = Math.min(7, Math.floor((today - startOfWeek(today)) / 86400000) + 1);
   const rate = daysSoFar ? Math.round((fullDays / daysSoFar) * 100) : 0;
@@ -69,20 +70,12 @@ export default async function DashboardPage() {
   since.setDate(since.getDate() - 60);
   const { data: history } = await supabase
     .from('daily_checkins')
-    .select('*')
+    .select('date, tasks_total, tasks_done, is_rest_day')
     .eq('user_id', student.id)
-    .gte('date', since.toISOString().slice(0, 10))
+    .gte('date', toYMD(since))
     .order('date', { ascending: false });
 
-  let streak = 0;
-  const byDate = new Map((history || []).map((r) => [r.date, r]));
-  for (let i = 0; i < 365; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const iso = d.toISOString().slice(0, 10);
-    if (isCheckinComplete(byDate.get(iso))) streak++;
-    else break;
-  }
+  const streak = computeStreakFromSummary(history || [], toYMD(today));
 
   // mistake breakdown
   const bySubject = {};

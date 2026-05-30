@@ -1,25 +1,11 @@
 import { redirect } from 'next/navigation';
 import { Flame } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
-import { isCheckinComplete } from '@/lib/utils';
+import { isDayComplete, computeStreakFromSummary } from '@/lib/streak';
+import { toYMD } from '@/lib/date';
 import AppShell from '@/components/AppShell';
 
 export const dynamic = 'force-dynamic';
-
-function computeStreak(rows) {
-  const byDate = new Map(rows.map((r) => [r.date, r]));
-  let streak = 0;
-  const today = new Date();
-  for (let i = 0; i < 365; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const iso = d.toLocaleDateString('en-CA');
-    const row = byDate.get(iso);
-    if (isCheckinComplete(row)) streak++;
-    else break;
-  }
-  return streak;
-}
 
 export default async function StreakPage() {
   const supabase = await createClient();
@@ -39,22 +25,24 @@ export default async function StreakPage() {
 
   const { data: rows } = await supabase
     .from('daily_checkins')
-    .select('*')
+    .select('date, tasks_total, tasks_done, is_rest_day')
     .eq('user_id', user.id)
-    .gte('date', since.toLocaleDateString('en-CA'))
+    .gte('date', toYMD(since))
     .order('date', { ascending: false });
 
-  const streak = computeStreak(rows || []);
+  const today = toYMD();
+  const streak = computeStreakFromSummary(rows || [], today);
 
   // 最近 42 天日曆
+  const byDate = new Map((rows || []).map((r) => [r.date, r]));
   const cells = [];
-  const today = new Date();
+  const now = new Date();
   for (let i = 41; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const iso = d.toLocaleDateString('en-CA');
-    const row = (rows || []).find((r) => r.date === iso);
-    cells.push({ iso, done: isCheckinComplete(row), rest: !!row?.is_rest_day });
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const iso = toYMD(d);
+    const row = byDate.get(iso);
+    cells.push({ iso, done: isDayComplete(row), rest: !!row?.is_rest_day });
   }
 
   return (

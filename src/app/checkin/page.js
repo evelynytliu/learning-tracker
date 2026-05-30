@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import CheckinForm from '../CheckinForm';
 import AppShell from '@/components/AppShell';
 import { toYMD } from '@/lib/date';
+import { loadDayCheckin } from '@/lib/checkin-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,13 +21,7 @@ export default async function CheckinPage() {
     .maybeSingle();
 
   const today = toYMD();
-
-  const { data: row } = await supabase
-    .from('daily_checkins')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('date', today)
-    .maybeSingle();
+  const day = await loadDayCheckin(supabase, user.id, today);
 
   return (
     <AppShell
@@ -40,7 +35,15 @@ export default async function CheckinPage() {
         <h1 className="mt-1 text-2xl font-bold text-slate-800">今日打卡</h1>
       </header>
 
-      <CheckinForm initialRow={row} userId={user.id} date={today} />
+      <CheckinForm
+        userId={user.id}
+        date={today}
+        setName={day.setName}
+        tasks={day.tasks}
+        initialDone={day.doneMap}
+        initialRest={day.isRest}
+        pinxuetangDone={day.pinxuetangDone}
+      />
     </AppShell>
   );
 }

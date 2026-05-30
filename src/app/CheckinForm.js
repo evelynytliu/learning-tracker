@@ -1,117 +1,170 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Check, BookOpen, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
+import { Check, BookOpen, ExternalLink, Settings2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { CHECKIN_TASKS, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { EXTERNAL_LINKS } from '@/lib/links';
 
-const EMPTY = {
-  homework_done: false,
-  platform_task_done: false,
-  english_input_done: false,
-  math_practice_done: false,
-  reading_done: false,
-  is_rest_day: false,
-  pinxuetang_done: false,
-};
-
-export default function CheckinForm({ initialRow, userId, date }) {
-  const [row, setRow] = useState(initialRow || { ...EMPTY, user_id: userId, date });
+// props:
+//   userId, date
+//   setName      今天套用的清單名稱（平日/假日/暑假…）
+//   tasks        今天清單的項目 [{id, label, hint}]
+//   initialDone  { [task_id]: true } 今天已完成的項目
+//   initialRest  是否免讀日
+//   pinxuetangDone
+export default function CheckinForm({
+  userId,
+  date,
+  setName,
+  tasks = [],
+  initialDone = {},
+  initialRest = false,
+  pinxuetangDone = false,
+}) {
+  const [done, setDone] = useState(initialDone);
+  const [rest, setRest] = useState(initialRest);
+  const [pinx, setPinx] = useState(pinxuetangDone);
   const [saving, startSaving] = useTransition();
 
-  function toggle(key) {
-    const next = { ...row, [key]: !row[key] };
-    setRow(next);
+  const total = tasks.length;
+  const completed = tasks.filter((t) => done[t.id]).length;
+
+  // 把每日摘要寫回 daily_checkins（streak / 儀表板用）
+  function syncSummary(nextDone, nextRest, nextPinx) {
+    const doneCount = tasks.filter((t) => nextDone[t.id]).length;
+    const supabase = createClient();
+    return supabase.from('daily_checkins').upsert(
+      {
+        user_id: userId,
+        date,
+        is_rest_day: nextRest,
+        pinxuetang_done: nextPinx,
+        tasks_total: tasks.length,
+        tasks_done: doneCount,
+      },
+      { onConflict: 'user_id,date' },
+    );
+  }
+
+  function toggleTask(taskId) {
+    const next = { ...done, [taskId]: !done[taskId] };
+    setDone(next);
     startSaving(async () => {
       const supabase = createClient();
-      await supabase
-        .from('daily_checkins')
-        .upsert(
-          { ...next, user_id: userId, date },
-          { onConflict: 'user_id,date' },
-        );
+      await supabase.from('task_checkins').upsert(
+        { user_id: userId, task_id: taskId, date, done: next[taskId] },
+        { onConflict: 'user_id,task_id,date' },
+      );
+      await syncSummary(next, rest, pinx);
     });
   }
 
-  const completed = CHECKIN_TASKS.filter((t) => row[t.key]).length;
-  const total = CHECKIN_TASKS.length;
+  function toggleRest() {
+    const next = !rest;
+    setRest(next);
+    startSaving(() => syncSummary(done, next, pinx));
+  }
+
+  function togglePinx() {
+    const next = !pinx;
+    setPinx(next);
+    startSaving(() => syncSummary(done, rest, next));
+  }
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between rounded-2xl bg-indigo-50 px-5 py-4">
         <div>
-          <p className="text-xs text-indigo-900/70">今日進度</p>
-          <p className="text-2xl font-bold text-indigo-900">{completed} / {total}</p>
+          <p className="text-xs text-indigo-900/70">
+            今日進度・<span className="font-medium">{setName || '未設定清單'}</span>
+          </p>
+          <p className="text-2xl font-bold text-indigo-900">
+            {completed} / {total}
+          </p>
         </div>
         <button
-          onClick={() => toggle('is_rest_day')}
+          onClick={toggleRest}
           className={cn(
             'rounded-full px-3 py-1 text-xs',
-            row.is_rest_day ? 'bg-amber-500 text-white' : 'bg-white text-slate-600',
+            rest ? 'bg-amber-500 text-white' : 'bg-white text-slate-600',
           )}
         >
-          {row.is_rest_day ? '免讀日 ✓' : '使用免讀日'}
+          {rest ? '免讀日 ✓' : '使用免讀日'}
         </button>
       </div>
 
-      <ul className="flex flex-col gap-3">
-        {CHECKIN_TASKS.map((task) => {
-          const done = row[task.key];
-          const isReadingOnRest = task.key === 'reading_done' && row.is_rest_day;
-          return (
-            <li key={task.key}>
-              <button
-                onClick={() => toggle(task.key)}
-                disabled={isReadingOnRest}
-                className={cn(
-                  'flex w-full items-center gap-4 rounded-2xl border-2 px-5 py-4 text-left transition active:scale-[0.98]',
-                  done ? 'border-green-500 bg-green-50' : 'border-slate-200 bg-white',
-                  isReadingOnRest && 'opacity-40',
-                )}
-              >
-                <span
+      {total === 0 ? (
+        <div className="rounded-2xl border border-dashed p-6 text-center">
+          <p className="text-sm text-slate-500">今天還沒有打卡項目。</p>
+          <Link
+            href="/settings/tasks"
+            className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white"
+          >
+            <Settings2 size={15} /> 去設定打卡清單
+          </Link>
+        </div>
+      ) : (
+        <ul className="flex flex-col gap-3">
+          {tasks.map((task) => {
+            const isDone = !!done[task.id];
+            return (
+              <li key={task.id}>
+                <button
+                  onClick={() => toggleTask(task.id)}
                   className={cn(
-                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
-                    done ? 'bg-green-500 text-white' : 'bg-slate-100 text-slate-300',
+                    'flex w-full items-center gap-4 rounded-2xl border-2 px-5 py-4 text-left transition active:scale-[0.98]',
+                    isDone ? 'border-green-500 bg-green-50' : 'border-slate-200 bg-white',
                   )}
                 >
-                  <Check size={20} strokeWidth={3} />
-                </span>
-                <span className="flex-1">
-                  <span className="block font-semibold">{task.label}</span>
-                  <span className="block text-xs text-slate-500">{task.hint}</span>
-                </span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+                  <span
+                    className={cn(
+                      'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
+                      isDone ? 'bg-green-500 text-white' : 'bg-slate-100 text-slate-300',
+                    )}
+                  >
+                    <Check size={20} strokeWidth={3} />
+                  </span>
+                  <span className="flex-1">
+                    <span className="block font-semibold">{task.label}</span>
+                    {task.hint && (
+                      <span className="block text-xs text-slate-500">{task.hint}</span>
+                    )}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
-      {/* 品學堂閱讀素養 — 加分項，不計入核心 5 項 */}
+      {/* 品學堂閱讀素養 — 加分項，不計入核心完成度 */}
       <div className="mt-6">
         <p className="mb-2 text-xs font-semibold text-slate-400">加分挑戰</p>
         <div
           className={cn(
             'rounded-2xl border-2 p-4 transition',
-            row.pinxuetang_done ? 'border-violet-400 bg-violet-50' : 'border-slate-200 bg-white',
+            pinx ? 'border-violet-400 bg-violet-50' : 'border-slate-200 bg-white',
           )}
         >
           <button
-            onClick={() => toggle('pinxuetang_done')}
+            onClick={togglePinx}
             className="flex w-full items-center gap-4 text-left active:scale-[0.98]"
           >
             <span
               className={cn(
                 'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
-                row.pinxuetang_done ? 'bg-violet-500 text-white' : 'bg-slate-100 text-slate-300',
+                pinx ? 'bg-violet-500 text-white' : 'bg-slate-100 text-slate-300',
               )}
             >
               <BookOpen size={18} strokeWidth={2.5} />
             </span>
             <span className="flex-1">
               <span className="block font-semibold">品學堂閱讀素養</span>
-              <span className="block text-xs text-slate-500">每天一篇，練閱讀理解（不算進 5 項，純加分）</span>
+              <span className="block text-xs text-slate-500">
+                每天一篇，練閱讀理解（純加分）
+              </span>
             </span>
           </button>
           <a
@@ -126,9 +179,15 @@ export default function CheckinForm({ initialRow, userId, date }) {
         </div>
       </div>
 
-      <p className="mt-6 text-center text-xs text-slate-400">
-        {saving ? '儲存中…' : '已自動儲存'}
-      </p>
+      <div className="mt-6 flex items-center justify-between">
+        <Link
+          href="/settings/tasks"
+          className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600"
+        >
+          <Settings2 size={13} /> 編輯打卡清單
+        </Link>
+        <p className="text-xs text-slate-400">{saving ? '儲存中…' : '已自動儲存'}</p>
+      </div>
     </div>
   );
 }
