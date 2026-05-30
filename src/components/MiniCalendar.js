@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { toYMD } from '@/lib/date';
 
@@ -49,8 +49,29 @@ export default function MiniCalendar({ events = [], doneDates, todayStr, onSelec
     });
   }
 
+  // 觸控左右滑動換月（水平位移明顯大於垂直時才觸發，避免擋到上下捲動）
+  const touch = useRef(null);
+  function onTouchStart(e) {
+    const t = e.changedTouches[0];
+    touch.current = { x: t.clientX, y: t.clientY };
+  }
+  function onTouchEnd(e) {
+    if (!touch.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touch.current.x;
+    const dy = t.clientY - touch.current.y;
+    touch.current = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      shift(dx < 0 ? 1 : -1); // 往左滑 = 下個月
+    }
+  }
+
   return (
-    <div>
+    <div
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      style={{ touchAction: 'pan-y' }}
+    >
       <div className="mb-2 flex items-center justify-between">
         <span className="font-semibold text-slate-800">
           {cursor.y} 年 {MONTHS[cursor.m]}
