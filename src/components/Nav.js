@@ -2,46 +2,47 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, BookX, Flame, BarChart3 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
-const STUDENT_TABS = [
-  { href: '/',          label: '打卡', icon: Home },
-  { href: '/mistakes',  label: '錯題', icon: BookX },
-  { href: '/streak',    label: '連續', icon: Flame },
+const studentLinks = [
+  { href: '/', label: '首頁', icon: '🏠' },
+  { href: '/checkin', label: '打卡', icon: '✅' },
+  { href: '/schedule', label: '課表', icon: '📅' },
+  { href: '/weekly', label: '週進度', icon: '🎯' },
+  { href: '/mistakes', label: '錯題', icon: '📝' },
 ];
 
-const PARENT_TABS = [
-  { href: '/dashboard',           label: '週報',   icon: BarChart3 },
-  { href: '/dashboard/mistakes',  label: '錯題',   icon: BookX },
-  { href: '/dashboard/monthly',   label: '月檢核', icon: Flame },
+const parentLinks = [
+  { href: '/dashboard', label: '總覽', icon: '📊' },
+  { href: '/dashboard/mistakes', label: '錯題', icon: '📝' },
+  { href: '/dashboard/monthly', label: '月報', icon: '🗓️' },
 ];
 
 export default function Nav({ role }) {
   const pathname = usePathname();
-  const tabs = role === 'parent' ? PARENT_TABS : STUDENT_TABS;
+  const links = role === 'parent' ? parentLinks : studentLinks;
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 border-t bg-white/95 backdrop-blur z-10">
-      <ul className="mx-auto flex max-w-md justify-around">
-        {tabs.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href;
+    <nav className="fixed bottom-0 left-0 right-0 z-10 border-t bg-white/95 backdrop-blur">
+      <div className="mx-auto flex max-w-md">
+        {links.map((link) => {
+          const active =
+            link.href === '/'
+              ? pathname === '/'
+              : pathname === link.href || pathname.startsWith(link.href + '/');
           return (
-            <li key={href} className="flex-1">
-              <Link
-                href={href}
-                className={cn(
-                  'flex flex-col items-center justify-center py-3 text-xs',
-                  active ? 'text-blue-600 font-semibold' : 'text-gray-500',
-                )}
-              >
-                <Icon size={20} strokeWidth={active ? 2.5 : 2} />
-                <span className="mt-1">{label}</span>
-              </Link>
-            </li>
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-center text-xs ${
+                active ? 'font-bold text-blue-600' : 'text-gray-400'
+              }`}
+            >
+              <span className="text-lg leading-none">{link.icon}</span>
+              <span>{link.label}</span>
+            </Link>
           );
         })}
-      </ul>
+      </div>
     </nav>
   );
 }
