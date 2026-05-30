@@ -36,6 +36,7 @@ create table if not exists learning.special_periods (
   task_set_id  uuid not null references learning.task_sets(id) on delete cascade,
   start_date   date not null,
   end_date     date not null,
+  weekdays     int[] not null default '{}',  -- 空=整段每天；有值=只在這段日期的這些星期(1=週一..7=週日)
   created_at   timestamptz not null default now()
 );
 create index if not exists special_periods_user_idx on learning.special_periods (user_id, start_date);

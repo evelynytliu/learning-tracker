@@ -11,7 +11,7 @@ export async function loadDayCheckin(supabase, userId, ymd) {
       .order('sort_order', { ascending: true }),
     supabase
       .from('special_periods')
-      .select('id, name, task_set_id, start_date, end_date')
+      .select('id, name, task_set_id, start_date, end_date, weekdays')
       .eq('user_id', userId),
     supabase
       .from('daily_checkins')

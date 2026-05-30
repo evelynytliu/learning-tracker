@@ -78,7 +78,15 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
   }
 
   // ---- special periods ----
-  const [pDraft, setPDraft] = useState({ name: '', task_set_id: '', start_date: '', end_date: '' });
+  const [pDraft, setPDraft] = useState({ name: '', task_set_id: '', start_date: '', end_date: '', weekdays: [] });
+  function togglePDraftWeekday(dow) {
+    setPDraft((d) => ({
+      ...d,
+      weekdays: d.weekdays.includes(dow)
+        ? d.weekdays.filter((x) => x !== dow)
+        : [...d.weekdays, dow].sort(),
+    }));
+  }
   async function addPeriod(e) {
     e.preventDefault();
     if (!pDraft.name.trim() || !pDraft.task_set_id || !pDraft.start_date || !pDraft.end_date) {
@@ -91,7 +99,7 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
       .single();
     if (error) return alert(error.message);
     setPeriods((prev) => [...prev, data]);
-    setPDraft({ name: '', task_set_id: '', start_date: '', end_date: '' });
+    setPDraft({ name: '', task_set_id: '', start_date: '', end_date: '', weekdays: [] });
   }
   async function deletePeriod(id) {
     setPeriods((prev) => prev.filter((p) => p.id !== id));
@@ -140,7 +148,8 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
       <section>
         <h2 className="mb-1 font-semibold text-slate-800">特殊期間</h2>
         <p className="mb-3 text-xs text-slate-400">
-          在某段日期改用指定清單（會覆蓋星期設定）。例：暑假整段用「暑假」清單。
+          在某段日期改用指定清單（會覆蓋星期設定）。可再限定星期，例如「暑假平日」設
+          7/1~8/31 + 一~五，「暑假假日」設同期間 + 六日。
         </p>
         <ul className="flex flex-col gap-2">
           {periods.length === 0 && (
@@ -159,7 +168,11 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
                   <span className="font-medium">{p.name}</span>
                   <span className="text-slate-400">
                     {' '}
-                    · {p.start_date} ~ {p.end_date} · 用「{set?.name ?? '?'}」
+                    · {p.start_date} ~ {p.end_date}
+                    {p.weekdays && p.weekdays.length > 0
+                      ? `（${p.weekdays.map((d) => DAY_LABELS[d - 1].replace('週', '')).join('')}）`
+                      : ''}
+                    {' '}· 用「{set?.name ?? '?'}」
                   </span>
                 </span>
                 <button
@@ -207,6 +220,29 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
               className="flex-1 rounded-lg border px-2 py-2 text-sm"
             />
           </div>
+
+          <p className="mb-1.5 mt-3 text-xs text-slate-500">
+            限定星期（不選 = 整段每天套用）：
+          </p>
+          <div className="flex gap-1">
+            {DAY_LABELS.map((lbl, i) => {
+              const dow = i + 1;
+              const on = pDraft.weekdays.includes(dow);
+              return (
+                <button
+                  key={dow}
+                  type="button"
+                  onClick={() => togglePDraftWeekday(dow)}
+                  className={`h-8 w-8 rounded-full text-xs ${
+                    on ? 'bg-indigo-600 font-semibold text-white' : 'bg-slate-100 text-slate-500'
+                  }`}
+                >
+                  {lbl.replace('週', '')}
+                </button>
+              );
+            })}
+          </div>
+
           <button
             type="submit"
             className="mt-3 w-full rounded-lg bg-indigo-600 py-2 font-semibold text-white"
