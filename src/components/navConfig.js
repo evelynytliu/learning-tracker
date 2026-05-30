@@ -9,6 +9,8 @@ import {
   Trophy,
   BookMarked,
   ClipboardList,
+  StickyNote,
+  MessagesSquare,
   Settings2,
   LayoutDashboard,
 } from 'lucide-react';
@@ -23,6 +25,8 @@ export const STUDENT_NAV = [
   { href: '/weekly', label: '週進度', icon: Target },
   { href: '/mistakes', label: '錯題', icon: NotebookPen },
   { href: '/reading', label: '課外閱讀', icon: BookMarked },
+  { href: '/notes', label: '筆記', icon: StickyNote },
+  { href: '/messages', label: '留言板', icon: MessagesSquare },
   { href: '/streak', label: '連續', icon: Flame },
   { href: '/achievements', label: '成就', icon: Trophy },
   { href: '/settings/tasks', label: '打卡設定', icon: Settings2 },
@@ -45,6 +49,7 @@ export const PARENT_NAV = [
   { href: '/calendar', label: '行事曆', icon: CalendarRange },
   { href: '/assignments', label: '作業', icon: ClipboardList },
   { href: '/reading', label: '閱讀', icon: BookMarked },
+  { href: '/messages', label: '留言板', icon: MessagesSquare },
 ];
 
 export function isActive(pathname, item) {

@@ -260,10 +260,10 @@ export default async function HomePage() {
           subtitle="閱讀素養"
         />
         <FeatureCard href="/achievements" icon="🏆" title="成就牆" subtitle="看徽章" />
+        <FeatureCard href="/notes" icon="✏️" title="筆記" subtitle="隨手記" />
+        <FeatureCard href="/messages" icon="💬" title="留言板" subtitle="親子留言" />
         <FeatureCard href="/settings/tasks" icon="⚙️" title="打卡設定" subtitle="自訂清單" />
         <FeatureCard icon="📚" title="教材重點" soon />
-        <FeatureCard icon="✏️" title="筆記" soon />
-        <FeatureCard icon="💬" title="留言板" soon />
       </div>
     </AppShell>
   );

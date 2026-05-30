@@ -42,7 +42,7 @@ export default async function MonthlyReviewPage() {
   const [{ data: checkins }, { count: mistakeCount }] = await Promise.all([
     supabase
       .from('daily_checkins')
-      .select('homework_done, math_practice_done, date')
+      .select('tasks_total, tasks_done, is_rest_day, date')
       .eq('user_id', student.id)
       .gte('date', startISO),
     supabase
@@ -52,18 +52,30 @@ export default async function MonthlyReviewPage() {
       .gte('created_at', start.toISOString()),
   ]);
 
-  const homeworkDone = (checkins || []).filter((r) => r.homework_done).length;
-  const practiceDone = (checkins || []).filter((r) => r.math_practice_done).length;
-  const homeworkRate = daysSoFar ? Math.round((homeworkDone / daysSoFar) * 100) : 0;
-  const practiceRate = daysSoFar ? Math.round((practiceDone / daysSoFar) * 100) : 0;
+  // 自訂清單後，以「當天打卡完成數 / 總數」衡量整體完成度
+  // （免讀日視為完成；無項目的日子不計入分母）
+  const rows = checkins || [];
+  const activeDays = rows.filter((r) => r.is_rest_day || r.tasks_total > 0);
+  const completeDays = rows.filter(
+    (r) => r.is_rest_day || (r.tasks_total > 0 && r.tasks_done >= r.tasks_total),
+  ).length;
+  // 整體任務完成率（所有項目）
+  let totalTasks = 0;
+  let doneTasks = 0;
+  for (const r of rows) {
+    totalTasks += r.tasks_total || 0;
+    doneTasks += Math.min(r.tasks_done || 0, r.tasks_total || 0);
+  }
+  const overallRate = totalTasks ? Math.round((doneTasks / totalTasks) * 100) : 0;
+  const completionRate = daysSoFar ? Math.round((completeDays / daysSoFar) * 100) : 0;
 
   const checks = [
-    { label: '作業準時交', value: `${homeworkRate}%`, target: '≥ 90%', pass: homeworkRate >= 90 },
+    { label: '每日打卡完成', value: `${completionRate}%`, target: '≥ 80%', pass: completionRate >= 80 },
+    { label: '任務整體完成率', value: `${overallRate}%`, target: '≥ 80%', pass: overallRate >= 80 },
     { label: '錯題本有在記', value: `${mistakeCount ?? 0} 筆`, target: '≥ 8 筆', pass: (mistakeCount ?? 0) >= 8 },
-    { label: '題庫練習有做', value: `${practiceRate}%`, target: '≥ 80%', pass: practiceRate >= 80 },
   ];
 
-  const passed = checks.every((c) => c.pass);
+  const passed = checks.filter((c) => c.pass).length >= 2;
 
   return (
     <AppShell role="parent" email={user.email}>
@@ -77,7 +89,7 @@ export default async function MonthlyReviewPage() {
           passed ? 'bg-green-50 text-green-800' : 'bg-orange-50 text-orange-800'
         }`}
       >
-        <p className="text-sm font-medium">{passed ? '三項都達標' : '兩項以下達標'}</p>
+        <p className="text-sm font-medium">{passed ? '達標（三項中至少兩項）' : '未達標'}</p>
         <p className="mt-1 text-2xl font-bold">
           {passed ? '維持自主學習權' : '下個月需介入'}
         </p>
