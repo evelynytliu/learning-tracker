@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Trash2, Plus, ChevronDown, ChevronUp } from 'lucide-react';
+import { Trash2, Plus, ChevronDown, ChevronUp, Pencil, Check, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { DAY_LABELS } from '@/lib/date';
 
@@ -32,6 +32,13 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
     if (!confirm('刪除這份清單?裡面的項目也會一起刪除。')) return;
     setSets((prev) => prev.filter((s) => s.id !== id));
     await supabase.from('task_sets').delete().eq('id', id);
+  }
+
+  async function renameSet(id, name) {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setSets((prev) => prev.map((s) => (s.id === id ? { ...s, name: trimmed } : s)));
+    await supabase.from('task_sets').update({ name: trimmed }).eq('id', id);
   }
 
   async function toggleWeekday(set, dow) {
@@ -104,6 +111,7 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
               open={openSet === set.id}
               onToggleOpen={() => setOpenSet(openSet === set.id ? null : set.id)}
               onToggleWeekday={(dow) => toggleWeekday(set, dow)}
+              onRename={(name) => renameSet(set.id, name)}
               onDeleteSet={() => deleteSet(set.id)}
               onAddTask={(label, hint) => addTask(set, label, hint)}
               onDeleteTask={(taskId) => deleteTask(set.id, taskId)}
@@ -211,9 +219,11 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
   );
 }
 
-function TaskSetCard({ set, open, onToggleOpen, onToggleWeekday, onDeleteSet, onAddTask, onDeleteTask }) {
+function TaskSetCard({ set, open, onToggleOpen, onToggleWeekday, onRename, onDeleteSet, onAddTask, onDeleteTask }) {
   const [label, setLabel] = useState('');
   const [hint, setHint] = useState('');
+  const [editing, setEditing] = useState(false);
+  const [nameDraft, setNameDraft] = useState(set.name);
 
   function submit(e) {
     e.preventDefault();
@@ -222,20 +232,67 @@ function TaskSetCard({ set, open, onToggleOpen, onToggleWeekday, onDeleteSet, on
     setHint('');
   }
 
+  function saveName() {
+    if (nameDraft.trim()) onRename(nameDraft);
+    setEditing(false);
+  }
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-white">
       <div className="flex items-center justify-between p-4">
-        <button onClick={onToggleOpen} className="flex flex-1 items-center gap-2 text-left">
-          {open ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-          <span className="font-semibold text-slate-800">{set.name}</span>
-          <span className="text-xs text-slate-400">{set.tasks.length} 項</span>
-        </button>
-        <button
-          onClick={onDeleteSet}
-          className="rounded-lg p-1.5 text-slate-300 hover:bg-red-50 hover:text-red-400"
-        >
-          <Trash2 size={16} />
-        </button>
+        {editing ? (
+          <div className="flex flex-1 items-center gap-2">
+            <input
+              autoFocus
+              value={nameDraft}
+              onChange={(e) => setNameDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') saveName();
+                if (e.key === 'Escape') {
+                  setNameDraft(set.name);
+                  setEditing(false);
+                }
+              }}
+              className="min-w-0 flex-1 rounded-lg border px-2 py-1 text-sm font-semibold"
+            />
+            <button onClick={saveName} className="rounded-lg p-1.5 text-green-600 hover:bg-green-50">
+              <Check size={16} />
+            </button>
+            <button
+              onClick={() => {
+                setNameDraft(set.name);
+                setEditing(false);
+              }}
+              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        ) : (
+          <>
+            <button onClick={onToggleOpen} className="flex flex-1 items-center gap-2 text-left">
+              {open ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              <span className="font-semibold text-slate-800">{set.name}</span>
+              <span className="text-xs text-slate-400">{set.tasks.length} 項</span>
+            </button>
+            <button
+              onClick={() => {
+                setNameDraft(set.name);
+                setEditing(true);
+              }}
+              className="rounded-lg p-1.5 text-slate-300 hover:bg-slate-100 hover:text-slate-600"
+              title="重新命名"
+            >
+              <Pencil size={15} />
+            </button>
+            <button
+              onClick={onDeleteSet}
+              className="rounded-lg p-1.5 text-slate-300 hover:bg-red-50 hover:text-red-400"
+            >
+              <Trash2 size={16} />
+            </button>
+          </>
+        )}
       </div>
 
       {open && (
