@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import Nav from '@/components/Nav';
+import AppShell from '@/components/AppShell';
 import { isCheckinComplete, CHECKIN_TASKS } from '@/lib/utils';
 import { toYMD, weekStartYMD, isoDayOfWeek, DAY_LABELS } from '@/lib/date';
 
@@ -16,7 +16,6 @@ function computeStreak(checkins, todayStr) {
   );
   let streak = 0;
   const cursor = new Date(todayStr + 'T00:00:00');
-  // 今天還沒打完不中斷連勝，從昨天往回數；今天已完成就從今天算起
   if (!doneDates.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
   while (doneDates.has(toYMD(cursor))) {
     streak += 1;
@@ -36,9 +35,8 @@ export default async function HomePage() {
     .from('profiles')
     .select('role, display_name')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
-  // 家長進首頁直接導到家長總覽
   if (profile?.role === 'parent') redirect('/dashboard');
 
   const today = toYMD();
@@ -75,79 +73,84 @@ export default async function HomePage() {
   const goalsDone = (goals ?? []).filter((g) => g.progress >= g.target).length;
 
   return (
-    <main className="mx-auto max-w-md px-5 pb-24 pt-8">
+    <AppShell role={profile?.role ?? 'student'} email={user.email} displayName={profile?.display_name}>
       <header className="mb-6">
-        <h1 className="text-2xl font-bold">嗨，{profile?.display_name} 👋</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-2xl font-bold text-slate-800">
+          嗨，{profile?.display_name} 👋
+        </h1>
+        <p className="text-sm text-slate-500">
           {today}（{DAY_LABELS[dow - 1]}）
         </p>
       </header>
 
-      {/* 今日打卡 — 主卡 */}
-      <Link
-        href="/checkin"
-        className="block rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-5 text-white shadow-sm"
-      >
-        <div className="flex items-center justify-between">
-          <span className="text-sm opacity-90">今日打卡</span>
-          <span className="text-sm opacity-90">{doneCount}/5</span>
-        </div>
-        <div className="mt-2 text-2xl font-bold">
-          {doneCount === 5 ? '今天完成了！🎉' : '去打卡 →'}
-        </div>
-        <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/30">
-          <div
-            className="h-full rounded-full bg-white transition-all"
-            style={{ width: `${(doneCount / 5) * 100}%` }}
-          />
-        </div>
-      </Link>
-
-      {/* 連續天數 + 本週目標 */}
-      <div className="mt-4 grid grid-cols-2 gap-4">
-        <Link href="/streak" className="rounded-2xl border bg-white p-4">
-          <div className="text-sm text-gray-500">連續達標</div>
-          <div className="mt-1 text-3xl font-bold">
-            🔥 {streak}
-            <span className="ml-1 text-base font-normal text-gray-400">天</span>
+      {/* 第一排：打卡（桌面佔兩格）+ 連續 + 週目標 */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Link
+          href="/checkin"
+          className="rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 p-5 text-white shadow-sm sm:col-span-2"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-sm opacity-90">今日打卡</span>
+            <span className="text-sm opacity-90">{doneCount}/5</span>
+          </div>
+          <div className="mt-2 text-2xl font-bold">
+            {doneCount === 5 ? '今天完成了！🎉' : '去打卡 →'}
+          </div>
+          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/30">
+            <div
+              className="h-full rounded-full bg-white transition-all"
+              style={{ width: `${(doneCount / 5) * 100}%` }}
+            />
           </div>
         </Link>
-        <Link href="/weekly" className="rounded-2xl border bg-white p-4">
-          <div className="text-sm text-gray-500">本週目標</div>
-          <div className="mt-1 text-3xl font-bold">
+
+        <Link href="/streak" className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="text-sm text-slate-500">連續達標</div>
+          <div className="mt-1 text-3xl font-bold text-slate-800">
+            🔥 {streak}
+            <span className="ml-1 text-base font-normal text-slate-400">天</span>
+          </div>
+        </Link>
+
+        <Link href="/weekly" className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="text-sm text-slate-500">本週目標</div>
+          <div className="mt-1 text-3xl font-bold text-slate-800">
             {goalsDone}
-            <span className="text-base font-normal text-gray-400">/{goalsTotal || 0}</span>
+            <span className="text-base font-normal text-slate-400">/{goalsTotal || 0}</span>
           </div>
         </Link>
       </div>
 
       {/* 今日課表 */}
-      <Link href="/schedule" className="mt-4 block rounded-2xl border bg-white p-4">
+      <Link href="/schedule" className="mt-4 block rounded-2xl border border-slate-200 bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
-          <span className="font-semibold">📅 今日課表</span>
-          <span className="text-xs text-gray-400">查看完整 →</span>
+          <span className="font-semibold text-slate-800">📅 今日課表</span>
+          <span className="text-xs text-slate-400">查看完整 →</span>
         </div>
         {todayClasses && todayClasses.length > 0 ? (
-          <ul className="flex flex-col gap-1.5">
-            {todayClasses.slice(0, 5).map((c, i) => (
+          <ul className="grid gap-1.5 sm:grid-cols-2">
+            {todayClasses.slice(0, 8).map((c, i) => (
               <li key={i} className="flex items-center gap-2 text-sm">
-                <span className="w-6 text-gray-400">{c.period}</span>
-                <span className="font-medium">{c.subject}</span>
+                <span className="w-6 text-slate-400">{c.period}</span>
+                <span className="font-medium text-slate-700">{c.subject}</span>
                 {c.start_time && (
-                  <span className="text-gray-400">{c.start_time.slice(0, 5)}</span>
+                  <span className="text-slate-400">{c.start_time.slice(0, 5)}</span>
                 )}
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-gray-400">今天還沒有排課，點我去設定</p>
+          <p className="text-sm text-slate-400">今天還沒有排課，點我去設定</p>
         )}
       </Link>
 
-      {/* 功能格：已上線 + 即將推出 */}
-      <div className="mt-6 grid grid-cols-2 gap-4">
+      {/* 功能格 */}
+      <h2 className="mb-3 mt-7 text-sm font-semibold text-slate-500">所有功能</h2>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         <FeatureCard href="/mistakes" icon="📝" title="錯題本" subtitle={`${mistakeCount ?? 0} 筆`} />
         <FeatureCard href="/streak" icon="🔥" title="連續紀錄" subtitle="看火焰" />
+        <FeatureCard href="/schedule" icon="📅" title="課表" subtitle="編輯每週課" />
+        <FeatureCard href="/weekly" icon="🎯" title="週進度" subtitle="本週目標" />
         <FeatureCard icon="📚" title="教材重點" soon />
         <FeatureCard icon="📖" title="課外閱讀" soon />
         <FeatureCard icon="✏️" title="筆記" soon />
@@ -155,22 +158,24 @@ export default async function HomePage() {
         <FeatureCard icon="🏆" title="成就榜" soon />
         <FeatureCard icon="💬" title="留言板" soon />
       </div>
-
-      <Nav role={profile?.role} />
-    </main>
+    </AppShell>
   );
 }
 
 function FeatureCard({ href, icon, title, subtitle, soon }) {
   const inner = (
     <div
-      className={`flex h-full flex-col rounded-2xl border p-4 ${
-        soon ? 'border-dashed bg-gray-50' : 'bg-white'
+      className={`flex h-full flex-col rounded-2xl border p-4 transition ${
+        soon
+          ? 'border-dashed border-slate-200 bg-slate-100/60'
+          : 'border-slate-200 bg-white hover:border-indigo-200 hover:shadow-sm'
       }`}
     >
       <span className="text-2xl">{icon}</span>
-      <span className={`mt-2 font-semibold ${soon ? 'text-gray-400' : ''}`}>{title}</span>
-      <span className="text-xs text-gray-400">{soon ? '即將推出' : subtitle}</span>
+      <span className={`mt-2 font-semibold ${soon ? 'text-slate-400' : 'text-slate-800'}`}>
+        {title}
+      </span>
+      <span className="text-xs text-slate-400">{soon ? '即將推出' : subtitle}</span>
     </div>
   );
   if (soon || !href) return inner;

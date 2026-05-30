@@ -16,10 +16,23 @@ export const CHECKIN_TASKS = [
 export const SUBJECTS = ['國文', '英文', '數學', '理化', '社會'];
 export const MISTAKE_REASONS = ['粗心', '不懂概念', '題意看不懂', '計算錯誤'];
 
+export const SUBJECT_COLORS = {
+  國文: '#ef4444',
+  英文: '#3b82f6',
+  數學: '#8b5cf6',
+  理化: '#10b981',
+  社會: '#f59e0b',
+};
+
 export function isCheckinComplete(row) {
   if (!row) return false;
   if (row.is_rest_day) {
-    return row.homework_done && row.platform_task_done && row.english_input_done && row.math_practice_done;
+    return (
+      row.homework_done &&
+      row.platform_task_done &&
+      row.english_input_done &&
+      row.math_practice_done
+    );
   }
   return CHECKIN_TASKS.every((t) => row[t.key]);
 }

@@ -138,7 +138,7 @@ export default function NewMistakePage() {
         <button
           type="submit"
           disabled={!canSubmit || saving}
-          className="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white disabled:opacity-40"
+          className="rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white disabled:opacity-40"
         >
           {saving ? '儲存中…' : '完成'}
         </button>

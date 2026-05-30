@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import Nav from '@/components/Nav';
+import AppShell from '@/components/AppShell';
 import WeeklyGoals from './WeeklyGoals';
 import { weekStartYMD } from '@/lib/date';
 
@@ -17,7 +17,7 @@ export default async function WeeklyPage() {
     .from('profiles')
     .select('role, display_name')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   const wkStart = weekStartYMD();
 
@@ -30,10 +30,15 @@ export default async function WeeklyPage() {
     .order('created_at', { ascending: true });
 
   return (
-    <main className="mx-auto max-w-md px-5 pb-24 pt-8">
+    <AppShell
+      role={profile?.role ?? 'student'}
+      email={user.email}
+      displayName={profile?.display_name}
+      width="narrow"
+    >
       <header className="mb-4">
-        <h1 className="text-2xl font-bold">🎯 本週目標</h1>
-        <p className="text-sm text-gray-500">這週想完成什麼?設定後每天更新進度</p>
+        <h1 className="text-2xl font-bold text-slate-800">🎯 本週目標</h1>
+        <p className="text-sm text-slate-500">這週想完成什麼?設定後每天更新進度</p>
       </header>
 
       <WeeklyGoals
@@ -42,8 +47,6 @@ export default async function WeeklyPage() {
         initial={goals ?? []}
         readOnly={profile?.role === 'parent'}
       />
-
-      <Nav role={profile?.role} />
-    </main>
+    </AppShell>
   );
 }

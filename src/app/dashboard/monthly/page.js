@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { Check, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
-import Nav from '@/components/Nav';
+import AppShell from '@/components/AppShell';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,9 @@ function monthStart(d = new Date()) {
 
 export default async function MonthlyReviewPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
   const { data: student } = await supabase
@@ -21,14 +23,20 @@ export default async function MonthlyReviewPage() {
     .limit(1)
     .maybeSingle();
 
-  if (!student) return <main className="p-6 text-gray-500">尚未建立學生帳號。</main>;
+  if (!student) {
+    return (
+      <AppShell role="parent" email={user.email}>
+        <p className="text-slate-500">尚未建立學生帳號。</p>
+      </AppShell>
+    );
+  }
 
   const start = monthStart();
   const startISO = start.toISOString().slice(0, 10);
   const today = new Date();
   const daysSoFar = Math.min(
     today.getDate(),
-    (new Date(start.getFullYear(), start.getMonth() + 1, 0)).getDate(),
+    new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate(),
   );
 
   const [{ data: checkins }, { count: mistakeCount }] = await Promise.all([
@@ -58,26 +66,24 @@ export default async function MonthlyReviewPage() {
   const passed = checks.every((c) => c.pass);
 
   return (
-    <main className="mx-auto max-w-md px-5 pb-24 pt-6">
-      <h1 className="text-2xl font-bold">月度檢核</h1>
-      <p className="text-sm text-gray-500">
+    <AppShell role="parent" email={user.email}>
+      <h1 className="text-2xl font-bold text-slate-800">月度檢核</h1>
+      <p className="text-sm text-slate-500">
         {start.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long' })}
       </p>
 
       <div
-        className={`mt-6 rounded-2xl px-5 py-6 text-center ${
+        className={`mt-6 rounded-2xl px-5 py-6 text-center lg:max-w-md ${
           passed ? 'bg-green-50 text-green-800' : 'bg-orange-50 text-orange-800'
         }`}
       >
-        <p className="text-sm font-medium">
-          {passed ? '三項都達標' : '兩項以下達標'}
-        </p>
+        <p className="text-sm font-medium">{passed ? '三項都達標' : '兩項以下達標'}</p>
         <p className="mt-1 text-2xl font-bold">
           {passed ? '維持自主學習權' : '下個月需介入'}
         </p>
       </div>
 
-      <ul className="mt-6 flex flex-col gap-3">
+      <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {checks.map((c) => (
           <li
             key={c.label}
@@ -85,7 +91,7 @@ export default async function MonthlyReviewPage() {
           >
             <div>
               <p className="font-medium">{c.label}</p>
-              <p className="text-xs text-gray-500">目標 {c.target}</p>
+              <p className="text-xs text-slate-500">目標 {c.target}</p>
             </div>
             <div className="text-right">
               <p className="font-bold">{c.value}</p>
@@ -101,8 +107,6 @@ export default async function MonthlyReviewPage() {
           </li>
         ))}
       </ul>
-
-      <Nav role="parent" />
-    </main>
+    </AppShell>
   );
 }

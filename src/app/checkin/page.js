@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import CheckinForm from '../CheckinForm';
-import Nav from '@/components/Nav';
+import AppShell from '@/components/AppShell';
 import { toYMD } from '@/lib/date';
 
 export const dynamic = 'force-dynamic';
@@ -29,15 +29,18 @@ export default async function CheckinPage() {
     .maybeSingle();
 
   return (
-    <main className="mx-auto max-w-md px-5 pb-24 pt-8">
+    <AppShell
+      role={profile?.role ?? 'student'}
+      email={user.email}
+      displayName={profile?.display_name}
+      width="narrow"
+    >
       <header className="mb-6">
-        <p className="text-sm text-gray-500">{today}</p>
-        <h1 className="mt-1 text-2xl font-bold">今日打卡</h1>
+        <p className="text-sm text-slate-500">{today}</p>
+        <h1 className="mt-1 text-2xl font-bold text-slate-800">今日打卡</h1>
       </header>
 
       <CheckinForm initialRow={row} userId={user.id} date={today} />
-
-      <Nav role={profile?.role} />
-    </main>
+    </AppShell>
   );
 }
