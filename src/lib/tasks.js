@@ -8,13 +8,13 @@ export function resolveTaskSet({ date = new Date(), taskSets = [], specialPeriod
 
   // 1. 特殊期間（取最後一個符合的，後建立的覆蓋先建立的）
   //    weekdays 空 = 整段每天套用；有值 = 只在這段日期的這些星期套用。
-  const matchedPeriod = specialPeriods
-    .filter((p) => {
-      if (ymd < p.start_date || ymd > p.end_date) return false;
-      const wd = p.weekdays || [];
-      return wd.length === 0 || wd.includes(dow);
-    })
-    .at(-1);
+  //    用索引取末項（不用 Array.prototype.at，相容舊版 iOS Safari < 15.4）。
+  const matched = specialPeriods.filter((p) => {
+    if (ymd < p.start_date || ymd > p.end_date) return false;
+    const wd = p.weekdays || [];
+    return wd.length === 0 || wd.includes(dow);
+  });
+  const matchedPeriod = matched.length ? matched[matched.length - 1] : undefined;
   if (matchedPeriod) {
     const set = taskSets.find((s) => s.id === matchedPeriod.task_set_id);
     if (set) return { set, reason: matchedPeriod.name };
