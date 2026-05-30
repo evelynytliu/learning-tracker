@@ -6,6 +6,7 @@ import MiniCalendar from '@/components/MiniCalendar';
 import { toYMD, weekStartYMD, isoDayOfWeek, DAY_LABELS } from '@/lib/date';
 import { EXTERNAL_LINKS } from '@/lib/links';
 import { isDayComplete, computeStreakFromSummary } from '@/lib/streak';
+import { ACHIEVEMENT_MAP } from '@/lib/achievements';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,6 +38,7 @@ export default async function HomePage() {
     { data: todayClasses },
     { count: mistakeCount },
     { data: events },
+    { data: recentAchievements },
   ] = await Promise.all([
     supabase
       .from('daily_checkins')
@@ -63,6 +65,12 @@ export default async function HomePage() {
       .select('id, title, event_date, end_date')
       .eq('user_id', user.id)
       .gte('event_date', toYMD(since)),
+    supabase
+      .from('user_achievements')
+      .select('achievement_key, unlocked_at')
+      .eq('user_id', user.id)
+      .order('unlocked_at', { ascending: false })
+      .limit(4),
   ]);
 
   const total = todayCheckin?.tasks_total ?? 0;
@@ -73,6 +81,9 @@ export default async function HomePage() {
   const goalsDone = (goals ?? []).filter((g) => g.progress >= g.target).length;
 
   const doneDates = (checkins ?? []).filter(isDayComplete).map((c) => c.date);
+  const badges = (recentAchievements ?? [])
+    .map((a) => ACHIEVEMENT_MAP[a.achievement_key])
+    .filter(Boolean);
 
   // 接下來的行程（今天起，最多 4 筆）
   const upcoming = (events ?? [])
@@ -157,6 +168,26 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* 最近徽章 */}
+      <Link href="/achievements" className="mt-4 block rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="mb-2 flex items-center justify-between">
+          <span className="font-semibold text-slate-800">🏆 我的徽章</span>
+          <span className="text-xs text-slate-400">成就牆 →</span>
+        </div>
+        {badges.length > 0 ? (
+          <div className="flex gap-3">
+            {badges.map((b) => (
+              <div key={b.key} className="flex flex-col items-center" title={b.desc}>
+                <span className="text-3xl">{b.emoji}</span>
+                <span className="mt-1 text-xs text-slate-500">{b.name}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-400">開始打卡，解鎖你的第一個徽章！</p>
+        )}
+      </Link>
+
       {/* 今日課表 */}
       <Link href="/schedule" className="mt-4 block rounded-2xl border border-slate-200 bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
@@ -193,6 +224,7 @@ export default async function HomePage() {
           title="品學堂"
           subtitle="閱讀素養"
         />
+        <FeatureCard href="/achievements" icon="🏆" title="成就牆" subtitle="看徽章" />
         <FeatureCard href="/settings/tasks" icon="⚙️" title="打卡設定" subtitle="自訂清單" />
         <FeatureCard icon="📚" title="教材重點" soon />
         <FeatureCard icon="📖" title="課外閱讀" soon />

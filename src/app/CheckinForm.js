@@ -6,6 +6,9 @@ import { Check, BookOpen, ExternalLink, Settings2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { EXTERNAL_LINKS } from '@/lib/links';
+import { ACHIEVEMENT_MAP } from '@/lib/achievements';
+import AchievementToast from '@/components/AchievementToast';
+import { toYMD } from '@/lib/date';
 
 // props:
 //   userId, date
@@ -27,6 +30,19 @@ export default function CheckinForm({
   const [rest, setRest] = useState(initialRest);
   const [pinx, setPinx] = useState(pinxuetangDone);
   const [saving, startSaving] = useTransition();
+  const [unlocked, setUnlocked] = useState([]);
+
+  // 打卡後評估徽章；新解鎖的跳 toast
+  async function checkAchievements(supabase) {
+    const { data, error } = await supabase.rpc('evaluate_achievements', {
+      p_user_id: userId,
+      p_today: toYMD(),
+    });
+    if (!error && data && data.length > 0) {
+      const items = data.map((k) => ACHIEVEMENT_MAP[k]).filter(Boolean);
+      if (items.length > 0) setUnlocked((prev) => [...prev, ...items]);
+    }
+  }
 
   const total = tasks.length;
   const completed = tasks.filter((t) => done[t.id]).length;
@@ -58,19 +74,28 @@ export default function CheckinForm({
         { onConflict: 'user_id,task_id,date' },
       );
       await syncSummary(next, rest, pinx);
+      await checkAchievements(supabase);
     });
   }
 
   function toggleRest() {
     const next = !rest;
     setRest(next);
-    startSaving(() => syncSummary(done, next, pinx));
+    startSaving(async () => {
+      const supabase = createClient();
+      await syncSummary(done, next, pinx);
+      await checkAchievements(supabase);
+    });
   }
 
   function togglePinx() {
     const next = !pinx;
     setPinx(next);
-    startSaving(() => syncSummary(done, rest, next));
+    startSaving(async () => {
+      const supabase = createClient();
+      await syncSummary(done, rest, next);
+      await checkAchievements(supabase);
+    });
   }
 
   return (
@@ -188,6 +213,8 @@ export default function CheckinForm({
         </Link>
         <p className="text-xs text-slate-400">{saving ? '儲存中…' : '已自動儲存'}</p>
       </div>
+
+      <AchievementToast items={unlocked} onClear={() => setUnlocked([])} />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   Target,
   NotebookPen,
   Flame,
+  Trophy,
   Settings2,
   LayoutDashboard,
 } from 'lucide-react';
@@ -19,6 +20,7 @@ export const STUDENT_NAV = [
   { href: '/weekly', label: '週進度', icon: Target },
   { href: '/mistakes', label: '錯題', icon: NotebookPen },
   { href: '/streak', label: '連續', icon: Flame },
+  { href: '/achievements', label: '成就', icon: Trophy },
   { href: '/settings/tasks', label: '打卡設定', icon: Settings2 },
 ];
 
