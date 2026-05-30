@@ -39,6 +39,8 @@ export default async function HomePage() {
     { count: mistakeCount },
     { data: events },
     { data: recentAchievements },
+    { data: pendingAssignments },
+    { count: booksRead },
   ] = await Promise.all([
     supabase
       .from('daily_checkins')
@@ -71,6 +73,17 @@ export default async function HomePage() {
       .eq('user_id', user.id)
       .order('unlocked_at', { ascending: false })
       .limit(4),
+    supabase
+      .from('assignments')
+      .select('id, title, due_date, done')
+      .eq('user_id', user.id)
+      .eq('done', false)
+      .order('due_date', { ascending: true }),
+    supabase
+      .from('reading_log')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .not('finished_date', 'is', null),
   ]);
 
   const total = todayCheckin?.tasks_total ?? 0;
@@ -84,6 +97,7 @@ export default async function HomePage() {
   const badges = (recentAchievements ?? [])
     .map((a) => ACHIEVEMENT_MAP[a.achievement_key])
     .filter(Boolean);
+  const assignmentsLeft = pendingAssignments ?? [];
 
   // 接下來的行程（今天起，最多 4 筆）
   const upcoming = (events ?? [])
@@ -168,6 +182,25 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* 暑假作業 */}
+      {assignmentsLeft.length > 0 && (
+        <Link href="/assignments" className="mt-4 block rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-semibold text-slate-800">📋 待完成作業</span>
+            <span className="text-xs text-slate-400">還有 {assignmentsLeft.length} 項 →</span>
+          </div>
+          <ul className="flex flex-col gap-1.5">
+            {assignmentsLeft.slice(0, 5).map((a) => (
+              <li key={a.id} className="flex items-center gap-2 text-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+                <span className="font-medium text-slate-700">{a.title}</span>
+                {a.due_date && <span className="text-xs text-slate-400">截止 {a.due_date}</span>}
+              </li>
+            ))}
+          </ul>
+        </Link>
+      )}
+
       {/* 最近徽章 */}
       <Link href="/achievements" className="mt-4 block rounded-2xl border border-slate-200 bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
@@ -212,6 +245,8 @@ export default async function HomePage() {
       {/* 功能格 */}
       <h2 className="mb-3 mt-7 text-sm font-semibold text-slate-500">所有功能</h2>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <FeatureCard href="/assignments" icon="📋" title="暑假作業" subtitle={`待完成 ${assignmentsLeft.length}`} />
+        <FeatureCard href="/reading" icon="📖" title="課外閱讀" subtitle={`讀完 ${booksRead ?? 0} 本`} />
         <FeatureCard href="/calendar" icon="📆" title="行事曆" subtitle="登記行程" />
         <FeatureCard href="/mistakes" icon="📝" title="錯題本" subtitle={`${mistakeCount ?? 0} 筆`} />
         <FeatureCard href="/streak" icon="🔥" title="連續紀錄" subtitle="看火焰" />
@@ -227,9 +262,7 @@ export default async function HomePage() {
         <FeatureCard href="/achievements" icon="🏆" title="成就牆" subtitle="看徽章" />
         <FeatureCard href="/settings/tasks" icon="⚙️" title="打卡設定" subtitle="自訂清單" />
         <FeatureCard icon="📚" title="教材重點" soon />
-        <FeatureCard icon="📖" title="課外閱讀" soon />
         <FeatureCard icon="✏️" title="筆記" soon />
-        <FeatureCard icon="🏆" title="成就榜" soon />
         <FeatureCard icon="💬" title="留言板" soon />
       </div>
     </AppShell>
