@@ -40,9 +40,9 @@ export default async function CheckinPage() {
         date={today}
         setName={day.setName}
         tasks={day.tasks}
+        bonusTasks={day.bonusTasks}
         initialDone={day.doneMap}
         initialRest={day.isRest}
-        pinxuetangDone={day.pinxuetangDone}
       />
     </AppShell>
   );
