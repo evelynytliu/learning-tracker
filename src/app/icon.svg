@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="fire" x1="32" y1="7" x2="32" y2="54" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDBA74"/>
+      <stop offset="0.5" stop-color="#FB923C"/>
+      <stop offset="1" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="url(#tile)"/>
+  <path d="M32 7 C 42 21 47 31 44 41 C 41.5 49.5 37.5 54 32 54 C 26.5 54 22.5 49.5 20 41 C 17 31 22 21 32 7 Z" fill="url(#fire)"/>
+  <path d="M32 26 C 37.5 33 39 40 35 46 C 33.2 48.6 32 48.6 30 46 C 25.5 40 27 33 32 26 Z" fill="#FCD34D"/>
+  <circle cx="30" cy="44" r="3" fill="#FEF3C7"/>
+</svg>

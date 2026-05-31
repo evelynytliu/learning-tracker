@@ -69,9 +69,13 @@ export default function AppShell({
         }`}
       >
         <div className={`flex h-16 items-center gap-2 border-b px-4 ${ninja ? 'border-cyan-300/15' : 'border-slate-200'}`}>
-          <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-lg font-black text-white ${brandTile}`}>
-            {brandGlyph}
-          </div>
+          {ninja ? (
+            <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-lg ${brandTile}`}>
+              {brandGlyph}
+            </div>
+          ) : (
+            <img src="/logo.svg" alt="學習挑戰賽" className="h-9 w-9 flex-shrink-0 rounded-xl" />
+          )}
           {!collapsed && (
             <span className={`truncate font-black tracking-wide ${brandText}`}>{brandLabel}</span>
           )}
@@ -124,9 +128,13 @@ export default function AppShell({
         {/* 手機頂部列 */}
         <header className={`flex h-14 flex-shrink-0 items-center justify-between border-b px-4 lg:hidden ${chromeClass}`}>
           <div className="flex items-center gap-2">
-            <div className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-black text-white ${brandTile} ${ninja ? '' : 'animate-pulse'}`}>
-              {brandGlyph}
-            </div>
+            {ninja ? (
+              <div className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm ${brandTile}`}>
+                {brandGlyph}
+              </div>
+            ) : (
+              <img src="/logo.svg" alt="學習挑戰賽" className="h-8 w-8 rounded-lg" />
+            )}
             <span className={`font-extrabold tracking-wide ${brandText}`}>
               {ninja ? brandLabel : '學習挑戰賽 🏆'}
             </span>
