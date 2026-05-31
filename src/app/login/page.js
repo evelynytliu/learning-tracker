@@ -102,83 +102,90 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6">
-      <h1 className="text-2xl font-bold">學習進度管理</h1>
-      <p className="mt-2 text-sm text-gray-500">{subtitle}</p>
+      <div className="animate-rise card p-7">
+        <div className="mb-6 flex flex-col items-center text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-500 via-violet-600 to-fuchsia-600 text-3xl font-black text-white shadow-lg shadow-violet-500/40">
+            學
+          </div>
+          <h1 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-800">學習基地</h1>
+          <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+        </div>
 
-      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
-        {mode === 'signup' && (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          {mode === 'signup' && (
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="顯示名稱（例如：小明）"
+              className="rounded-xl border border-slate-200 bg-white/80 px-4 py-3 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200"
+            />
+          )}
           <input
-            type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="顯示名稱（例如：小明）"
-            className="rounded-lg border px-4 py-3"
-          />
-        )}
-        <input
-          type="email"
-          required
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          className="rounded-lg border px-4 py-3"
-        />
-        {mode !== 'forgot' && (
-          <input
-            type="password"
+            type="email"
             required
-            minLength={6}
-            autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="密碼（至少 6 個字）"
-            className="rounded-lg border px-4 py-3"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="rounded-xl border border-slate-200 bg-white/80 px-4 py-3 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200"
           />
-        )}
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white disabled:opacity-50"
-        >
-          {buttonLabel}
-        </button>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        {info && (
-          <p className="rounded-lg bg-green-50 p-4 text-sm text-green-700">
-            {info}
-          </p>
-        )}
-      </form>
-
-      <div className="mt-6 flex flex-col gap-2 text-sm text-blue-600">
-        {mode === 'signin' && (
-          <>
-            <button
-              type="button"
-              onClick={() => switchMode('forgot')}
-              className="text-left underline"
-            >
-              忘記密碼？
-            </button>
-            <button
-              type="button"
-              onClick={() => switchMode('signup')}
-              className="text-left underline"
-            >
-              還沒有帳號？申請一個
-            </button>
-          </>
-        )}
-        {mode !== 'signin' && (
+          {mode !== 'forgot' && (
+            <input
+              type="password"
+              required
+              minLength={6}
+              autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="密碼（至少 6 個字）"
+              className="rounded-xl border border-slate-200 bg-white/80 px-4 py-3 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200"
+            />
+          )}
           <button
-            type="button"
-            onClick={() => switchMode('signin')}
-            className="text-left underline"
+            type="submit"
+            disabled={loading}
+            className="mt-1 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-4 py-3 font-bold text-white shadow-md shadow-indigo-500/30 transition hover:shadow-lg hover:shadow-indigo-500/40 active:scale-[0.98] disabled:opacity-50"
           >
-            ← 回登入
+            {buttonLabel}
           </button>
-        )}
+          {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+          {info && (
+            <p className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-700">
+              {info}
+            </p>
+          )}
+        </form>
+
+        <div className="mt-6 flex flex-col gap-2 text-sm font-medium text-indigo-600">
+          {mode === 'signin' && (
+            <>
+              <button
+                type="button"
+                onClick={() => switchMode('forgot')}
+                className="text-left hover:underline"
+              >
+                忘記密碼？
+              </button>
+              <button
+                type="button"
+                onClick={() => switchMode('signup')}
+                className="text-left hover:underline"
+              >
+                還沒有帳號？申請一個
+              </button>
+            </>
+          )}
+          {mode !== 'signin' && (
+            <button
+              type="button"
+              onClick={() => switchMode('signin')}
+              className="text-left hover:underline"
+            >
+              ← 回登入
+            </button>
+          )}
+        </div>
       </div>
     </main>
   );

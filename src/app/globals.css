@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
+  --background: #f4f6fc;
   --foreground: #0f172a;
 }
 
@@ -11,8 +11,163 @@
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC",
     "Microsoft JhengHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* 清新的極光底色：淡靛藍 → 白 → 淡紫，配上兩團柔光 */
+  background-color: var(--background);
+  background-image:
+    radial-gradient(42rem 42rem at 8% -8%, rgba(129, 140, 248, 0.18), transparent 60%),
+    radial-gradient(38rem 38rem at 100% 0%, rgba(45, 212, 191, 0.16), transparent 55%),
+    radial-gradient(46rem 46rem at 50% 120%, rgba(167, 139, 250, 0.16), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* ============ 動畫 ============ */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  60% { transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes glowPulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(251, 146, 60, 0.55)); }
+  50% { filter: drop-shadow(0 0 18px rgba(249, 115, 22, 0.85)); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-7deg); }
+  75% { transform: rotate(7deg); }
+}
+
+.animate-float { animation: float 3.6s ease-in-out infinite; }
+.animate-pop { animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.animate-rise { animation: rise 0.5s ease-out both; }
+.animate-glow { animation: glowPulse 2.4s ease-in-out infinite; }
+.group:hover .group-hover\:animate-wiggle { animation: wiggle 0.5s ease-in-out; }
+
+/* 進場依序浮現 */
+.stagger > * { animation: rise 0.5s ease-out both; }
+.stagger > *:nth-child(1) { animation-delay: 0.02s; }
+.stagger > *:nth-child(2) { animation-delay: 0.07s; }
+.stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger > *:nth-child(4) { animation-delay: 0.17s; }
+.stagger > *:nth-child(5) { animation-delay: 0.22s; }
+.stagger > *:nth-child(6) { animation-delay: 0.27s; }
+.stagger > *:nth-child(7) { animation-delay: 0.32s; }
+.stagger > *:nth-child(8) { animation-delay: 0.37s; }
+
+/* ============ 視覺元件 ============ */
+
+/* 玻璃感卡片：半透明白 + 柔邊 + 浮起感 */
+.card {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 1.5rem;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 12px 28px -12px rgba(79, 70, 229, 0.18);
+}
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 2px 4px rgba(15, 23, 42, 0.05),
+    0 22px 40px -16px rgba(79, 70, 229, 0.32);
+}
+
+/* 漸層文字 */
+.text-gradient {
+  background: linear-gradient(110deg, #6366f1, #8b5cf6 45%, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 進度條流光 */
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.6s linear infinite;
+}
+
+/* ============ 造型：甲賀忍蛙 Greninja ============ */
+/* 淺色水忍者底色，文字維持深色好閱讀 */
+:root[data-skin='greninja'] body {
+  --background: #e9f5fb;
+  background-color: var(--background);
+  background-image:
+    radial-gradient(40rem 40rem at 10% -10%, rgba(56, 189, 248, 0.30), transparent 60%),
+    radial-gradient(38rem 38rem at 100% -4%, rgba(14, 42, 77, 0.20), transparent 55%),
+    radial-gradient(48rem 48rem at 50% 120%, rgba(34, 211, 238, 0.22), transparent 62%);
+}
+
+/* 甲賀忍蛙剪影浮水印（固定在右下角，藏在內容後面） */
+:root[data-skin='greninja'] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/skins/greninja.png");
+  background-repeat: no-repeat;
+  background-position: right -18px bottom -8px;
+  background-size: min(44vh, 400px) auto;
+  opacity: 0.16;
+  filter: saturate(1.1);
+}
+
+/* 漸層文字、流光、卡片陰影換成水忍者配色 */
+:root[data-skin='greninja'] .text-gradient {
+  background: linear-gradient(110deg, #0e7490, #0ea5e9 45%, #e0566f);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+:root[data-skin='greninja'] .card {
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 12px 28px -12px rgba(14, 116, 144, 0.28);
+}
+:root[data-skin='greninja'] ::selection {
+  background: #e0566f;
+  color: #fff;
+}
+
+/* 尊重「減少動態」偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  body { background-attachment: scroll; }
 }

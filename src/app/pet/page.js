@@ -1,13 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import CheckinForm from '../CheckinForm';
 import AppShell from '@/components/AppShell';
+import PetManager from './PetManager';
 import { toYMD } from '@/lib/date';
-import { loadDayCheckin } from '@/lib/checkin-data';
 
 export const dynamic = 'force-dynamic';
 
-export default async function CheckinPage() {
+export default async function PetPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -20,8 +19,21 @@ export default async function CheckinPage() {
     .eq('id', user.id)
     .maybeSingle();
 
-  const today = toYMD();
-  const day = await loadDayCheckin(supabase, user.id, today);
+  if (profile?.role === 'parent') redirect('/dashboard');
+
+  // 先對帳補發點數（idempotent），再讀餘額與寵物
+  const { data: earned } = await supabase.rpc('award_points', {
+    p_user_id: user.id,
+    p_today: toYMD(),
+  });
+  const [{ data: balance }, { data: pets }] = await Promise.all([
+    supabase.rpc('point_balance', { p_user_id: user.id }),
+    supabase
+      .from('pets')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: true }),
+  ]);
 
   return (
     <AppShell
@@ -30,19 +42,11 @@ export default async function CheckinPage() {
       displayName={profile?.display_name}
       width="narrow"
     >
-      <header className="mb-6">
-        <p className="text-xs text-slate-400 font-bold">{today}</p>
-        <h1 className="mt-1 text-2xl font-black text-slate-800">每日挑戰</h1>
-      </header>
-
-      <CheckinForm
+      <PetManager
         userId={user.id}
-        date={today}
-        setName={day.setName}
-        tasks={day.tasks}
-        bonusTasks={day.bonusTasks}
-        initialDone={day.doneMap}
-        initialRest={day.isRest}
+        initialBalance={balance ?? 0}
+        initialPets={pets ?? []}
+        earned={earned ?? 0}
       />
     </AppShell>
   );
