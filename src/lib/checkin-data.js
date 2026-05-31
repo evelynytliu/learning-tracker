@@ -1,6 +1,6 @@
 import { resolveTaskSet } from './tasks';
 
-// 載入某使用者某天的打卡資料：套用的清單、項目、已完成狀態、免讀日、品學堂。
+// 載入某使用者某天的打卡資料：套用的清單、正規項目、加分項目、已完成狀態、免讀日。
 // 在 server component 用（傳入 server supabase client）。
 export async function loadDayCheckin(supabase, userId, ymd) {
   const [{ data: taskSets }, { data: specialPeriods }, { data: summary }] = await Promise.all([
@@ -28,17 +28,17 @@ export async function loadDayCheckin(supabase, userId, ymd) {
     specialPeriods: specialPeriods ?? [],
   });
 
-  let tasks = [];
+  let allTasks = [];
   let doneMap = {};
   if (set) {
     const { data: taskRows } = await supabase
       .from('tasks')
-      .select('id, label, hint, sort_order')
+      .select('id, label, hint, link, is_bonus, sort_order')
       .eq('set_id', set.id)
       .order('sort_order', { ascending: true });
-    tasks = taskRows ?? [];
+    allTasks = taskRows ?? [];
 
-    if (tasks.length > 0) {
+    if (allTasks.length > 0) {
       const { data: checks } = await supabase
         .from('task_checkins')
         .select('task_id, done')
@@ -46,14 +46,17 @@ export async function loadDayCheckin(supabase, userId, ymd) {
         .eq('date', ymd)
         .in(
           'task_id',
-          tasks.map((t) => t.id),
+          allTasks.map((t) => t.id),
         );
       for (const c of checks ?? []) doneMap[c.task_id] = c.done;
     }
   }
 
-  // 對帳：以「目前生效清單」重算完成數，若和已存的摘要不一致就寫回，
-  // 避免清單改過之後 daily_checkins 的 tasks_total/done 停在舊值。
+  const tasks = allTasks.filter((t) => !t.is_bonus); // 正規項目（計入完成度）
+  const bonusTasks = allTasks.filter((t) => t.is_bonus); // 加分項目（不計入）
+
+  // 對帳：以「目前生效的正規項目」重算完成數，若和已存摘要不一致就寫回，
+  // 避免清單改過後 daily_checkins 的 tasks_total/done 停在舊值。
   const total = tasks.length;
   const done = tasks.filter((t) => doneMap[t.id]).length;
   const summaryStale =
@@ -75,9 +78,9 @@ export async function loadDayCheckin(supabase, userId, ymd) {
   return {
     setName: reason,
     tasks,
+    bonusTasks,
     doneMap,
     isRest: !!summary?.is_rest_day,
-    pinxuetangDone: !!summary?.pinxuetang_done,
     hasSets: (taskSets?.length ?? 0) > 0,
   };
 }

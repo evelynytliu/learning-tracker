@@ -31,24 +31,24 @@ export default function AppShell({
   const mobileNav = role === 'parent' ? PARENT_NAV : STUDENT_NAV_MOBILE;
   const maxW = width === 'narrow' ? 'max-w-2xl' : 'max-w-6xl';
 
-  // 造型相關的外框樣式（甲賀忍蛙＝深海忍者深藍）
+  // 造型相關的外框樣式（預設＝學習挑戰賽藍；甲賀忍蛙＝深海忍者深藍）
   const chromeClass = ninja
     ? 'border-cyan-300/15 bg-[#0a2240]/85 backdrop-blur-xl'
-    : 'border-white/60 bg-white/70 backdrop-blur-xl';
+    : 'border-slate-200 bg-white';
   const brandTile = ninja
-    ? 'bg-gradient-to-br from-cyan-400 to-sky-600 shadow-cyan-500/40'
-    : 'bg-gradient-to-br from-indigo-500 to-violet-600 shadow-indigo-500/30';
+    ? 'bg-gradient-to-br from-cyan-400 to-sky-600 shadow-md shadow-cyan-500/40'
+    : 'bg-gradient-to-br from-blue-600 to-cyan-500';
   const brandGlyph = ninja ? '🐸' : '學';
-  const brandLabel = ninja ? '甲賀忍者' : '學習基地';
+  const brandLabel = ninja ? '甲賀忍者' : '學習挑戰賽';
   const brandText = ninja ? 'text-cyan-50' : 'text-slate-800';
   const userText = ninja ? 'text-cyan-100/80' : 'text-slate-600';
 
   const navActive = ninja
     ? 'bg-gradient-to-r from-cyan-400 to-sky-600 text-white shadow-md shadow-cyan-500/40'
-    : 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/30';
+    : 'bg-blue-600 text-white shadow-sm shadow-blue-100';
   const navIdle = ninja
     ? 'text-cyan-100/70 hover:bg-white/10 hover:text-white'
-    : 'text-slate-600 hover:bg-indigo-50 hover:text-indigo-700';
+    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900';
 
   async function handleLogout() {
     const supabase = createClient();
@@ -60,7 +60,7 @@ export default function AppShell({
   return (
     // 手機：整個畫面是高度 100dvh 的直向 flex，底部列是「在文件流裡」的最後一個子元素，
     // 不用 position:fixed，所以 iOS Chrome 的工具列收合時不會浮起來。
-    // 桌面：改為左右 flex（側邊欄 + 內容）。
+    // 桌面：改為左右 flex（側邊欄 + 內容）。relative z-10 讓內容蓋在造型浮水印之上。
     <div className="relative z-10 flex h-[100dvh] flex-col overflow-hidden lg:flex-row">
       {/* ===== 桌面側邊欄 ===== */}
       <aside
@@ -68,15 +68,15 @@ export default function AppShell({
           collapsed ? 'lg:w-16' : 'lg:w-60'
         }`}
       >
-        <div className={`flex h-16 items-center gap-2 border-b px-4 ${ninja ? 'border-cyan-300/15' : 'border-slate-200/70'}`}>
-          <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white shadow-md ${brandTile}`}>
+        <div className={`flex h-16 items-center gap-2 border-b px-4 ${ninja ? 'border-cyan-300/15' : 'border-slate-200'}`}>
+          <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-lg font-black text-white ${brandTile}`}>
             {brandGlyph}
           </div>
           {!collapsed && (
-            <span className={`truncate font-extrabold tracking-tight ${brandText}`}>{brandLabel}</span>
+            <span className={`truncate font-black tracking-wide ${brandText}`}>{brandLabel}</span>
           )}
         </div>
-        <nav className="flex flex-col gap-1 p-3">
+        <nav className="flex flex-col gap-1.5 p-3">
           {fullNav.map((item) => {
             const Icon = item.icon;
             const active = isActive(pathname, item);
@@ -85,7 +85,7 @@ export default function AppShell({
                 key={item.href}
                 href={item.href}
                 title={item.label}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition active:scale-[0.98] ${
                   active ? navActive : navIdle
                 }`}
               >
@@ -124,10 +124,12 @@ export default function AppShell({
         {/* 手機頂部列 */}
         <header className={`flex h-14 flex-shrink-0 items-center justify-between border-b px-4 lg:hidden ${chromeClass}`}>
           <div className="flex items-center gap-2">
-            <div className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white shadow-md ${brandTile}`}>
+            <div className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-black text-white ${brandTile} ${ninja ? '' : 'animate-pulse'}`}>
               {brandGlyph}
             </div>
-            <span className={`font-extrabold tracking-tight ${brandText}`}>{brandLabel}</span>
+            <span className={`font-extrabold tracking-wide ${brandText}`}>
+              {ninja ? brandLabel : '學習挑戰賽 🏆'}
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <SkinPicker variant={ninja ? 'dark' : 'light'} />
@@ -160,25 +162,24 @@ export default function AppShell({
           {mobileNav.map((item) => {
             const Icon = item.icon;
             const active = isActive(pathname, item);
-            const activeColor = ninja ? 'text-cyan-300' : 'text-indigo-600';
+            const activeColor = ninja ? 'text-cyan-300' : 'text-blue-600';
             const idleColor = ninja ? 'text-cyan-100/50' : 'text-slate-400';
-            const activePill = ninja
-              ? 'bg-white/10'
-              : 'bg-gradient-to-r from-indigo-100 to-violet-100';
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-center text-xs transition ${
+                className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-center text-xs transition active:scale-[0.92] ${
                   active ? `font-bold ${activeColor}` : idleColor
                 }`}
               >
                 <span
-                  className={`flex h-7 w-12 items-center justify-center rounded-full transition ${
-                    active ? activePill : ''
-                  }`}
+                  className={
+                    ninja && active
+                      ? 'flex h-7 w-12 items-center justify-center rounded-full bg-white/10'
+                      : ''
+                  }
                 >
-                  <Icon size={20} strokeWidth={active ? 2.5 : 2} />
+                  <Icon size={20} strokeWidth={active ? 2.6 : 2} />
                 </span>
                 <span>{item.label}</span>
               </Link>

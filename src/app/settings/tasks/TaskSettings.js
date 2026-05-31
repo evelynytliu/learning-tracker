@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Trash2, Plus, ChevronDown, ChevronUp, Pencil, Check, X } from 'lucide-react';
+import { Trash2, Plus, ChevronDown, ChevronUp, Pencil, Check, X, Link2, Sparkles } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { DAY_LABELS } from '@/lib/date';
+import Sortable from '@/components/Sortable';
 
-// props: userId, initialSets [{id, name, weekdays, tasks:[{id,label,hint}]}], initialPeriods
 export default function TaskSettings({ userId, initialSets, initialPeriods }) {
   const [sets, setSets] = useState(initialSets);
   const [periods, setPeriods] = useState(initialPeriods);
@@ -49,15 +49,17 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
   }
 
   // ---- tasks ----
-  async function addTask(set, label, hint) {
-    if (!label.trim()) return;
+  async function addTask(set, draft) {
+    if (!draft.label.trim()) return;
     const { data, error } = await supabase
       .from('tasks')
       .insert({
         user_id: userId,
         set_id: set.id,
-        label: label.trim(),
-        hint: hint.trim() || null,
+        label: draft.label.trim(),
+        hint: draft.hint.trim() || null,
+        link: draft.link.trim() || null,
+        is_bonus: !!draft.is_bonus,
         sort_order: set.tasks.length,
       })
       .select()
@@ -68,6 +70,17 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
     );
   }
 
+  async function updateTask(setId, taskId, patch) {
+    setSets((prev) =>
+      prev.map((s) =>
+        s.id === setId
+          ? { ...s, tasks: s.tasks.map((t) => (t.id === taskId ? { ...t, ...patch } : t)) }
+          : s,
+      ),
+    );
+    await supabase.from('tasks').update(patch).eq('id', taskId);
+  }
+
   async function deleteTask(setId, taskId) {
     setSets((prev) =>
       prev.map((s) =>
@@ -75,6 +88,16 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
       ),
     );
     await supabase.from('tasks').delete().eq('id', taskId);
+  }
+
+  async function reorderTasks(setId, newTasks) {
+    setSets((prev) => prev.map((s) => (s.id === setId ? { ...s, tasks: newTasks } : s)));
+    // 寫回新的 sort_order
+    await Promise.all(
+      newTasks.map((t, i) =>
+        supabase.from('tasks').update({ sort_order: i }).eq('id', t.id),
+      ),
+    );
   }
 
   // ---- special periods ----
@@ -121,8 +144,10 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
               onToggleWeekday={(dow) => toggleWeekday(set, dow)}
               onRename={(name) => renameSet(set.id, name)}
               onDeleteSet={() => deleteSet(set.id)}
-              onAddTask={(label, hint) => addTask(set, label, hint)}
+              onAddTask={(draft) => addTask(set, draft)}
+              onUpdateTask={(taskId, patch) => updateTask(set.id, taskId, patch)}
               onDeleteTask={(taskId) => deleteTask(set.id, taskId)}
+              onReorder={(newTasks) => reorderTasks(set.id, newTasks)}
             />
           ))}
         </div>
@@ -148,8 +173,7 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
       <section>
         <h2 className="mb-1 font-semibold text-slate-800">特殊期間</h2>
         <p className="mb-3 text-xs text-slate-400">
-          在某段日期改用指定清單（會覆蓋星期設定）。可再限定星期，例如「暑假平日」設
-          7/1~8/31 + 一~五，「暑假假日」設同期間 + 六日。
+          在某段日期改用指定清單（會覆蓋星期設定）。例：暑假整段用「暑假」清單。
         </p>
         <ul className="flex flex-col gap-2">
           {periods.length === 0 && (
@@ -255,28 +279,39 @@ export default function TaskSettings({ userId, initialSets, initialPeriods }) {
   );
 }
 
-function TaskSetCard({ set, open, onToggleOpen, onToggleWeekday, onRename, onDeleteSet, onAddTask, onDeleteTask }) {
-  const [label, setLabel] = useState('');
-  const [hint, setHint] = useState('');
-  const [editing, setEditing] = useState(false);
+function TaskSetCard({
+  set,
+  open,
+  onToggleOpen,
+  onToggleWeekday,
+  onRename,
+  onDeleteSet,
+  onAddTask,
+  onUpdateTask,
+  onDeleteTask,
+  onReorder,
+}) {
+  const [draft, setDraft] = useState({ label: '', hint: '', link: '', is_bonus: false });
+  const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState(set.name);
 
   function submit(e) {
     e.preventDefault();
-    onAddTask(label, hint);
-    setLabel('');
-    setHint('');
+    onAddTask(draft);
+    setDraft({ label: '', hint: '', link: '', is_bonus: false });
   }
 
   function saveName() {
     if (nameDraft.trim()) onRename(nameDraft);
-    setEditing(false);
+    setEditingName(false);
   }
+
+  const regularCount = set.tasks.filter((t) => !t.is_bonus).length;
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white">
       <div className="flex items-center justify-between p-4">
-        {editing ? (
+        {editingName ? (
           <div className="flex flex-1 items-center gap-2">
             <input
               autoFocus
@@ -286,7 +321,7 @@ function TaskSetCard({ set, open, onToggleOpen, onToggleWeekday, onRename, onDel
                 if (e.key === 'Enter') saveName();
                 if (e.key === 'Escape') {
                   setNameDraft(set.name);
-                  setEditing(false);
+                  setEditingName(false);
                 }
               }}
               className="min-w-0 flex-1 rounded-lg border px-2 py-1 text-sm font-semibold"
@@ -297,7 +332,7 @@ function TaskSetCard({ set, open, onToggleOpen, onToggleWeekday, onRename, onDel
             <button
               onClick={() => {
                 setNameDraft(set.name);
-                setEditing(false);
+                setEditingName(false);
               }}
               className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100"
             >
@@ -309,12 +344,12 @@ function TaskSetCard({ set, open, onToggleOpen, onToggleWeekday, onRename, onDel
             <button onClick={onToggleOpen} className="flex flex-1 items-center gap-2 text-left">
               {open ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
               <span className="font-semibold text-slate-800">{set.name}</span>
-              <span className="text-xs text-slate-400">{set.tasks.length} 項</span>
+              <span className="text-xs text-slate-400">{regularCount} 項</span>
             </button>
             <button
               onClick={() => {
                 setNameDraft(set.name);
-                setEditing(true);
+                setEditingName(true);
               }}
               className="rounded-lg p-1.5 text-slate-300 hover:bg-slate-100 hover:text-slate-600"
               title="重新命名"
@@ -353,53 +388,173 @@ function TaskSetCard({ set, open, onToggleOpen, onToggleWeekday, onRename, onDel
             })}
           </div>
 
-          {/* 項目 */}
-          <ul className="flex flex-col gap-2">
-            {set.tasks.map((t) => (
-              <li
-                key={t.id}
-                className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm"
-              >
-                <span>
-                  <span className="font-medium">{t.label}</span>
-                  {t.hint && <span className="text-slate-400"> · {t.hint}</span>}
-                </span>
-                <button
-                  onClick={() => onDeleteTask(t.id)}
-                  className="rounded p-1 text-slate-300 hover:text-red-400"
-                >
-                  <Trash2 size={14} />
-                </button>
-              </li>
-            ))}
-          </ul>
+          {/* 項目（可拖曳排序、可編輯） */}
+          {set.tasks.length > 0 ? (
+            <>
+              <p className="mb-1.5 text-xs text-slate-500">
+                項目（按住左側 <span className="inline-block align-middle">☰</span> 拖曳排序）：
+              </p>
+              <Sortable
+                items={set.tasks}
+                onReorder={onReorder}
+                renderItem={(t) => (
+                  <TaskRow
+                    task={t}
+                    onUpdate={(patch) => onUpdateTask(t.id, patch)}
+                    onDelete={() => onDeleteTask(t.id)}
+                  />
+                )}
+              />
+            </>
+          ) : (
+            <p className="text-xs text-slate-400">還沒有項目，在下面新增。</p>
+          )}
 
-          <form onSubmit={submit} className="mt-3 flex flex-col gap-2">
+          {/* 新增項目 */}
+          <form onSubmit={submit} className="mt-3 rounded-xl border bg-slate-50 p-3">
             <input
               type="text"
               placeholder="項目名稱（例：作業寫完）"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              className="rounded-lg border px-3 py-2 text-sm"
+              value={draft.label}
+              onChange={(e) => setDraft({ ...draft, label: e.target.value })}
+              className="w-full rounded-lg border px-3 py-2 text-sm"
             />
-            <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="說明（可選）"
+              value={draft.hint}
+              onChange={(e) => setDraft({ ...draft, hint: e.target.value })}
+              className="mt-2 w-full rounded-lg border px-3 py-2 text-sm"
+            />
+            <input
+              type="url"
+              placeholder="連結（可選，例：品學堂網址）"
+              value={draft.link}
+              onChange={(e) => setDraft({ ...draft, link: e.target.value })}
+              className="mt-2 w-full rounded-lg border px-3 py-2 text-sm"
+            />
+            <label className="mt-2 flex items-center gap-2 text-sm text-slate-600">
               <input
-                type="text"
-                placeholder="說明（可選）"
-                value={hint}
-                onChange={(e) => setHint(e.target.value)}
-                className="flex-1 rounded-lg border px-3 py-2 text-sm"
+                type="checkbox"
+                checked={draft.is_bonus}
+                onChange={(e) => setDraft({ ...draft, is_bonus: e.target.checked })}
+                className="h-4 w-4"
               />
-              <button
-                type="submit"
-                className="flex items-center gap-1 rounded-lg bg-slate-700 px-3 py-2 text-sm font-semibold text-white"
-              >
-                <Plus size={14} /> 加項目
-              </button>
-            </div>
+              設為加分項（不計入每日完成度）
+            </label>
+            <button
+              type="submit"
+              className="mt-3 flex w-full items-center justify-center gap-1 rounded-lg bg-slate-700 py-2 text-sm font-semibold text-white"
+            >
+              <Plus size={14} /> 加項目
+            </button>
           </form>
         </div>
       )}
+    </div>
+  );
+}
+
+function TaskRow({ task, onUpdate, onDelete }) {
+  const [editing, setEditing] = useState(false);
+  const [d, setD] = useState({
+    label: task.label,
+    hint: task.hint || '',
+    link: task.link || '',
+    is_bonus: !!task.is_bonus,
+  });
+
+  function save() {
+    if (!d.label.trim()) return;
+    onUpdate({
+      label: d.label.trim(),
+      hint: d.hint.trim() || null,
+      link: d.link.trim() || null,
+      is_bonus: !!d.is_bonus,
+    });
+    setEditing(false);
+  }
+
+  if (editing) {
+    return (
+      <div className="rounded-lg border bg-white p-3">
+        <input
+          autoFocus
+          value={d.label}
+          onChange={(e) => setD({ ...d, label: e.target.value })}
+          className="w-full rounded-lg border px-2 py-1.5 text-sm"
+          placeholder="項目名稱"
+        />
+        <input
+          value={d.hint}
+          onChange={(e) => setD({ ...d, hint: e.target.value })}
+          className="mt-2 w-full rounded-lg border px-2 py-1.5 text-sm"
+          placeholder="說明（可選）"
+        />
+        <input
+          value={d.link}
+          onChange={(e) => setD({ ...d, link: e.target.value })}
+          className="mt-2 w-full rounded-lg border px-2 py-1.5 text-sm"
+          placeholder="連結（可選）"
+        />
+        <label className="mt-2 flex items-center gap-2 text-sm text-slate-600">
+          <input
+            type="checkbox"
+            checked={d.is_bonus}
+            onChange={(e) => setD({ ...d, is_bonus: e.target.checked })}
+            className="h-4 w-4"
+          />
+          加分項
+        </label>
+        <div className="mt-2 flex gap-2">
+          <button
+            onClick={save}
+            className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-green-600 py-1.5 text-sm font-semibold text-white"
+          >
+            <Check size={14} /> 儲存
+          </button>
+          <button
+            onClick={() => {
+              setD({ label: task.label, hint: task.hint || '', link: task.link || '', is_bonus: !!task.is_bonus });
+              setEditing(false);
+            }}
+            className="rounded-lg bg-slate-200 px-3 py-1.5 text-sm text-slate-600"
+          >
+            取消
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 py-2 pr-2 text-sm">
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5">
+          <span className="font-medium text-slate-800">{task.label}</span>
+          {task.is_bonus && (
+            <span className="inline-flex items-center gap-0.5 rounded-full bg-violet-100 px-1.5 py-0.5 text-[10px] font-semibold text-violet-600">
+              <Sparkles size={10} /> 加分
+            </span>
+          )}
+          {task.link && <Link2 size={12} className="text-slate-300" />}
+        </div>
+        {task.hint && <div className="text-xs text-slate-400">{task.hint}</div>}
+      </div>
+      <button
+        onClick={() => setEditing(true)}
+        className="rounded p-1.5 text-slate-300 hover:bg-slate-100 hover:text-slate-600"
+        aria-label="編輯"
+      >
+        <Pencil size={14} />
+      </button>
+      <button
+        onClick={onDelete}
+        className="rounded p-1.5 text-slate-300 hover:text-red-400"
+        aria-label="刪除"
+      >
+        <Trash2 size={14} />
+      </button>
     </div>
   );
 }
