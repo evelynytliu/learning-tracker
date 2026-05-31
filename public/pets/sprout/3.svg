@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 成株 -->
+  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
+  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
+  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
+  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
+  <path d="M256 388 C252 340 260 300 256 268" stroke="#7FA87D" stroke-width="10" stroke-linecap="round"/>
+  <g transform="translate(256 360) rotate(-62)"><path d="M0 0 C -15 -7 -15 -32 0 -44 C 15 -32 15 -7 0 0 Z" fill="#7FAE80"/></g>
+  <g transform="translate(256 360) rotate(62)"><path d="M0 0 C -15 -7 -15 -32 0 -44 C 15 -32 15 -7 0 0 Z" fill="#8BB789"/></g>
+  <g transform="translate(256 322) rotate(-52)"><path d="M0 0 C -14 -6 -14 -30 0 -40 C 14 -30 14 -6 0 0 Z" fill="#8BB789"/></g>
+  <g transform="translate(256 322) rotate(52)"><path d="M0 0 C -14 -6 -14 -30 0 -40 C 14 -30 14 -6 0 0 Z" fill="#9CC39A"/></g>
+  <g transform="translate(256 286) rotate(-42) scale(0.85)"><path d="M0 0 C -13 -6 -13 -28 0 -38 C 13 -28 13 -6 0 0 Z" fill="#9CC39A"/></g>
+  <g transform="translate(256 286) rotate(42) scale(0.85)"><path d="M0 0 C -13 -6 -13 -28 0 -38 C 13 -28 13 -6 0 0 Z" fill="#8BB789"/></g>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 幼龍 -->
+  <ellipse cx="256" cy="438" rx="92" ry="15" fill="#000000" opacity="0.06"/>
+  <path d="M298 392 q42 8 46 -16 q2 -14 -12 -16" fill="none" stroke="#3E5C78" stroke-width="14" stroke-linecap="round"/>
+  <path d="M214 350 q-22 -10 -30 4 q14 6 28 8 z" fill="#5B7B9A"/>
+  <path d="M298 350 q22 -10 30 4 q-14 6 -28 8 z" fill="#5B7B9A"/>
+  <circle cx="256" cy="364" r="48" fill="#3E5C78"/>
+  <ellipse cx="256" cy="384" rx="23" ry="25" fill="#EAD9B0"/>
+  <path d="M236 322 l-6 -20 l13 9 z" fill="#EAD9B0"/>
+  <path d="M276 322 l6 -20 l-13 9 z" fill="#EAD9B0"/>
+  <circle cx="240" cy="356" r="9" fill="#fff"/><circle cx="272" cy="356" r="9" fill="#fff"/>
+  <circle cx="242" cy="357" r="5" fill="#2A2A2A"/><circle cx="270" cy="357" r="5" fill="#2A2A2A"/>
+  <circle cx="243.6" cy="355.4" r="1.8" fill="#fff"/><circle cx="271.6" cy="355.4" r="1.8" fill="#fff"/>
+  <path d="M248 378 q8 6 16 0" stroke="#2A485F" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <g fill="#3E5C78"><ellipse cx="238" cy="406" rx="12" ry="8"/><ellipse cx="274" cy="406" rx="12" ry="8"/></g>
+</svg>

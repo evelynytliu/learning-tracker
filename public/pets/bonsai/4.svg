@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 成樹 -->
+  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
+  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
+  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
+  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
+  <path d="M256 388 C248 350 264 332 256 312" stroke="#9C6F4E" stroke-width="15" stroke-linecap="round"/>
+  <path d="M256 342 Q226 336 206 314" stroke="#9C6F4E" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M256 332 Q288 326 308 306" stroke="#9C6F4E" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <g fill="#7FAE80">
+    <ellipse cx="204" cy="300" rx="38" ry="28"/>
+    <ellipse cx="308" cy="294" rx="36" ry="27"/>
+    <ellipse cx="256" cy="270" rx="46" ry="34"/>
+  </g>
+  <g fill="#8BB789">
+    <ellipse cx="232" cy="284" rx="26" ry="18"/>
+    <ellipse cx="284" cy="280" rx="24" ry="17"/>
+  </g>
+  <ellipse cx="248" cy="262" rx="18" ry="12" fill="#9CC39A" opacity="0.5"/>
+</svg>

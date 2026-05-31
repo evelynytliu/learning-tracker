@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 冒芽 -->
+  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
+  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
+  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
+  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
+  <path d="M256 388 C256 372 256 360 256 346" stroke="#9C6F4E" stroke-width="9" stroke-linecap="round"/>
+  <g transform="translate(256 350) rotate(-32)"><path d="M0 0 C -12 -5 -12 -22 0 -30 C 12 -22 12 -5 0 0 Z" fill="#8BB789"/></g>
+  <g transform="translate(256 350) rotate(32)"><path d="M0 0 C -12 -5 -12 -22 0 -30 C 12 -22 12 -5 0 0 Z" fill="#9CC39A"/></g>
+  <circle cx="256" cy="324" r="6" fill="#9CC39A"/>
+</svg>

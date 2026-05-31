@@ -8,6 +8,7 @@ import { EXTERNAL_LINKS } from '@/lib/links';
 import { isDayComplete, computeStreakFromSummary } from '@/lib/streak';
 import { ACHIEVEMENT_MAP } from '@/lib/achievements';
 import { PETS, stageFromGrowth, stageProgress, nextThreshold, MAX_STAGE } from '@/lib/pets';
+import PetSprite from '@/components/PetSprite';
 
 export const dynamic = 'force-dynamic';
 
@@ -149,10 +150,12 @@ export default async function HomePage() {
         href="/pet"
         className="group mb-4 flex items-center gap-4 overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-teal-50 to-white p-4 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md sm:gap-5 sm:p-5"
       >
-        <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-white/70 shadow-inner sm:h-24 sm:w-24">
-          <span className="text-5xl animate-float drop-shadow-sm sm:text-6xl">
-            {petDef ? petDef.stages[petStage].emoji : '🥚'}
-          </span>
+        <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-white/70 shadow-inner overflow-hidden sm:h-24 sm:w-24">
+          {activePet ? (
+            <PetSprite species={activePet.species} stage={petStage} size="md" />
+          ) : (
+            <span className="text-5xl animate-float drop-shadow-sm sm:text-6xl">🥚</span>
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">

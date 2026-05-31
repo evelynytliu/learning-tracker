@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 盛開 -->
+  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
+  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
+  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
+  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
+  <path d="M256 388 C252 338 260 286 256 214" stroke="#7FA87D" stroke-width="10" stroke-linecap="round"/>
+  <g transform="translate(256 356) rotate(-62)"><path d="M0 0 C -15 -7 -15 -32 0 -44 C 15 -32 15 -7 0 0 Z" fill="#7FAE80"/></g>
+  <g transform="translate(256 356) rotate(62)"><path d="M0 0 C -15 -7 -15 -32 0 -44 C 15 -32 15 -7 0 0 Z" fill="#8BB789"/></g>
+  <g transform="translate(256 314) rotate(-50)"><path d="M0 0 C -14 -6 -14 -30 0 -40 C 14 -30 14 -6 0 0 Z" fill="#8BB789"/></g>
+  <g transform="translate(256 314) rotate(50)"><path d="M0 0 C -14 -6 -14 -30 0 -40 C 14 -30 14 -6 0 0 Z" fill="#9CC39A"/></g>
+  <!-- 花 -->
+  <g transform="translate(256 196)">
+    <g fill="#E7A6B0">
+      <ellipse cx="0" cy="-40" rx="18" ry="27"/>
+      <g transform="rotate(72)"><ellipse cx="0" cy="-40" rx="18" ry="27"/></g>
+      <g transform="rotate(144)"><ellipse cx="0" cy="-40" rx="18" ry="27"/></g>
+      <g transform="rotate(216)"><ellipse cx="0" cy="-40" rx="18" ry="27"/></g>
+      <g transform="rotate(288)"><ellipse cx="0" cy="-40" rx="18" ry="27"/></g>
+    </g>
+    <g fill="#D98A98" opacity="0.55">
+      <ellipse cx="0" cy="-30" rx="9" ry="14"/>
+      <g transform="rotate(72)"><ellipse cx="0" cy="-30" rx="9" ry="14"/></g>
+      <g transform="rotate(144)"><ellipse cx="0" cy="-30" rx="9" ry="14"/></g>
+      <g transform="rotate(216)"><ellipse cx="0" cy="-30" rx="9" ry="14"/></g>
+      <g transform="rotate(288)"><ellipse cx="0" cy="-30" rx="9" ry="14"/></g>
+    </g>
+    <circle cx="0" cy="0" r="15" fill="#F0C76E"/>
+    <circle cx="0" cy="0" r="15" fill="none" stroke="#E0AE52" stroke-width="2"/>
+    <circle cx="-4" cy="-4" r="3" fill="#FBE3A6"/>
+  </g>
+</svg>

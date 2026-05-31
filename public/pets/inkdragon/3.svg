@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 少年龍 -->
+  <ellipse cx="256" cy="442" rx="100" ry="15" fill="#000000" opacity="0.06"/>
+  <!-- 尾 -->
+  <path d="M304 396 q56 10 60 -24 q2 -18 -16 -16" fill="none" stroke="#3E5C78" stroke-width="15" stroke-linecap="round"/>
+  <path d="M352 352 l18 -6 l-6 18 z" fill="#5B7B9A"/>
+  <!-- 翅膀 -->
+  <g fill="#5B7B9A">
+    <path d="M210 348 C 176 322 150 300 122 304 C 138 332 142 360 164 374 C 182 366 198 360 210 348 Z"/>
+    <g transform="matrix(-1 0 0 1 512 0)"><path d="M210 348 C 176 322 150 300 122 304 C 138 332 142 360 164 374 C 182 366 198 360 210 348 Z"/></g>
+  </g>
+  <g stroke="#456A88" stroke-width="2.5" fill="none" opacity="0.7">
+    <path d="M150 312 L160 366"/><path d="M362 312 L352 366"/>
+  </g>
+  <circle cx="256" cy="360" r="54" fill="#3E5C78"/>
+  <ellipse cx="256" cy="384" rx="26" ry="29" fill="#EAD9B0"/>
+  <path d="M230 312 l-8 -26 l16 12 z" fill="#EAD9B0"/>
+  <path d="M282 312 l8 -26 l-16 12 z" fill="#EAD9B0"/>
+  <g fill="#2E4860"><path d="M256 308 l-8 -16 l-8 16 z"/><path d="M240 312 l-6 -12 l-6 12 z"/><path d="M272 312 l6 -12 l6 12 z"/></g>
+  <circle cx="239" cy="352" r="9.5" fill="#fff"/><circle cx="273" cy="352" r="9.5" fill="#fff"/>
+  <circle cx="241" cy="353" r="5.2" fill="#2A2A2A"/><circle cx="271" cy="353" r="5.2" fill="#2A2A2A"/>
+  <circle cx="242.8" cy="351.2" r="1.9" fill="#fff"/><circle cx="272.8" cy="351.2" r="1.9" fill="#fff"/>
+  <path d="M246 378 q10 7 20 0" stroke="#2A485F" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <g fill="#3E5C78"><ellipse cx="238" cy="410" rx="13" ry="9"/><ellipse cx="276" cy="410" rx="13" ry="9"/></g>
+</svg>

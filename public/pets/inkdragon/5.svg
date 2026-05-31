@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 神龍 -->
+  <circle cx="256" cy="356" r="130" fill="#BFE3F0" opacity="0.22"/>
+  <circle cx="256" cy="356" r="100" fill="#CFEAF4" opacity="0.18"/>
+  <ellipse cx="256" cy="446" rx="108" ry="15" fill="#000000" opacity="0.06"/>
+  <path d="M308 400 q72 12 74 -32 q2 -22 -20 -16" fill="none" stroke="#3E5C78" stroke-width="16" stroke-linecap="round"/>
+  <path d="M360 346 l22 -8 l-5 22 z" fill="#6E91AE"/>
+  <!-- 翅膀（更大） -->
+  <defs><clipPath id="w5">
+    <path d="M214 338 C 162 300 112 274 78 282 C 92 322 100 372 140 392 C 168 380 196 358 214 338 Z"/>
+    <path transform="matrix(-1 0 0 1 512 0)" d="M214 338 C 162 300 112 274 78 282 C 92 322 100 372 140 392 C 168 380 196 358 214 338 Z"/>
+  </clipPath></defs>
+  <g fill="#6E91AE">
+    <path d="M214 338 C 162 300 112 274 78 282 C 92 322 100 372 140 392 C 168 380 196 358 214 338 Z"/>
+    <g transform="matrix(-1 0 0 1 512 0)"><path d="M214 338 C 162 300 112 274 78 282 C 92 322 100 372 140 392 C 168 380 196 358 214 338 Z"/></g>
+  </g>
+  <g clip-path="url(#w5)" stroke="#4E7593" stroke-width="2.5" fill="none" opacity="0.7">
+    <path d="M104 292 L140 388"/><path d="M134 282 L162 380"/>
+    <path d="M408 292 L372 388"/><path d="M378 282 L350 380"/>
+  </g>
+  <circle cx="256" cy="356" r="57" fill="#3E5C78"/>
+  <ellipse cx="256" cy="383" rx="27" ry="31" fill="#EAD9B0"/>
+  <path d="M227 306 l-9 -30 l18 14 z" fill="#EAD9B0"/>
+  <path d="M285 306 l9 -30 l-18 14 z" fill="#EAD9B0"/>
+  <g fill="#2E4860"><path d="M256 302 l-9 -18 l-9 18 z"/><path d="M238 306 l-7 -14 l-7 14 z"/><path d="M274 306 l7 -14 l7 14 z"/></g>
+  <circle cx="238" cy="348" r="10" fill="#fff"/><circle cx="274" cy="348" r="10" fill="#fff"/>
+  <circle cx="240" cy="349" r="5.4" fill="#2A2A2A"/><circle cx="272" cy="349" r="5.4" fill="#2A2A2A"/>
+  <circle cx="242" cy="347" r="2" fill="#fff"/><circle cx="274" cy="347" r="2" fill="#fff"/>
+  <path d="M246 376 q10 7 20 0" stroke="#2A485F" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <g fill="#3E5C78"><ellipse cx="238" cy="412" rx="14" ry="9"/><ellipse cx="276" cy="412" rx="14" ry="9"/></g>
+  <!-- 龍珠 -->
+  <circle cx="256" cy="430" r="13" fill="#CFEAF4"/>
+  <circle cx="256" cy="430" r="13" fill="none" stroke="#9FD3E6" stroke-width="2"/>
+  <circle cx="251" cy="425" r="3.5" fill="#fff"/>
+  <!-- 星光 -->
+  <g fill="#FBE3A6">
+    <path d="M120 180 l4 11 l11 4 l-11 4 l-4 11 l-4 -11 l-11 -4 l11 -4 z"/>
+    <path d="M392 200 l3.5 9 l9 3.5 l-9 3.5 l-3.5 9 l-3.5 -9 l-9 -3.5 l9 -3.5 z"/>
+    <path d="M356 138 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3 z"/>
+  </g>
+</svg>

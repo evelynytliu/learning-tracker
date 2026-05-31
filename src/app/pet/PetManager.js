@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Coins, Sparkles, Plus, Check, Leaf, Egg } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
+import PetSprite from '@/components/PetSprite';
 import {
   PETS,
   PLANT_LIST,
@@ -12,6 +13,7 @@ import {
   stageProgress,
   nextThreshold,
   MAX_STAGE,
+  STAGE_THRESHOLDS,
 } from '@/lib/pets';
 
 const FEED_STEPS = [10, 50];
@@ -22,6 +24,7 @@ export default function PetManager({ userId, initialBalance, initialPets, earned
   const [busy, setBusy] = useState(false);
   const [adopting, setAdopting] = useState(initialPets.length === 0);
   const [celebrate, setCelebrate] = useState(null);
+  const [showGallery, setShowGallery] = useState(false);
 
   const active = pets.find((p) => p.is_active) || pets[0] || null;
 
@@ -64,7 +67,13 @@ export default function PetManager({ userId, initialBalance, initialPets, earned
       const afterStage = stageFromGrowth(newGrowth);
       if (afterStage > beforeStage) {
         const ap = PETS[active.species].stages[afterStage];
-        setCelebrate({ emoji: ap.emoji, name: ap.name, petName: PETS[active.species].name });
+        setCelebrate({
+          species: active.species,
+          stage: afterStage,
+          emoji: ap.emoji,
+          name: ap.name,
+          petName: PETS[active.species].name,
+        });
       }
     }
     setBusy(false);
@@ -85,7 +94,16 @@ export default function PetManager({ userId, initialBalance, initialPets, earned
       {/* 標題 + 點數 */}
       <header className="mb-5 flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-slate-800">🌿 我的寵物</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-black tracking-tight text-slate-800">🌿 我的寵物</h1>
+            <button
+              onClick={() => setShowGallery(true)}
+              className="flex items-center gap-1 rounded-full border border-slate-200 bg-white/80 px-2.5 py-1 text-[11px] font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 active:scale-95 cursor-pointer"
+            >
+              <Sparkles size={11} className="text-amber-500" />
+              圖鑑預覽
+            </button>
+          </div>
           <p className="mt-1 text-xs font-medium text-slate-500">
             用學習賺到的點數，把牠養大吧
           </p>
@@ -127,8 +145,8 @@ export default function PetManager({ userId, initialBalance, initialPets, earned
                       : 'border-slate-200 bg-white hover:border-slate-300',
                   )}
                 >
-                  <span className="text-3xl">{def.stages[st].emoji}</span>
-                  <span className="mt-1 truncate text-[11px] font-bold text-slate-600">{def.name}</span>
+                  <PetSprite species={p.species} stage={st} size="sm" className="mb-1" />
+                  <span className="truncate text-[11px] font-bold text-slate-600">{def.name}</span>
                   {isActive && (
                     <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-white">
                       <Check size={11} strokeWidth={3} />
@@ -154,7 +172,7 @@ export default function PetManager({ userId, initialBalance, initialPets, earned
           onClick={() => setCelebrate(null)}
         >
           <div className="flex flex-col items-center rounded-3xl bg-white px-8 py-10 text-center shadow-2xl">
-            <span className="text-7xl animate-pop">{celebrate.emoji}</span>
+            <PetSprite species={celebrate.species} stage={celebrate.stage} size="md" className="animate-pop" />
             <p className="mt-4 flex items-center gap-1.5 text-lg font-black text-slate-800">
               <Sparkles size={18} className="text-amber-500" /> 進化了！
             </p>
@@ -167,6 +185,80 @@ export default function PetManager({ userId, initialBalance, initialPets, earned
             >
               太棒了
             </button>
+          </div>
+        </div>
+      )}
+
+      {showGallery && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-md"
+          onClick={() => setShowGallery(false)}
+        >
+          <div
+            className="relative my-8 w-full max-w-4xl rounded-3xl bg-white p-6 shadow-2xl md:p-8 card max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 關閉按鈕 */}
+            <button
+              onClick={() => setShowGallery(false)}
+              className="absolute right-4 top-4 rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition cursor-pointer"
+            >
+              <Plus size={20} className="rotate-45" />
+            </button>
+
+            <div className="mb-6">
+              <h2 className="flex items-center gap-2 text-xl font-black text-slate-800">
+                <Sparkles className="text-amber-500 animate-pulse" />
+                寵物進化圖鑑（36 階段完整預覽）
+              </h2>
+              <p className="mt-1 text-xs font-medium text-slate-500">
+                預覽所有物種從種子/蛋開始，到最終完全體/盛開的 6 個階段插圖與微動畫。
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              {Object.entries(PETS).map(([speciesKey, def]) => (
+                <div key={speciesKey} className="border-b border-slate-100 pb-6 last:border-0 last:pb-0">
+                  <div className="mb-3">
+                    <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5">
+                      <span>{def.name}</span>
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
+                        {def.kind === 'plant' ? '植物' : '生物'}
+                      </span>
+                    </h3>
+                    <p className="text-[11px] text-slate-500">{def.tagline}</p>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-6">
+                    {def.stages.map((stageInfo, idx) => (
+                      <div
+                        key={idx}
+                        className="flex flex-col items-center rounded-2xl border border-slate-100 bg-slate-50/50 p-2.5 text-center transition hover:border-emerald-200 hover:bg-emerald-50/20"
+                      >
+                        <span className="text-[10px] font-bold text-slate-500">
+                          {idx + 1}・{stageInfo.name}
+                        </span>
+                        <div className="my-2 flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-inner overflow-hidden">
+                          <PetSprite species={speciesKey} stage={idx} size="sm" />
+                        </div>
+                        <span className="text-[9px] font-bold text-slate-400">
+                          {idx === 0 ? '領養' : `XP ${STAGE_THRESHOLDS[idx]}+`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setShowGallery(false)}
+                className="rounded-xl bg-slate-100 hover:bg-slate-200 px-5 py-2.5 text-xs font-black text-slate-600 transition active:scale-95 cursor-pointer"
+              >
+                關閉圖鑑
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -204,8 +296,8 @@ function ActivePet({ pet, balance, busy, onFeed }) {
 
       {/* 主角 */}
       <div className="my-6 flex flex-col items-center">
-        <div className="flex h-36 w-36 items-center justify-center rounded-full bg-white/60 shadow-inner">
-          <span className="text-7xl animate-float drop-shadow-sm">{stageInfo.emoji}</span>
+        <div className="flex h-36 w-36 items-center justify-center rounded-full bg-white/60 shadow-inner overflow-hidden">
+          <PetSprite species={pet.species} stage={stage} size="lg" />
         </div>
         <p className="mt-3 text-sm font-medium text-slate-500">{def.tagline}</p>
       </div>

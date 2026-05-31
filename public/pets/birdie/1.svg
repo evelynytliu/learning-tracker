@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 破殼 -->
+  <ellipse cx="256" cy="438" rx="108" ry="18" fill="#000000" opacity="0.06"/>
+  <!-- 小頭探出 -->
+  <circle cx="256" cy="350" r="33" fill="#F6D98A"/>
+  <!-- 蛋殼下半（鋸齒口） -->
+  <path d="M196 378 L212 360 L228 378 L244 360 L260 378 L276 360 L292 378 L308 360 L318 378 Q316 432 256 436 Q196 432 196 378 Z" fill="#FBF0D2"/>
+  <!-- 臉 -->
+  <circle cx="245" cy="342" r="4.5" fill="#3A3A3A"/>
+  <circle cx="267" cy="342" r="4.5" fill="#3A3A3A"/>
+  <circle cx="246.5" cy="340.5" r="1.4" fill="#fff"/>
+  <circle cx="268.5" cy="340.5" r="1.4" fill="#fff"/>
+  <path d="M256 350 l-7 7 l14 0 z" fill="#EFA15A"/>
+  <ellipse cx="234" cy="352" rx="5" ry="3" fill="#F3A9A0" opacity="0.6"/>
+  <ellipse cx="278" cy="352" rx="5" ry="3" fill="#F3A9A0" opacity="0.6"/>
+  <!-- 頭上殼片 -->
+  <path d="M240 322 l9 -16 l13 13 z" fill="#FBF0D2"/>
+</svg>

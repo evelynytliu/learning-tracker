@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 龍蛋 -->
+  <ellipse cx="256" cy="438" rx="108" ry="18" fill="#000000" opacity="0.06"/>
+  <path d="M256 300 C296 300 318 346 318 384 C318 420 292 440 256 440 C220 440 194 420 194 384 C194 346 216 300 256 300 Z" fill="#3E5C78"/>
+  <ellipse cx="234" cy="346" rx="13" ry="22" fill="#6E91AE" opacity="0.45"/>
+  <g fill="#557B96"><circle cx="244" cy="366" r="8"/><circle cx="282" cy="394" r="6"/><circle cx="264" cy="336" r="5"/></g>
+  <g fill="#EAD9B0" opacity="0.85"><circle cx="226" cy="400" r="5"/><circle cx="290" cy="356" r="4"/><circle cx="252" cy="380" r="3.5"/></g>
+</svg>

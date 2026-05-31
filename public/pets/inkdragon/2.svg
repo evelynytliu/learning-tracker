@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 成長期 -->
+  <ellipse cx="256" cy="440" rx="96" ry="15" fill="#000000" opacity="0.06"/>
+  <path d="M302 392 q48 8 52 -20 q2 -16 -14 -16 q10 8 0 16" fill="none" stroke="#3E5C78" stroke-width="15" stroke-linecap="round"/>
+  <path d="M210 346 q-34 -14 -44 4 q18 10 36 12 z" fill="#5B7B9A"/>
+  <path d="M302 346 q34 -14 44 4 q-18 10 -36 12 z" fill="#5B7B9A"/>
+  <circle cx="256" cy="362" r="52" fill="#3E5C78"/>
+  <ellipse cx="256" cy="384" rx="25" ry="28" fill="#EAD9B0"/>
+  <path d="M232 316 l-7 -24 l15 11 z" fill="#EAD9B0"/>
+  <path d="M280 316 l7 -24 l-15 11 z" fill="#EAD9B0"/>
+  <g fill="#2E4860"><path d="M256 312 l-7 -14 l-7 14 z"/><path d="M242 314 l-6 -11 l-6 11 z"/><path d="M270 314 l6 -11 l6 11 z"/></g>
+  <circle cx="240" cy="354" r="9" fill="#fff"/><circle cx="272" cy="354" r="9" fill="#fff"/>
+  <circle cx="242" cy="355" r="5" fill="#2A2A2A"/><circle cx="270" cy="355" r="5" fill="#2A2A2A"/>
+  <circle cx="243.6" cy="353.4" r="1.8" fill="#fff"/><circle cx="271.6" cy="353.4" r="1.8" fill="#fff"/>
+  <path d="M247 378 q9 7 18 0" stroke="#2A485F" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <g fill="#3E5C78"><ellipse cx="238" cy="408" rx="13" ry="9"/><ellipse cx="276" cy="408" rx="13" ry="9"/></g>
+</svg>

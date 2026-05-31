@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 古木 -->
+  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
+  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
+  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
+  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
+  <path d="M256 388 C240 350 272 332 258 310 C250 298 264 292 256 282" stroke="#9C6F4E" stroke-width="17" stroke-linecap="round" fill="none"/>
+  <path d="M256 338 Q218 330 196 306" stroke="#9C6F4E" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M256 324 Q298 316 320 294" stroke="#9C6F4E" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <g fill="#7FAE80">
+    <ellipse cx="194" cy="292" rx="42" ry="30"/>
+    <ellipse cx="318" cy="286" rx="40" ry="30"/>
+    <ellipse cx="256" cy="252" rx="54" ry="38"/>
+    <ellipse cx="230" cy="280" rx="32" ry="23"/>
+    <ellipse cx="288" cy="276" rx="32" ry="23"/>
+  </g>
+  <g fill="#8BB789" opacity="0.6">
+    <ellipse cx="248" cy="244" rx="22" ry="14"/>
+    <ellipse cx="200" cy="286" rx="16" ry="10"/>
+  </g>
+  <g fill="#E7A6B0">
+    <circle cx="232" cy="246" r="5"/>
+    <circle cx="282" cy="258" r="5"/>
+    <circle cx="262" cy="234" r="5"/>
+    <circle cx="306" cy="282" r="4.5"/>
+    <circle cx="202" cy="296" r="4.5"/>
+  </g>
+</svg>

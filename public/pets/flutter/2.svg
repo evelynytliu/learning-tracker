@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 結蛹 -->
+  <path d="M196 150 Q256 138 316 150" stroke="#9C6F4E" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M256 150 v20" stroke="#9C6F4E" stroke-width="2.5"/>
+  <g transform="translate(256 252)">
+    <path d="M0 -82 C 34 -70 40 -20 30 24 C 24 56 12 78 0 82 C -12 78 -24 56 -30 24 C -40 -20 -34 -70 0 -82 Z" fill="#A7C7A0"/>
+    <path d="M0 -82 C 20 -72 26 -36 22 -2 C 14 -4 6 -10 0 -22 C -6 -10 -8 -2 -8 -2 C -10 -40 -14 -70 0 -82 Z" fill="#B9D4B0" opacity="0.6"/>
+    <g fill="#E3C56B"><circle cx="-12" cy="-44" r="3"/><circle cx="0" cy="-52" r="3"/><circle cx="12" cy="-44" r="3"/><circle cx="-6" cy="-36" r="2.4"/><circle cx="7" cy="-36" r="2.4"/></g>
+    <path d="M0 18 q-10 18 0 50 q10 -32 0 -50 Z" fill="#8FB58A" opacity="0.5"/>
+  </g>
+</svg>

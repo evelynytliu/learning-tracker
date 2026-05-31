@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 開花 -->
+  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
+  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
+  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
+  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
+  <path d="M240 350 q-30 0 -30 -30 v-20" fill="none" stroke="#8FB98A" stroke-width="22" stroke-linecap="round"/>
+  <path d="M272 332 q30 0 30 -30 v-28" fill="none" stroke="#8FB98A" stroke-width="22" stroke-linecap="round"/>
+  <rect x="232" y="270" width="48" height="124" rx="24" fill="#8FB98A"/>
+  <rect x="245" y="280" width="8" height="104" rx="4" fill="#A6CBA0" opacity="0.6"/>
+  <g fill="#EFE8D2"><circle cx="256" cy="300" r="3"/><circle cx="256" cy="322" r="3"/><circle cx="256" cy="344" r="3"/><circle cx="256" cy="366" r="3"/></g>
+  <!-- 頂花 -->
+  <g transform="translate(256 266)">
+    <g fill="#E58B9A">
+      <ellipse cx="0" cy="-20" rx="9" ry="14"/>
+      <g transform="rotate(72)"><ellipse cx="0" cy="-20" rx="9" ry="14"/></g>
+      <g transform="rotate(144)"><ellipse cx="0" cy="-20" rx="9" ry="14"/></g>
+      <g transform="rotate(216)"><ellipse cx="0" cy="-20" rx="9" ry="14"/></g>
+      <g transform="rotate(288)"><ellipse cx="0" cy="-20" rx="9" ry="14"/></g>
+    </g>
+    <circle cx="0" cy="0" r="7" fill="#F6D38A"/>
+  </g>
+  <!-- 手臂小花 -->
+  <circle cx="302" cy="272" r="7" fill="#EFA9B4"/>
+  <circle cx="302" cy="272" r="3" fill="#F6D38A"/>
+</svg>

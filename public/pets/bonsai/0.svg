@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 種子（橡實） -->
+  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
+  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
+  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
+  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
+  <g transform="translate(256 356)">
+    <path d="M-20 -4 Q0 14 20 -4 Q20 22 0 30 Q-20 22 -20 -4 Z" fill="#B98A63"/>
+    <path d="M-22 -6 Q0 -18 22 -6 Q22 4 0 8 Q-22 4 -22 -6 Z" fill="#8A5E3C"/>
+    <rect x="-3.5" y="-24" width="7" height="12" rx="3.5" fill="#8A5E3C"/>
+    <ellipse cx="-7" cy="8" rx="5" ry="8" fill="#CFA67E" opacity="0.55"/>
+  </g>
+</svg>

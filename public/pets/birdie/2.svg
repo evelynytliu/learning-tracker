@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 雛鳥 -->
+  <ellipse cx="256" cy="438" rx="100" ry="17" fill="#000000" opacity="0.06"/>
+  <ellipse cx="210" cy="372" rx="11" ry="17" fill="#F2C95C"/>
+  <ellipse cx="302" cy="372" rx="11" ry="17" fill="#F2C95C"/>
+  <circle cx="256" cy="366" r="46" fill="#F6D98A"/>
+  <ellipse cx="256" cy="382" rx="29" ry="23" fill="#FCEBB6"/>
+  <path d="M256 360 l-8 9 l16 0 z" fill="#EFA15A"/>
+  <circle cx="243" cy="352" r="4.8" fill="#3A3A3A"/>
+  <circle cx="269" cy="352" r="4.8" fill="#3A3A3A"/>
+  <circle cx="244.6" cy="350.4" r="1.5" fill="#fff"/>
+  <circle cx="270.6" cy="350.4" r="1.5" fill="#fff"/>
+  <ellipse cx="228" cy="362" rx="5.5" ry="3.5" fill="#F3A9A0" opacity="0.6"/>
+  <ellipse cx="284" cy="362" rx="5.5" ry="3.5" fill="#F3A9A0" opacity="0.6"/>
+  <g stroke="#EFA15A" stroke-width="4" stroke-linecap="round"><path d="M244 408 v8"/><path d="M268 408 v8"/></g>
+  <path d="M238 330 l10 -15 l13 13 z" fill="#FBF0D2"/>
+</svg>
