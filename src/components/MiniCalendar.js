@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { toYMD } from '@/lib/date';
 
@@ -12,31 +12,20 @@ function addMonth(y, m, delta) {
   return { y: y + Math.floor(t / 12), m: ((t % 12) + 12) % 12 };
 }
 
-// props:
-//   events, doneDates, todayStr, onSelectDate, compact
+// 用「百分比 + CSS transform」做月份滑動，不量像素寬度，避免 RWD 量測時機問題。
+// track 寬 300%（三個月），每個面板 33.3333%（= 一個視窗寬）。
+// 平時顯示中間面板：translateX(-33.3333%)。
 export default function MiniCalendar({ events = [], doneDates, todayStr, onSelectDate, compact }) {
   const today = todayStr ? new Date(todayStr + 'T00:00:00') : new Date();
   const [cursor, setCursor] = useState({ y: today.getFullYear(), m: today.getMonth() });
-  const [w, setW] = useState(0);
-  const [dx, setDx] = useState(0);
+  const [dragPx, setDragPx] = useState(0); // 拖曳中的像素位移
   const [anim, setAnim] = useState(false);
-  const viewport = useRef(null);
+  const [target, setTarget] = useState(null); // 'next' | 'prev' | 'back' | null
   const drag = useRef(null);
-  const pending = useRef(0);
-
-  useEffect(() => {
-    const el = viewport.current;
-    if (!el) return;
-    const update = () => setW(el.clientWidth);
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
+  const vp = useRef(null);
 
   const doneSet = doneDates instanceof Set ? doneDates : new Set(doneDates || []);
 
-  // 把事件依日期歸納（一次算好，三個月共用）
   const eventsByDate = {};
   for (const e of events) {
     const start = e.event_date;
@@ -49,55 +38,72 @@ export default function MiniCalendar({ events = [], doneDates, todayStr, onSelec
     }
   }
 
-  function go(dir) {
-    if (!w || anim) return;
-    pending.current = dir;
+  const prev = addMonth(cursor.y, cursor.m, -1);
+  const next = addMonth(cursor.y, cursor.m, 1);
+
+  // 計算 transform：基準 -33.3333%，加上拖曳像素或動畫目標
+  let transform = 'translateX(-33.3333%)';
+  if (target === 'next') transform = 'translateX(-66.6666%)';
+  else if (target === 'prev') transform = 'translateX(0%)';
+  else if (dragPx !== 0) transform = `translateX(calc(-33.3333% + ${dragPx}px))`;
+
+  function animateTo(dir) {
+    if (anim) return;
     setAnim(true);
-    setDx(dir === 1 ? -w : w); // 滑到下一個 / 上一個面板
+    setTarget(dir === 1 ? 'next' : 'prev');
   }
 
   function onTransitionEnd() {
-    if (pending.current !== 0) {
-      setCursor((c) => addMonth(c.y, c.m, pending.current));
-      pending.current = 0;
-    }
+    if (target === 'next') setCursor((c) => addMonth(c.y, c.m, 1));
+    else if (target === 'prev') setCursor((c) => addMonth(c.y, c.m, -1));
+    // 換好 cursor 後，無動畫地回到中間面板
     setAnim(false);
-    setDx(0);
+    setTarget(null);
+    setDragPx(0);
   }
 
   function onTouchStart(e) {
     if (anim) return;
     const t = e.touches[0];
-    drag.current = { x: t.clientX, y: t.clientY, moved: false };
+    drag.current = { x: t.clientX, y: t.clientY, decided: false, horizontal: false };
   }
   function onTouchMove(e) {
-    if (!drag.current) return;
+    if (!drag.current || anim) return;
     const t = e.touches[0];
-    const ddx = t.clientX - drag.current.x;
-    const ddy = t.clientY - drag.current.y;
-    if (!drag.current.moved && Math.abs(ddx) < Math.abs(ddy)) {
-      // 垂直為主 → 交給頁面捲動
-      drag.current = null;
-      return;
+    const dx = t.clientX - drag.current.x;
+    const dy = t.clientY - drag.current.y;
+    if (!drag.current.decided) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      drag.current.decided = true;
+      drag.current.horizontal = Math.abs(dx) > Math.abs(dy);
     }
-    drag.current.moved = true;
-    setDx(ddx);
+    if (drag.current.horizontal) {
+      e.preventDefault?.();
+      setDragPx(dx);
+    }
   }
   function onTouchEnd() {
     if (!drag.current) return;
-    const moved = dx;
+    const horizontal = drag.current.horizontal;
+    const dx = dragPx;
     drag.current = null;
+    if (!horizontal) {
+      setDragPx(0);
+      return;
+    }
+    const w = vp.current?.clientWidth || 300;
     const threshold = Math.max(48, w * 0.22);
-    if (moved <= -threshold) go(1);
-    else if (moved >= threshold) go(-1);
+    if (dx <= -threshold) animateTo(1);
+    else if (dx >= threshold) animateTo(-1);
     else {
+      // 沒過門檻 → 彈回中間
       setAnim(true);
-      setDx(0); // 彈回
+      setTarget('back');
+      setDragPx(0);
     }
   }
 
-  const prev = addMonth(cursor.y, cursor.m, -1);
-  const next = addMonth(cursor.y, cursor.m, 1);
+  const panelProps = { eventsByDate, doneSet, todayStr, onSelectDate, compact };
 
   return (
     <div>
@@ -107,14 +113,14 @@ export default function MiniCalendar({ events = [], doneDates, todayStr, onSelec
         </span>
         <div className="flex gap-1">
           <button
-            onClick={() => go(-1)}
+            onClick={() => animateTo(-1)}
             className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100"
             aria-label="上個月"
           >
             <ChevronLeft size={18} />
           </button>
           <button
-            onClick={() => go(1)}
+            onClick={() => animateTo(1)}
             className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100"
             aria-label="下個月"
           >
@@ -123,45 +129,41 @@ export default function MiniCalendar({ events = [], doneDates, todayStr, onSelec
         </div>
       </div>
 
-      {/* 星期列（固定，不跟著滑） */}
+      {/* 星期列（固定） */}
       <div className="grid grid-cols-7 gap-1 text-center text-xs text-slate-400">
         {WD.map((d) => (
           <div key={d} className="py-1">{d}</div>
         ))}
       </div>
 
-      {/* 可滑動的月份區 */}
+      {/* 可滑動的月份區：viewport 全寬且裁切，track 三倍寬 */}
       <div
-        ref={viewport}
-        className="overflow-hidden"
+        ref={vp}
+        className="w-full overflow-hidden"
         style={{ touchAction: 'pan-y' }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        {w > 0 ? (
-          <div
-            className="flex"
-            style={{
-              width: w * 3,
-              transform: `translateX(${-w + dx}px)`,
-              transition: anim ? 'transform 260ms ease-out' : 'none',
-            }}
-            onTransitionEnd={onTransitionEnd}
-          >
-            <div style={{ width: w }}>
-              <DayGrid {...prev} {...{ eventsByDate, doneSet, todayStr, onSelectDate, compact }} />
-            </div>
-            <div style={{ width: w }}>
-              <DayGrid {...cursor} {...{ eventsByDate, doneSet, todayStr, onSelectDate, compact }} />
-            </div>
-            <div style={{ width: w }}>
-              <DayGrid {...next} {...{ eventsByDate, doneSet, todayStr, onSelectDate, compact }} />
-            </div>
+        <div
+          className="flex pt-1"
+          style={{
+            width: '300%',
+            transform,
+            transition: anim ? 'transform 260ms ease-out' : 'none',
+          }}
+          onTransitionEnd={target === 'back' ? () => { setAnim(false); setTarget(null); } : onTransitionEnd}
+        >
+          <div style={{ width: '33.3333%' }} className="shrink-0">
+            <DayGrid {...prev} {...panelProps} />
           </div>
-        ) : (
-          <DayGrid {...cursor} {...{ eventsByDate, doneSet, todayStr, onSelectDate, compact }} />
-        )}
+          <div style={{ width: '33.3333%' }} className="shrink-0">
+            <DayGrid {...cursor} {...panelProps} />
+          </div>
+          <div style={{ width: '33.3333%' }} className="shrink-0">
+            <DayGrid {...next} {...panelProps} />
+          </div>
+        </div>
       </div>
 
       <p className="mt-2 text-center text-xs text-slate-300">← 左右滑動換月 →</p>
@@ -179,7 +181,7 @@ function DayGrid({ y, m, eventsByDate, doneSet, todayStr, onSelectDate, compact 
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
   return (
-    <div className="grid grid-cols-7 gap-1 pt-1">
+    <div className="grid grid-cols-7 gap-1 px-0.5">
       {cells.map((d, i) => {
         if (d === null) return <div key={`e${i}`} />;
         const ymd = toYMD(new Date(y, m, d));

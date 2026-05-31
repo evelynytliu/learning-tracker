@@ -46,14 +46,14 @@ export default function AppShell({
         }`}
       >
         <div className="flex h-16 items-center gap-2 border-b border-slate-200 px-4">
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-indigo-600 font-bold text-white">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 font-black text-white">
             學
           </div>
           {!collapsed && (
-            <span className="truncate font-bold text-slate-800">學習平台</span>
+            <span className="truncate font-black text-slate-800 tracking-wide">學習挑戰賽</span>
           )}
         </div>
-        <nav className="flex flex-col gap-1 p-3">
+        <nav className="flex flex-col gap-1.5 p-3">
           {fullNav.map((item) => {
             const Icon = item.icon;
             const active = isActive(pathname, item);
@@ -62,10 +62,10 @@ export default function AppShell({
                 key={item.href}
                 href={item.href}
                 title={item.label}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition active:scale-[0.98] ${
                   active
-                    ? 'bg-indigo-50 text-indigo-700'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'bg-blue-600 text-white shadow-sm shadow-blue-100'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
                 <Icon size={20} className="flex-shrink-0" />
@@ -104,10 +104,10 @@ export default function AppShell({
         {/* 手機頂部列 */}
         <header className="flex h-14 flex-shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 lg:hidden">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 text-sm font-black text-white animate-pulse">
               學
             </div>
-            <span className="font-bold text-slate-800">學習平台</span>
+            <span className="font-extrabold text-slate-800 tracking-wide">學習挑戰賽 🏆</span>
           </div>
           <button
             onClick={handleLogout}
@@ -141,11 +141,11 @@ export default function AppShell({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-center text-xs ${
-                  active ? 'font-bold text-indigo-600' : 'text-slate-400'
+                className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-center text-xs transition active:scale-[0.92] ${
+                  active ? 'font-bold text-blue-600' : 'text-slate-400'
                 }`}
               >
-                <Icon size={20} strokeWidth={active ? 2.5 : 2} />
+                <Icon size={20} strokeWidth={active ? 2.6 : 2} className={active ? 'text-blue-600' : 'text-slate-400'} />
                 <span>{item.label}</span>
               </Link>
             );

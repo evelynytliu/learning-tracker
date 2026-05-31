@@ -31,8 +31,8 @@ export default async function CheckinPage() {
       width="narrow"
     >
       <header className="mb-6">
-        <p className="text-sm text-slate-500">{today}</p>
-        <h1 className="mt-1 text-2xl font-bold text-slate-800">今日打卡</h1>
+        <p className="text-xs text-slate-400 font-bold">{today}</p>
+        <h1 className="mt-1 text-2xl font-black text-slate-800">每日挑戰</h1>
       </header>
 
       <CheckinForm
