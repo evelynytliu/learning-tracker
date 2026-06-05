@@ -27,3 +27,18 @@ export function isoDayOfWeek(d = new Date()) {
 }
 
 export const DAY_LABELS = ['週一', '週二', '週三', '週四', '週五', '週六', '週日'];
+
+// 把資料庫 time（"HH:MM:SS"）格式化成 "HH:MM"；空值回傳 ''
+export function fmtTime(t) {
+  if (!t) return '';
+  return String(t).slice(0, 5);
+}
+
+// 事件時間標籤：全天 / 14:30 / 14:30–16:00
+export function eventTimeLabel(start, end) {
+  const s = fmtTime(start);
+  const e = fmtTime(end);
+  if (!s && !e) return '全天';
+  if (s && e) return `${s}–${e}`;
+  return s || e;
+}

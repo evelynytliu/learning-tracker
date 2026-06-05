@@ -66,7 +66,7 @@ export default async function HomePage() {
     supabase.from('mistakes').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
     supabase
       .from('calendar_events')
-      .select('id, title, event_date, end_date')
+      .select('id, title, event_date, end_date, start_time, end_time')
       .eq('user_id', user.id)
       .gte('event_date', toYMD(since)),
     supabase
@@ -104,7 +104,11 @@ export default async function HomePage() {
   // 接下來的行程（今天起，最多 4 筆）
   const upcoming = (events ?? [])
     .filter((e) => (e.end_date || e.event_date) >= today)
-    .sort((a, b) => a.event_date.localeCompare(b.event_date))
+    .sort(
+      (a, b) =>
+        a.event_date.localeCompare(b.event_date) ||
+        (a.start_time || '').localeCompare(b.start_time || ''),
+    )
     .slice(0, 4);
 
   // 寵物 + 點數：先對帳補發，再讀餘額與目前正在養的寵物
@@ -285,7 +289,14 @@ export default async function HomePage() {
                     <span className="rounded-lg bg-orange-100 px-2 py-1 text-xs font-bold text-orange-700">
                       {e.event_date.slice(5)}
                     </span>
-                    <span className="font-bold text-slate-700">{e.title}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="font-bold text-slate-700">{e.title}</span>
+                      {e.start_time && (
+                        <span className="ml-2 whitespace-nowrap text-xs font-semibold text-blue-500">
+                          🕒 {e.start_time.slice(0, 5)}{e.end_time ? `–${e.end_time.slice(0, 5)}` : ''}
+                        </span>
+                      )}
+                    </span>
                   </li>
                 ))}
               </ul>

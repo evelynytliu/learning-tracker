@@ -1,26 +1,27 @@
 'use client';
 
 import { useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Clock, CalendarDays } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import MiniCalendar from '@/components/MiniCalendar';
-import { toYMD } from '@/lib/date';
+
+const EMPTY = { title: '', event_date: '', end_date: '', start_time: '', end_time: '', note: '' };
 
 export default function CalendarManager({ userId, initialEvents, doneDates, todayStr, canEdit }) {
   const [events, setEvents] = useState(initialEvents);
   const [selected, setSelected] = useState(todayStr);
-  const [draft, setDraft] = useState({ title: '', event_date: todayStr, end_date: '', note: '' });
+  const [draft, setDraft] = useState({ ...EMPTY, event_date: todayStr });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
 
-  const supabase = createClient();
   const selectedEvents = events
     .filter((e) => {
       const start = e.event_date;
       const end = e.end_date || e.event_date;
       return selected >= start && selected <= end;
     })
-    .sort((a, b) => a.event_date.localeCompare(b.event_date));
+    // 全天（無時間）排前面，其餘照開始時間
+    .sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
 
   function selectDate(ymd) {
     setSelected(ymd);
@@ -34,12 +35,19 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
       setErr('請輸入事件名稱');
       return;
     }
+    if (draft.start_time && draft.end_time && draft.end_time < draft.start_time) {
+      setErr('結束時間不能早於開始時間');
+      return;
+    }
     setBusy(true);
+    const supabase = createClient();
     const payload = {
       user_id: userId,
       title: draft.title.trim(),
       event_date: draft.event_date,
       end_date: draft.end_date || null,
+      start_time: draft.start_time || null,
+      end_time: draft.end_time || null,
       note: draft.note.trim() || null,
     };
     const { data, error } = await supabase
@@ -53,17 +61,18 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
       return;
     }
     setEvents((prev) => [...prev, data]);
-    setDraft({ title: '', event_date: selected, end_date: '', note: '' });
+    setDraft({ ...EMPTY, event_date: selected });
   }
 
   async function deleteEvent(id) {
     setEvents((prev) => prev.filter((e) => e.id !== id));
+    const supabase = createClient();
     await supabase.from('calendar_events').delete().eq('id', id);
   }
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="card p-4">
         <MiniCalendar
           events={events}
           doneDates={doneDates}
@@ -74,79 +83,134 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
       </div>
 
       <div>
-        <h2 className="mb-2 font-semibold text-slate-800">{selected} 的行程</h2>
+        <h2 className="mb-3 flex items-center gap-2 font-bold text-slate-800">
+          <CalendarDays size={18} className="text-blue-600" />
+          {selected} 的行程
+        </h2>
         <ul className="flex flex-col gap-2">
           {selectedEvents.length === 0 && (
-            <li className="rounded-xl border border-dashed p-4 text-center text-sm text-slate-400">
+            <li className="rounded-2xl border border-dashed border-slate-200 p-5 text-center text-sm text-slate-400">
               這天還沒有行程
             </li>
           )}
-          {selectedEvents.map((e) => (
-            <li
-              key={e.id}
-              className="flex items-start justify-between gap-2 rounded-xl border bg-white p-3"
-            >
-              <div className="min-w-0">
-                <div className="font-medium text-slate-800">{e.title}</div>
-                <div className="text-xs text-slate-400">
-                  {e.event_date}
-                  {e.end_date && e.end_date !== e.event_date ? ` ~ ${e.end_date}` : ''}
-                </div>
-                {e.note && <div className="mt-1 text-sm text-slate-500">{e.note}</div>}
-              </div>
-              {canEdit && (
-                <button
-                  onClick={() => deleteEvent(e.id)}
-                  className="flex-shrink-0 rounded-lg p-1.5 text-slate-300 hover:bg-red-50 hover:text-red-400"
+          {selectedEvents.map((e) => {
+            const multiDay = e.end_date && e.end_date !== e.event_date;
+            const timed = !!e.start_time;
+            return (
+              <li
+                key={e.id}
+                className="flex items-stretch gap-3 overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
+              >
+                {/* 時間欄 */}
+                <div
+                  className={`flex w-16 flex-shrink-0 flex-col items-center justify-center rounded-xl px-1 py-1.5 text-center ${
+                    timed ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-500'
+                  }`}
                 >
-                  <Trash2 size={16} />
-                </button>
-              )}
-            </li>
-          ))}
+                  {timed ? (
+                    <>
+                      <span className="text-sm font-black leading-tight">{e.start_time.slice(0, 5)}</span>
+                      {e.end_time && (
+                        <span className="text-[10px] font-medium text-blue-400">
+                          ~{e.end_time.slice(0, 5)}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-xs font-bold">全天</span>
+                  )}
+                </div>
+                {/* 內容 */}
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-slate-800">{e.title}</div>
+                  {multiDay && (
+                    <div className="mt-0.5 flex items-center gap-1 text-xs font-medium text-amber-600">
+                      <CalendarDays size={12} />
+                      {e.event_date.slice(5)} ~ {e.end_date.slice(5)}
+                    </div>
+                  )}
+                  {e.note && <div className="mt-1 text-sm text-slate-500">{e.note}</div>}
+                </div>
+                {canEdit && (
+                  <button
+                    onClick={() => deleteEvent(e.id)}
+                    className="flex-shrink-0 self-start rounded-lg p-1.5 text-slate-300 transition hover:bg-red-50 hover:text-red-400"
+                    aria-label="刪除"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
         {canEdit && (
-          <form onSubmit={addEvent} className="mt-4 rounded-xl border bg-slate-50 p-4">
-            <div className="mb-2 text-sm font-semibold text-slate-600">新增行程</div>
+          <form onSubmit={addEvent} className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+            <div className="mb-3 text-sm font-bold text-slate-700">新增行程</div>
             <input
               type="text"
-              placeholder="事件名稱（例：新生營）"
+              placeholder="事件名稱（例：段考、社團、看牙醫）"
               value={draft.title}
               onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-              className="w-full rounded-lg border px-3 py-2 text-sm"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
             />
+
             <div className="mt-2 flex items-center gap-2">
-              <label className="w-12 text-xs text-slate-500">日期</label>
+              <label className="flex w-14 items-center gap-1 text-xs font-medium text-slate-500">
+                <CalendarDays size={13} /> 日期
+              </label>
               <input
                 type="date"
                 value={draft.event_date}
                 onChange={(e) => setDraft({ ...draft, event_date: e.target.value })}
-                className="flex-1 rounded-lg border px-2 py-2 text-sm"
+                className="flex-1 rounded-xl border border-slate-200 bg-white px-2 py-2 text-sm outline-none focus:border-blue-400"
               />
             </div>
+
             <div className="mt-2 flex items-center gap-2">
-              <label className="w-12 text-xs text-slate-500">結束</label>
+              <label className="flex w-14 items-center gap-1 text-xs font-medium text-slate-500">
+                <Clock size={13} /> 時間
+              </label>
+              <input
+                type="time"
+                value={draft.start_time}
+                onChange={(e) => setDraft({ ...draft, start_time: e.target.value })}
+                className="flex-1 rounded-xl border border-slate-200 bg-white px-2 py-2 text-sm outline-none focus:border-blue-400"
+              />
+              <span className="text-xs text-slate-400">至</span>
+              <input
+                type="time"
+                value={draft.end_time}
+                onChange={(e) => setDraft({ ...draft, end_time: e.target.value })}
+                className="flex-1 rounded-xl border border-slate-200 bg-white px-2 py-2 text-sm outline-none focus:border-blue-400"
+              />
+            </div>
+            <p className="mt-1 pl-16 text-[11px] text-slate-400">時間留空 = 全天事件</p>
+
+            <div className="mt-2 flex items-center gap-2">
+              <label className="w-14 text-xs font-medium text-slate-500">結束日</label>
               <input
                 type="date"
                 value={draft.end_date}
                 onChange={(e) => setDraft({ ...draft, end_date: e.target.value })}
-                className="flex-1 rounded-lg border px-2 py-2 text-sm"
+                className="flex-1 rounded-xl border border-slate-200 bg-white px-2 py-2 text-sm outline-none focus:border-blue-400"
               />
-              <span className="text-xs text-slate-400">多天才填</span>
+              <span className="text-xs text-slate-400">跨多天才填</span>
             </div>
+
             <input
               type="text"
               placeholder="備註（可選）"
               value={draft.note}
               onChange={(e) => setDraft({ ...draft, note: e.target.value })}
-              className="mt-2 w-full rounded-lg border px-3 py-2 text-sm"
+              className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
             />
-            {err && <p className="mt-2 text-sm text-red-500">{err}</p>}
+            {err && <p className="mt-2 text-sm font-medium text-red-500">{err}</p>}
             <button
               type="submit"
               disabled={busy}
-              className="mt-3 w-full rounded-lg bg-indigo-600 py-2 font-semibold text-white disabled:opacity-50"
+              className="mt-3 w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 py-2.5 font-bold text-white shadow-sm transition active:scale-[0.98] disabled:opacity-50"
             >
               {busy ? '新增中…' : '＋ 新增行程'}
             </button>

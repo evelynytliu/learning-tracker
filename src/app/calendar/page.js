@@ -37,7 +37,7 @@ export default async function CalendarPage() {
   const [{ data: events }, { data: checkins }] = await Promise.all([
     supabase
       .from('calendar_events')
-      .select('id, title, event_date, end_date, note, color')
+      .select('id, title, event_date, end_date, start_time, end_time, note, color')
       .eq('user_id', targetId)
       .order('event_date', { ascending: true }),
     supabase

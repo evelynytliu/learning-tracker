@@ -37,6 +37,10 @@ export default function MiniCalendar({ events = [], doneDates, todayStr, onSelec
       d.setDate(d.getDate() + 1);
     }
   }
+  // 每天的事件照開始時間排序（全天無時間者排前）
+  for (const k in eventsByDate) {
+    eventsByDate[k].sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
+  }
 
   const prev = addMonth(cursor.y, cursor.m, -1);
   const next = addMonth(cursor.y, cursor.m, 1);
@@ -209,8 +213,12 @@ function DayGrid({ y, m, eventsByDate, doneSet, todayStr, onSelectDate, compact 
                     isToday ? 'bg-white/20' : 'bg-amber-100 text-amber-700'
                   }`}
                 >
+                  {dayEvents[0].start_time ? `${dayEvents[0].start_time.slice(0, 5)} ` : ''}
                   {dayEvents[0].title}
                 </span>
+                {dayEvents.length > 1 && (
+                  <span className={isToday ? 'text-white/70' : 'text-amber-500'}> +{dayEvents.length - 1}</span>
+                )}
               </span>
             )}
             {compact && dayEvents.length > 0 && (
