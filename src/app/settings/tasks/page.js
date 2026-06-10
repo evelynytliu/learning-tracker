@@ -38,7 +38,9 @@ export default async function TaskSettingsPage() {
       .order('sort_order', { ascending: true }),
     supabase
       .from('tasks')
-      .select('id, set_id, label, hint, sort_order')
+      // link / is_bonus 一定要抓：編輯表單以這份資料初始化，
+      // 少抓會在儲存時把使用者設好的連結與加分標記洗掉
+      .select('id, set_id, label, hint, link, is_bonus, sort_order')
       .eq('user_id', targetId)
       .order('sort_order', { ascending: true }),
     supabase
@@ -59,9 +61,9 @@ export default async function TaskSettingsPage() {
       displayName={profile?.display_name}
       width="narrow"
     >
-      <header className="mb-4">
-        <h1 className="text-2xl font-bold text-slate-800">⚙️ 打卡清單設定</h1>
-        <p className="text-sm text-slate-500">
+      <header className="mb-5">
+        <h1 className="text-2xl font-black tracking-tight text-slate-900">⚙️ 打卡清單設定</h1>
+        <p className="mt-1 text-sm text-slate-500">
           設定平日、假日、暑假等不同清單，系統會依星期或特殊期間自動套用
         </p>
       </header>

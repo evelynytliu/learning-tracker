@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import AppShell from '@/components/AppShell';
 import MiniCalendar from '@/components/MiniCalendar';
-import { toYMD, weekStartYMD, isoDayOfWeek, DAY_LABELS } from '@/lib/date';
+import { toYMD, weekStart, weekStartYMD, isoDayOfWeek, DAY_LABELS } from '@/lib/date';
 import { EXTERNAL_LINKS } from '@/lib/links';
 import { isDayComplete, computeStreakFromSummary } from '@/lib/streak';
 import { ACHIEVEMENT_MAP } from '@/lib/achievements';
@@ -43,6 +43,7 @@ export default async function HomePage() {
     { data: recentAchievements },
     { data: pendingAssignments },
     { count: booksRead },
+    { count: courseUnitsWeek },
   ] = await Promise.all([
     supabase
       .from('daily_checkins')
@@ -86,6 +87,11 @@ export default async function HomePage() {
       .select('id', { count: 'exact', head: true })
       .eq('user_id', user.id)
       .not('finished_date', 'is', null),
+    supabase
+      .from('course_progress')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('done_at', weekStart().toISOString()),
   ]);
 
   const total = todayCheckin?.tasks_total ?? 0;
@@ -372,6 +378,7 @@ export default async function HomePage() {
       {/* 所有冒險模組 */}
       <h2 className="mb-3 mt-8 text-xs font-black text-slate-400 tracking-widest uppercase">冒險功能模組</h2>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <FeatureCard href="/courses" icon="🎓" title="線上課程" subtitle={`本週看了 ${courseUnitsWeek ?? 0} 集`} />
         <FeatureCard href="/assignments" icon="📋" title="任務挑戰" subtitle={`待擊破 ${assignmentsLeft.length}`} />
         <FeatureCard href="/reading" icon="📖" title="傳奇書庫" subtitle={`已讀完 ${booksRead ?? 0} 本`} />
         <FeatureCard href="/calendar" icon="📆" title="日程地圖" subtitle="日程與行程" />

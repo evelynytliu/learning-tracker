@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f6fc;
+  --background: #f3f5fc;
   --foreground: #0f172a;
 }
 
@@ -16,12 +16,12 @@ body {
     "Microsoft JhengHei", sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* 清新的極光底色：淡靛藍 → 白 → 淡紫，配上兩團柔光 */
+  /* 清新的極光底色：淡靛藍 → 白 → 淡紫，配上柔光 */
   background-color: var(--background);
   background-image:
-    radial-gradient(42rem 42rem at 8% -8%, rgba(129, 140, 248, 0.18), transparent 60%),
+    radial-gradient(42rem 42rem at 8% -8%, rgba(129, 140, 248, 0.20), transparent 60%),
     radial-gradient(38rem 38rem at 100% 0%, rgba(45, 212, 191, 0.16), transparent 55%),
-    radial-gradient(46rem 46rem at 50% 120%, rgba(167, 139, 250, 0.16), transparent 60%);
+    radial-gradient(46rem 46rem at 50% 120%, rgba(167, 139, 250, 0.17), transparent 60%);
   background-attachment: fixed;
 }
 
@@ -75,17 +75,19 @@ body {
 .stagger > *:nth-child(7) { animation-delay: 0.32s; }
 .stagger > *:nth-child(8) { animation-delay: 0.37s; }
 
-/* ============ 視覺元件 ============ */
+/* ============ 設計系統元件 ============ */
+/* 全 app 共用的視覺語言：玻璃卡片、統一輸入框、按鈕、chip。
+   原則：圓角大（卡 1.25rem / 控制元件 0.75rem）、陰影柔、focus 一律靛藍光圈。 */
 
 /* 玻璃感卡片：半透明白 + 柔邊 + 浮起感 */
 .card {
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 1.25rem;
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.04),
-    0 12px 28px -12px rgba(79, 70, 229, 0.18);
+    0 12px 28px -12px rgba(79, 70, 229, 0.16);
 }
 .card-hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -95,6 +97,95 @@ body {
   box-shadow:
     0 2px 4px rgba(15, 23, 42, 0.05),
     0 22px 40px -16px rgba(79, 70, 229, 0.32);
+}
+
+/* 統一輸入框（input / select / textarea 都可掛；寬度用 w-full / flex-1 控制） */
+.input {
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.875rem;
+  color: #0f172a;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input::placeholder { color: #94a3b8; }
+.input:focus {
+  outline: none;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+}
+
+/* 按鈕 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.75rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+  cursor: pointer;
+}
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary {
+  color: #fff;
+  background-image: linear-gradient(120deg, #4f46e5, #7c3aed);
+  box-shadow: 0 8px 18px -8px rgba(79, 70, 229, 0.55);
+}
+.btn-primary:hover { box-shadow: 0 10px 22px -8px rgba(79, 70, 229, 0.7); }
+.btn-ghost {
+  color: #475569;
+  background: #f1f5f9;
+}
+.btn-ghost:hover { background: #e2e8f0; }
+
+/* 圓形小 chip（星期選擇、篩選之類） */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-weight: 700;
+  color: #64748b;
+  background: #f1f5f9;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.chip:hover { background: #e2e8f0; }
+.chip-on {
+  color: #fff;
+  background-image: linear-gradient(120deg, #4f46e5, #7c3aed);
+  box-shadow: 0 6px 14px -6px rgba(79, 70, 229, 0.6);
+}
+.chip-on:hover { background-image: linear-gradient(120deg, #4338ca, #6d28d9); }
+
+/* 區塊小標（uppercase 小字） */
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+/* 進度條 */
+.progress-track {
+  height: 0.625rem;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background-image: linear-gradient(90deg, #6366f1, #8b5cf6, #d946ef);
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* 漸層文字 */
@@ -150,7 +241,7 @@ body {
   filter: saturate(1.1);
 }
 
-/* 漸層文字、流光、卡片陰影換成水忍者配色 */
+/* 漸層文字、流光、卡片陰影、主按鈕換成水忍者配色 */
 :root[data-skin='greninja'] .text-gradient {
   background: linear-gradient(110deg, #0e7490, #0ea5e9 45%, #e0566f);
   -webkit-background-clip: text;
@@ -160,6 +251,14 @@ body {
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.04),
     0 12px 28px -12px rgba(14, 116, 144, 0.28);
+}
+:root[data-skin='greninja'] .btn-primary,
+:root[data-skin='greninja'] .chip-on {
+  background-image: linear-gradient(120deg, #0891b2, #0284c7);
+  box-shadow: 0 8px 18px -8px rgba(8, 145, 178, 0.6);
+}
+:root[data-skin='greninja'] .progress-fill {
+  background-image: linear-gradient(90deg, #06b6d4, #0ea5e9, #38bdf8);
 }
 :root[data-skin='greninja'] ::selection {
   background: #e0566f;

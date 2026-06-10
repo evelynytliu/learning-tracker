@@ -47,8 +47,13 @@ export default function ScheduleEditor({ userId, initial, readOnly }) {
   }
 
   async function deleteRow(id) {
-    setRows((prev) => prev.filter((r) => r.id !== id));
-    await supabase.from('class_schedule').delete().eq('id', id);
+    const prev = rows;
+    setRows((p) => p.filter((r) => r.id !== id));
+    const { error } = await supabase.from('class_schedule').delete().eq('id', id);
+    if (error) {
+      setRows(prev); // 失敗就還原畫面，不要讓人以為刪掉了
+      setErr(`刪除失敗：${error.message}`);
+    }
   }
 
   return (
@@ -62,9 +67,7 @@ export default function ScheduleEditor({ userId, initial, readOnly }) {
             <button
               key={d}
               onClick={() => setDay(d)}
-              className={`flex-shrink-0 rounded-full px-3 py-1.5 text-sm ${
-                active ? 'bg-blue-600 font-semibold text-white' : 'bg-gray-100 text-gray-600'
-              }`}
+              className={`chip flex-shrink-0 px-3.5 py-1.5 ${active ? 'chip-on' : ''}`}
             >
               {label}
             </button>
@@ -80,8 +83,8 @@ export default function ScheduleEditor({ userId, initial, readOnly }) {
           </li>
         )}
         {dayRows.map((r) => (
-          <li key={r.id} className="flex items-center gap-3 rounded-xl border bg-white p-3">
-            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 text-sm font-bold text-blue-600">
+          <li key={r.id} className="card flex items-center gap-3 p-3">
+            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-sm font-bold text-indigo-600">
               {r.period}
             </span>
             <div className="min-w-0 flex-1">
@@ -106,7 +109,7 @@ export default function ScheduleEditor({ userId, initial, readOnly }) {
 
       {/* 新增課程 */}
       {!readOnly && (
-        <form onSubmit={addRow} className="mt-4 rounded-xl border bg-gray-50 p-4">
+        <form onSubmit={addRow} className="card mt-4 p-4">
           <div className="mb-2 text-sm font-semibold text-gray-600">
             新增 {DAY_LABELS[day - 1]} 的課
           </div>
@@ -118,14 +121,14 @@ export default function ScheduleEditor({ userId, initial, readOnly }) {
               placeholder="節"
               value={draft.period}
               onChange={(e) => setDraft({ ...draft, period: e.target.value })}
-              className="w-16 rounded-lg border px-2 py-2 text-sm"
+              className="input w-16"
             />
             <input
               type="text"
               placeholder="科目（例：數學）"
               value={draft.subject}
               onChange={(e) => setDraft({ ...draft, subject: e.target.value })}
-              className="flex-1 rounded-lg border px-3 py-2 text-sm"
+              className="input flex-1"
             />
           </div>
           <div className="mt-2 flex gap-2">
@@ -133,28 +136,24 @@ export default function ScheduleEditor({ userId, initial, readOnly }) {
               type="time"
               value={draft.start_time}
               onChange={(e) => setDraft({ ...draft, start_time: e.target.value })}
-              className="flex-1 rounded-lg border px-2 py-2 text-sm"
+              className="input flex-1"
             />
             <input
               type="time"
               value={draft.end_time}
               onChange={(e) => setDraft({ ...draft, end_time: e.target.value })}
-              className="flex-1 rounded-lg border px-2 py-2 text-sm"
+              className="input flex-1"
             />
             <input
               type="text"
               placeholder="教室"
               value={draft.location}
               onChange={(e) => setDraft({ ...draft, location: e.target.value })}
-              className="w-20 rounded-lg border px-2 py-2 text-sm"
+              className="input w-20"
             />
           </div>
           {err && <p className="mt-2 text-sm text-red-500">{err}</p>}
-          <button
-            type="submit"
-            disabled={busy}
-            className="mt-3 w-full rounded-lg bg-blue-600 py-2 font-semibold text-white disabled:opacity-50"
-          >
+          <button type="submit" disabled={busy} className="btn btn-primary mt-3 w-full">
             {busy ? '新增中…' : '＋ 新增課程'}
           </button>
         </form>
