@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Trash2, Check } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
 
 export default function Assignments({ userId, initial, canEdit }) {
   const [items, setItems] = useState(initial);
@@ -10,19 +11,27 @@ export default function Assignments({ userId, initial, canEdit }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
   const supabase = createClient();
+  const { status, errMsg, run } = useSaveRunner();
 
   const pending = items.filter((a) => !a.done);
   const done = items.filter((a) => a.done);
 
   async function toggle(a) {
     const next = !a.done;
+    const prev = items;
     setItems((p) =>
       p.map((x) => (x.id === a.id ? { ...x, done: next, done_at: next ? new Date().toISOString() : null } : x)),
     );
-    await supabase
-      .from('assignments')
-      .update({ done: next, done_at: next ? new Date().toISOString() : null })
-      .eq('id', a.id);
+    await run(
+      async () =>
+        (
+          await supabase
+            .from('assignments')
+            .update({ done: next, done_at: next ? new Date().toISOString() : null })
+            .eq('id', a.id)
+        ).error,
+      { rollback: () => setItems(prev) },
+    );
   }
 
   async function add(e) {
@@ -37,16 +46,25 @@ export default function Assignments({ userId, initial, canEdit }) {
       due_date: draft.due_date || null,
       sort_order: items.length,
     };
-    const { data, error } = await supabase.from('assignments').insert(payload).select().single();
+    let created;
+    const ok = await run(async () => {
+      const { data, error } = await supabase.from('assignments').insert(payload).select().single();
+      created = data;
+      return error;
+    });
     setBusy(false);
-    if (error) return setErr(error.message);
-    setItems((p) => [...p, data]);
+    if (!ok) return;
+    setItems((p) => [...p, created]);
     setDraft({ title: '', category: draft.category, due_date: draft.due_date });
   }
 
   async function remove(id) {
+    const prev = items;
     setItems((p) => p.filter((a) => a.id !== id));
-    await supabase.from('assignments').delete().eq('id', id);
+    await run(
+      async () => (await supabase.from('assignments').delete().eq('id', id)).error,
+      { rollback: () => setItems(prev) },
+    );
   }
 
   return (
@@ -117,6 +135,8 @@ export default function Assignments({ userId, initial, canEdit }) {
           </button>
         </form>
       )}
+
+      <SaveStatusPill status={status} errMsg={errMsg} />
     </div>
   );
 }

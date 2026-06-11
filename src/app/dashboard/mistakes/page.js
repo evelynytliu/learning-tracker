@@ -16,6 +16,7 @@ export default async function ParentMistakesPage() {
     .from('profiles')
     .select('id, display_name')
     .eq('role', 'student')
+    .order('created_at', { ascending: true })
     .limit(1)
     .maybeSingle();
 

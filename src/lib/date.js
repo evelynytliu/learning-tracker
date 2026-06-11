@@ -1,29 +1,33 @@
-// 日期工具：以「週一」為一週起點（符合台灣作息與課表）。
+// 日期工具：一律以台灣時間（Asia/Taipei）為準，並以「週一」為一週起點。
+// 重要：Vercel 伺服器跑在 UTC，若用伺服器本地時間，台灣 00:00–08:00 之間
+// 所有「今天」都會差一天（打卡寫到昨天、週報切錯週）。
 
-// 回傳本地時區的 YYYY-MM-DD
+const TZ = 'Asia/Taipei';
+
+// 回傳台灣時區的 YYYY-MM-DD
 export function toYMD(d = new Date()) {
-  return d.toLocaleDateString('en-CA');
+  return d.toLocaleDateString('en-CA', { timeZone: TZ });
 }
 
-// 取得某日所在週的「週一」日期物件
+// 今天是週幾（1=週一 .. 7=週日），對應 class_schedule.day_of_week（台灣時區）
+export function isoDayOfWeek(d = new Date()) {
+  const name = new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: TZ }).format(d);
+  return { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 }[name];
+}
+
+// 取得某日所在週的「週一」：回傳的 Date 是台灣時間週一 00:00 的精確時刻，
+// 可以直接 toISOString() 當 timestamptz 下界，或丟回 toYMD()。
 export function weekStart(d = new Date()) {
-  const date = new Date(d);
-  const day = date.getDay(); // 0=週日 .. 6=週六
-  const diff = (day === 0 ? -6 : 1 - day); // 調整到週一
-  date.setDate(date.getDate() + diff);
-  date.setHours(0, 0, 0, 0);
-  return date;
+  const ymd = toYMD(d);
+  const dow = isoDayOfWeek(d);
+  const midnight = new Date(`${ymd}T00:00:00+08:00`);
+  // 台灣無日光節約，直接扣整數天的毫秒最穩
+  return new Date(midnight.getTime() - (dow - 1) * 86400000);
 }
 
 // 本週週一的 YYYY-MM-DD（給 weekly_goals.week_start 用）
 export function weekStartYMD(d = new Date()) {
   return toYMD(weekStart(d));
-}
-
-// 今天是週幾（1=週一 .. 7=週日），對應 class_schedule.day_of_week
-export function isoDayOfWeek(d = new Date()) {
-  const day = d.getDay();
-  return day === 0 ? 7 : day;
 }
 
 export const DAY_LABELS = ['週一', '週二', '週三', '週四', '週五', '週六', '週日'];

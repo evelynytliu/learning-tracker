@@ -25,6 +25,7 @@ export default async function MessagesPage() {
       .from('profiles')
       .select('id')
       .eq('role', 'student')
+      .order('created_at', { ascending: true })
       .limit(1)
       .maybeSingle();
     if (student) studentId = student.id;

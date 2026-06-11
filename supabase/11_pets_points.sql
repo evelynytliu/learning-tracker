@@ -145,8 +145,10 @@ begin
 
   insert into learning.point_ledger(user_id, amount, reason)
   values (v_owner, -p_amount, '餵食寵物');
-  update learning.pets set growth = growth + p_amount
-   where id = p_pet_id returning growth into v_growth;
+  -- 注意：RETURNS TABLE 的 growth 是 OUT 變數，這裡必須寫 pets.growth，
+  -- 不然 PL/pgSQL 會報 42702 ambiguous（曾讓餵食永遠失敗）
+  update learning.pets set growth = pets.growth + p_amount
+   where id = p_pet_id returning pets.growth into v_growth;
 
   return query select true, learning.point_balance(v_owner), v_growth;
 end;

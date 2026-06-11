@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Trash2, Clock, CalendarDays } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import MiniCalendar from '@/components/MiniCalendar';
+import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
 
 const EMPTY = { title: '', event_date: '', end_date: '', start_time: '', end_time: '', note: '' };
 
@@ -13,6 +14,7 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
   const [draft, setDraft] = useState({ ...EMPTY, event_date: todayStr });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
+  const { status, errMsg, run } = useSaveRunner();
 
   const selectedEvents = events
     .filter((e) => {
@@ -39,6 +41,10 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
       setErr('結束時間不能早於開始時間');
       return;
     }
+    if (draft.end_date && draft.end_date < draft.event_date) {
+      setErr('結束日不能早於開始日');
+      return;
+    }
     setBusy(true);
     const supabase = createClient();
     const payload = {
@@ -50,24 +56,30 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
       end_time: draft.end_time || null,
       note: draft.note.trim() || null,
     };
-    const { data, error } = await supabase
-      .from('calendar_events')
-      .insert(payload)
-      .select()
-      .single();
+    let created;
+    const ok = await run(async () => {
+      const { data, error } = await supabase
+        .from('calendar_events')
+        .insert(payload)
+        .select()
+        .single();
+      created = data;
+      return error;
+    });
     setBusy(false);
-    if (error) {
-      setErr(error.message);
-      return;
-    }
-    setEvents((prev) => [...prev, data]);
+    if (!ok) return;
+    setEvents((prev) => [...prev, created]);
     setDraft({ ...EMPTY, event_date: selected });
   }
 
   async function deleteEvent(id) {
-    setEvents((prev) => prev.filter((e) => e.id !== id));
+    const prev = events;
+    setEvents((p) => p.filter((e) => e.id !== id));
     const supabase = createClient();
-    await supabase.from('calendar_events').delete().eq('id', id);
+    await run(
+      async () => (await supabase.from('calendar_events').delete().eq('id', id)).error,
+      { rollback: () => setEvents(prev) },
+    );
   }
 
   return (
@@ -217,6 +229,8 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
           </form>
         )}
       </div>
+
+      <SaveStatusPill status={status} errMsg={errMsg} />
     </div>
   );
 }

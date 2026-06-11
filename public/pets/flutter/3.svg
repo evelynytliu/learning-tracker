@@ -1,23 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 初羽 -->
-  <ellipse cx="256" cy="448" rx="58" ry="11" fill="#000000" opacity="0.05"/>
-  <g transform="translate(256 366) scale(0.72)">
-    <g>
-      <g>
-        <path d="M-6 -16 C -46 -50 -92 -44 -96 -8 C -98 22 -54 26 -6 6 Z" fill="#D8CEEA"/>
-        <path d="M-6 8 C -40 10 -70 30 -64 56 C -60 74 -26 66 -6 36 Z" fill="#F7DCC8"/>
-        <circle cx="-62" cy="-12" r="7" fill="#E8C6DC"/>
-      </g>
-      <g transform="scale(-1,1)">
-        <path d="M-6 -16 C -46 -50 -92 -44 -96 -8 C -98 22 -54 26 -6 6 Z" fill="#D8CEEA"/>
-        <path d="M-6 8 C -40 10 -70 30 -64 56 C -60 74 -26 66 -6 36 Z" fill="#F7DCC8"/>
-        <circle cx="-62" cy="-12" r="7" fill="#E8C6DC"/>
-      </g>
-    </g>
-    <ellipse cx="0" cy="6" rx="9" ry="36" fill="#6B6357"/>
-    <circle cx="0" cy="-32" r="10" fill="#6B6357"/>
-    <g stroke="#6B6357" stroke-width="3" stroke-linecap="round" fill="none"><path d="M-2 -42 q-11 -16 -19 -20"/><path d="M2 -42 q11 -16 19 -20"/></g>
-    <circle cx="-21" cy="-62" r="3.4" fill="#6B6357"/><circle cx="21" cy="-62" r="3.4" fill="#6B6357"/>
-    <circle cx="-4" cy="-33" r="2.5" fill="#fff"/><circle cx="4" cy="-33" r="2.5" fill="#fff"/>
-  </g>
+  <defs>
+    <radialGradient id="fl3-wing" cx="0.4" cy="0.35" r="1">
+      <stop offset="0" stop-color="#D9C2F4"/><stop offset="0.6" stop-color="#B795EC"/><stop offset="1" stop-color="#9268C9"/>
+    </radialGradient>
+    <radialGradient id="fl3-wingb" cx="0.4" cy="0.35" r="1">
+      <stop offset="0" stop-color="#FAD8E4"/><stop offset="1" stop-color="#EFA8C2"/>
+    </radialGradient>
+    <radialGradient id="fl3-body" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#8E7AA8"/><stop offset="1" stop-color="#5A4A6E"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="452" rx="118" ry="15" fill="#4A3A60" opacity="0.13"/>
+  <!-- 上翅 -->
+  <path d="M236 250 C 186 168 118 130 56 138 C 64 222 110 290 196 312 C 212 294 228 272 236 250 Z"
+        fill="url(#fl3-wing)" stroke="#6E4FA0" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M276 250 C 326 168 394 130 456 138 C 448 222 402 290 316 312 C 300 294 284 272 276 250 Z"
+        fill="url(#fl3-wing)" stroke="#6E4FA0" stroke-width="10" stroke-linejoin="round"/>
+  <!-- 下翅 -->
+  <path d="M228 318 C 178 318 134 348 122 396 C 168 426 226 420 248 376 C 244 356 236 336 228 318 Z"
+        fill="url(#fl3-wingb)" stroke="#C97A9E" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M284 318 C 334 318 378 348 390 396 C 344 426 286 420 264 376 C 268 356 276 336 284 318 Z"
+        fill="url(#fl3-wingb)" stroke="#C97A9E" stroke-width="10" stroke-linejoin="round"/>
+  <!-- 翅紋 -->
+  <circle cx="138" cy="200" r="20" fill="#FFFFFF" opacity="0.55"/>
+  <circle cx="374" cy="200" r="20" fill="#FFFFFF" opacity="0.55"/>
+  <circle cx="172" cy="382" r="12" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="340" cy="382" r="12" fill="#FFFFFF" opacity="0.5"/>
+  <!-- 身體 -->
+  <ellipse cx="256" cy="330" rx="42" ry="86" fill="url(#fl3-body)" stroke="#3E3252" stroke-width="10"/>
+  <path d="M226 318 q30 12 60 0 M230 356 q26 12 52 0" stroke="#3E3252" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <!-- 頭 -->
+  <circle cx="256" cy="216" r="58" fill="url(#fl3-body)" stroke="#3E3252" stroke-width="10"/>
+  <!-- 觸角 -->
+  <path d="M230 168 q-18 -36 -42 -44" stroke="#3E3252" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <circle cx="184" cy="120" r="11" fill="#EFA8C2" stroke="#C97A9E" stroke-width="6"/>
+  <path d="M282 168 q18 -36 42 -44" stroke="#3E3252" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <circle cx="328" cy="120" r="11" fill="#EFA8C2" stroke="#C97A9E" stroke-width="6"/>
+  <!-- 臉 -->
+  <ellipse cx="234" cy="212" rx="13" ry="17" fill="#FFFFFF"/>
+  <circle cx="234" cy="214" r="8" fill="#2A2138"/><circle cx="231" cy="210" r="3" fill="#FFFFFF"/>
+  <ellipse cx="278" cy="212" rx="13" ry="17" fill="#FFFFFF"/>
+  <circle cx="278" cy="214" r="8" fill="#2A2138"/><circle cx="275" cy="210" r="3" fill="#FFFFFF"/>
+  <path d="M246 240 q10 9 20 0" stroke="#2A2138" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="212" cy="238" rx="11" ry="7" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="300" cy="238" rx="11" ry="7" fill="#F09A9C" opacity="0.6"/>
 </svg>

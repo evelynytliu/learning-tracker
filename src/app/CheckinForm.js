@@ -1,21 +1,23 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { Check, ExternalLink, Settings2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { ACHIEVEMENT_MAP } from '@/lib/achievements';
 import AchievementToast from '@/components/AchievementToast';
+import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
 import { toYMD } from '@/lib/date';
 
 // props:
 //   userId, date
-//   setName      今天套用的清單名稱（平日/假日/暑假…）
-//   tasks        正規項目 [{id, label, hint, link}]（計入完成度）
-//   bonusTasks   加分項目 [{id, label, hint, link}]（不計入）
-//   initialDone  { [task_id]: true } 今天已完成的項目
-//   initialRest  是否免讀日
+//   setName           今天套用的清單名稱（平日/假日/暑假…）
+//   tasks             正規項目 [{id, label, hint, link}]（計入完成度）
+//   bonusTasks        加分項目 [{id, label, hint, link}]（不計入）
+//   initialDone       { [task_id]: true } 今天已完成的項目
+//   initialRest       是否免讀日
+//   restUsedThisWeek  本週（不含今天）已用過幾次免讀日
 export default function CheckinForm({
   userId,
   date,
@@ -24,11 +26,19 @@ export default function CheckinForm({
   bonusTasks = [],
   initialDone = {},
   initialRest = false,
+  restUsedThisWeek = 0,
 }) {
   const [done, setDone] = useState(initialDone);
   const [rest, setRest] = useState(initialRest);
-  const [saving, startSaving] = useTransition();
   const [unlocked, setUnlocked] = useState([]);
+  const { status, errMsg, run } = useSaveRunner();
+  // 寫入排隊：快速連點時依序送出，避免兩筆「每日摘要」互相蓋寫
+  const queue = useRef(Promise.resolve());
+  function enqueue(work) {
+    const next = queue.current.then(work, work);
+    queue.current = next.catch(() => {});
+    return next;
+  }
 
   async function checkAchievements(supabase) {
     const { data, error } = await supabase.rpc('evaluate_achievements', {
@@ -41,10 +51,14 @@ export default function CheckinForm({
     }
   }
 
-  // 只用正規項目重算每日摘要（加分項不計入）
-  function syncSummary(nextDone, nextRest) {
+  // 只用正規項目重算每日摘要（加分項不計入完成度）。
+  // 同時回寫 pinxuetang_done：有勾任何名稱含「品學堂」的項目就算，
+  // 讓品學堂的點數（+3/天）與徽章能正常累積。
+  function syncSummary(supabase, nextDone, nextRest) {
     const doneCount = tasks.filter((t) => nextDone[t.id]).length;
-    const supabase = createClient();
+    const pinxDone = [...tasks, ...bonusTasks].some(
+      (t) => nextDone[t.id] && (t.label || '').includes('品學堂'),
+    );
     return supabase.from('daily_checkins').upsert(
       {
         user_id: userId,
@@ -52,37 +66,56 @@ export default function CheckinForm({
         is_rest_day: nextRest,
         tasks_total: tasks.length,
         tasks_done: doneCount,
+        pinxuetang_done: pinxDone,
       },
       { onConflict: 'user_id,date' },
     );
   }
 
   function toggleTask(taskId) {
+    const prevDone = done;
     const next = { ...done, [taskId]: !done[taskId] };
     setDone(next);
-    startSaving(async () => {
-      const supabase = createClient();
-      await supabase.from('task_checkins').upsert(
-        { user_id: userId, task_id: taskId, date, done: next[taskId] },
-        { onConflict: 'user_id,task_id,date' },
-      );
-      await syncSummary(next, rest);
-      await checkAchievements(supabase);
-    });
+    run(
+      () =>
+        enqueue(async () => {
+          const supabase = createClient();
+          const r1 = await supabase.from('task_checkins').upsert(
+            { user_id: userId, task_id: taskId, date, done: next[taskId] },
+            { onConflict: 'user_id,task_id,date' },
+          );
+          if (r1.error) return r1.error;
+          const r2 = await syncSummary(supabase, next, rest);
+          if (r2.error) return r2.error;
+          await checkAchievements(supabase);
+          return null;
+        }),
+      { rollback: () => setDone(prevDone) },
+    );
   }
 
   function toggleRest() {
+    // 一週只有一張免讀補給牌（今天已開的可以收回）
+    if (!rest && restUsedThisWeek >= 1) return;
+    const prevRest = rest;
     const next = !rest;
     setRest(next);
-    startSaving(async () => {
-      const supabase = createClient();
-      await syncSummary(done, next);
-      await checkAchievements(supabase);
-    });
+    run(
+      () =>
+        enqueue(async () => {
+          const supabase = createClient();
+          const { error } = await syncSummary(supabase, done, next);
+          if (error) return error;
+          await checkAchievements(supabase);
+          return null;
+        }),
+      { rollback: () => setRest(prevRest) },
+    );
   }
 
   const completed = tasks.filter((t) => done[t.id]).length;
   const total = tasks.length;
+  const restExhausted = !rest && restUsedThisWeek >= 1;
 
   return (
     <div>
@@ -97,17 +130,25 @@ export default function CheckinForm({
             {completed} <span className="text-xs font-bold text-slate-400">/ {total} 項</span>
           </p>
         </div>
-        <button
-          onClick={toggleRest}
-          className={cn(
-            'rounded-xl px-3 py-2 text-xs font-black transition-all relative z-10 active:scale-[0.95]',
-            rest
-              ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/20'
-              : 'bg-slate-800 text-slate-350 hover:bg-slate-700 hover:text-white border border-slate-700',
+        <div className="relative z-10 flex flex-col items-end gap-1">
+          <button
+            onClick={toggleRest}
+            disabled={restExhausted}
+            className={cn(
+              'rounded-xl px-3 py-2 text-xs font-black transition-all active:scale-[0.95]',
+              rest
+                ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/20'
+                : restExhausted
+                ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700',
+            )}
+          >
+            {rest ? '⚡ 免戰補給中' : '使用免讀補給牌'}
+          </button>
+          {restExhausted && (
+            <span className="text-[10px] font-bold text-slate-500">本週補給牌已用過</span>
           )}
-        >
-          {rest ? '⚡ 免戰補給中' : '使用免讀補給牌'}
-        </button>
+        </div>
       </div>
 
       {total === 0 && bonusTasks.length === 0 ? (
@@ -158,9 +199,12 @@ export default function CheckinForm({
         >
           <Settings2 size={13} /> 編輯任務設定
         </Link>
-        <p className="text-xs text-slate-400 font-semibold">{saving ? '儲存中…' : '已自動儲存'}</p>
+        <p className="text-xs text-slate-400 font-semibold">
+          {status === 'saving' ? '儲存中…' : '勾選即自動儲存'}
+        </p>
       </div>
 
+      <SaveStatusPill status={status} errMsg={errMsg} />
       <AchievementToast items={unlocked} onClear={() => setUnlocked([])} />
     </div>
   );

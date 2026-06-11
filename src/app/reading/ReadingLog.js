@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Trash2, Star, BookOpen } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { toYMD } from '@/lib/date';
+import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
 
 export default function ReadingLog({ userId, initial, readOnly }) {
   const [books, setBooks] = useState(initial);
@@ -11,6 +12,7 @@ export default function ReadingLog({ userId, initial, readOnly }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
   const supabase = createClient();
+  const { status, errMsg, run } = useSaveRunner();
 
   const finished = books.filter((b) => b.finished_date);
   const reading = books.filter((b) => !b.finished_date);
@@ -29,27 +31,55 @@ export default function ReadingLog({ userId, initial, readOnly }) {
       rating: draft.rating || null,
       finished_date: null, // 先放「閱讀中」
     };
-    const { data, error } = await supabase.from('reading_log').insert(payload).select().single();
+    let created;
+    const ok = await run(async () => {
+      const { data, error } = await supabase.from('reading_log').insert(payload).select().single();
+      created = data;
+      return error;
+    });
     setBusy(false);
-    if (error) return setErr(error.message);
-    setBooks((p) => [data, ...p]);
+    if (!ok) return;
+    setBooks((p) => [created, ...p]);
     setDraft({ title: '', author: '', pages: '', note: '', rating: 0 });
   }
 
   async function markFinished(book) {
     const finished_date = toYMD();
+    const prev = books;
     setBooks((p) => p.map((b) => (b.id === book.id ? { ...b, finished_date } : b)));
-    await supabase.from('reading_log').update({ finished_date }).eq('id', book.id);
+    await run(
+      async () => (await supabase.from('reading_log').update({ finished_date }).eq('id', book.id)).error,
+      { rollback: () => setBooks(prev) },
+    );
   }
 
   async function setRating(book, rating) {
+    const prev = books;
     setBooks((p) => p.map((b) => (b.id === book.id ? { ...b, rating } : b)));
-    await supabase.from('reading_log').update({ rating }).eq('id', book.id);
+    await run(
+      async () => (await supabase.from('reading_log').update({ rating }).eq('id', book.id)).error,
+      { rollback: () => setBooks(prev) },
+    );
   }
 
   async function remove(id) {
+    const prev = books;
     setBooks((p) => p.filter((b) => b.id !== id));
-    await supabase.from('reading_log').delete().eq('id', id);
+    await run(
+      async () => {
+        // 刪掉這本書同時收回它發出的點數
+        const { error } = await supabase.from('reading_log').delete().eq('id', id);
+        if (error) return error;
+        return (
+          await supabase
+            .from('point_ledger')
+            .delete()
+            .eq('user_id', userId)
+            .eq('source_key', 'book:' + id)
+        ).error;
+      },
+      { rollback: () => setBooks(prev) },
+    );
   }
 
   return (
@@ -159,6 +189,8 @@ export default function ReadingLog({ userId, initial, readOnly }) {
           </button>
         </form>
       )}
+
+      <SaveStatusPill status={status} errMsg={errMsg} />
     </div>
   );
 }

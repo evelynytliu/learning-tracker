@@ -1,8 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 龍蛋 -->
-  <ellipse cx="256" cy="438" rx="108" ry="18" fill="#000000" opacity="0.06"/>
-  <path d="M256 300 C296 300 318 346 318 384 C318 420 292 440 256 440 C220 440 194 420 194 384 C194 346 216 300 256 300 Z" fill="#3E5C78"/>
-  <ellipse cx="234" cy="346" rx="13" ry="22" fill="#6E91AE" opacity="0.45"/>
-  <g fill="#557B96"><circle cx="244" cy="366" r="8"/><circle cx="282" cy="394" r="6"/><circle cx="264" cy="336" r="5"/></g>
-  <g fill="#EAD9B0" opacity="0.85"><circle cx="226" cy="400" r="5"/><circle cx="290" cy="356" r="4"/><circle cx="252" cy="380" r="3.5"/></g>
+  <defs>
+    <radialGradient id="id0-shell" cx="0.35" cy="0.28" r="1">
+      <stop offset="0" stop-color="#7FA8CC"/><stop offset="0.5" stop-color="#4A7096"/><stop offset="1" stop-color="#2C4A68"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="446" rx="118" ry="18" fill="#1C3553" opacity="0.14"/>
+  <path d="M256 84 C 162 84 116 192 116 288 C 116 384 178 442 256 442 C 334 442 396 384 396 288 C 396 192 350 84 256 84 Z"
+        fill="url(#id0-shell)" stroke="#1C3553" stroke-width="11"/>
+  <path d="M128 262 q32 -28 64 0 q32 28 64 0 q32 -28 64 0 q32 28 64 0"
+        stroke="#7FA8CC" stroke-width="24" fill="none" stroke-linecap="round" opacity="0.9"/>
+  <path d="M146 332 q27 -22 55 0 q27 22 55 0 q27 -22 55 0 q27 22 55 0"
+        stroke="#274560" stroke-width="17" fill="none" stroke-linecap="round" opacity="0.75"/>
+  <ellipse cx="204" cy="160" rx="36" ry="56" fill="#FFFFFF" opacity="0.4" transform="rotate(-18 204 160)"/>
+  <circle cx="244" cy="120" r="10" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="322" cy="200" r="11" fill="#F0CF82"/>
+  <circle cx="296" cy="382" r="9" fill="#F0CF82"/>
+  <circle cx="176" cy="346" r="8" fill="#F0CF82"/>
+  <path d="M408 116 l6 16 16 6 -16 6 -6 16 -6 -16 -16 -6 16 -6 z" fill="#F0CF82"/>
 </svg>

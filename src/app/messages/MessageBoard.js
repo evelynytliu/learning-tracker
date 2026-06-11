@@ -3,37 +3,48 @@
 import { useState } from 'react';
 import { Trash2, Send } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
 
 export default function MessageBoard({ studentId, me, initial }) {
   const [messages, setMessages] = useState(initial);
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const supabase = createClient();
+  const { status, errMsg, run } = useSaveRunner();
 
   async function send(e) {
     e.preventDefault();
     if (!text.trim()) return;
     setBusy(true);
-    const { data, error } = await supabase
-      .from('messages')
-      .insert({
-        student_id: studentId,
-        author_id: me.id,
-        author_name: me.name,
-        author_role: me.role,
-        content: text.trim(),
-      })
-      .select()
-      .single();
+    let created;
+    const ok = await run(async () => {
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          student_id: studentId,
+          author_id: me.id,
+          author_name: me.name,
+          author_role: me.role,
+          content: text.trim(),
+        })
+        .select()
+        .single();
+      created = data;
+      return error;
+    });
     setBusy(false);
-    if (error) return alert(error.message);
-    setMessages((p) => [...p, data]);
+    if (!ok) return;
+    setMessages((p) => [...p, created]);
     setText('');
   }
 
   async function remove(id) {
+    const prev = messages;
     setMessages((p) => p.filter((m) => m.id !== id));
-    await supabase.from('messages').delete().eq('id', id);
+    await run(
+      async () => (await supabase.from('messages').delete().eq('id', id)).error,
+      { rollback: () => setMessages(prev) },
+    );
   }
 
   return (
@@ -94,6 +105,8 @@ export default function MessageBoard({ studentId, me, initial }) {
           <Send size={18} />
         </button>
       </form>
+
+      <SaveStatusPill status={status} errMsg={errMsg} />
     </div>
   );
 }

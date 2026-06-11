@@ -1,10 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 小芽 -->
-  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
-  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
-  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
-  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
-  <rect x="242" y="350" width="28" height="44" rx="14" fill="#8FB98A"/>
-  <rect x="250" y="356" width="6" height="28" rx="3" fill="#A6CBA0" opacity="0.6"/>
-  <circle cx="256" cy="350" r="3.5" fill="#EFE8D2"/>
+  <defs>
+    <radialGradient id="ca1-pot" cx="0.35" cy="0.2" r="1.1">
+      <stop offset="0" stop-color="#F2D2A0"/><stop offset="0.6" stop-color="#E0B978"/><stop offset="1" stop-color="#C49654"/>
+    </radialGradient>
+    <radialGradient id="ca1-body" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#9ADB94"/><stop offset="0.6" stop-color="#6FBF73"/><stop offset="1" stop-color="#4A9655"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="460" rx="140" ry="16" fill="#8E6A2E" opacity="0.14"/>
+  <path d="M132 322 L 380 322 L 358 434 Q 356 456 330 456 L 182 456 Q 156 456 154 434 Z"
+        fill="url(#ca1-pot)" stroke="#A87C3E" stroke-width="11" stroke-linejoin="round"/>
+  <rect x="112" y="296" width="288" height="42" rx="21" fill="#EDCB92" stroke="#A87C3E" stroke-width="11"/>
+  <path d="M180 358 q-6 38 4 74" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" opacity="0.32"/>
+  <ellipse cx="256" cy="310" rx="112" ry="24" fill="#E8D3A0"/>
+  <ellipse cx="256" cy="306" rx="112" ry="22" fill="#F2E2B8"/>
+  <!-- 圓滾滾小仙人掌 -->
+  <circle cx="256" cy="206" r="96" fill="url(#ca1-body)" stroke="#357A42" stroke-width="11"/>
+  <!-- 頭頂小芽 -->
+  <path d="M256 110 q-2 -26 12 -38" stroke="#357A42" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <circle cx="276" cy="64" r="14" fill="#9ADB94" stroke="#357A42" stroke-width="8"/>
+  <!-- 刺（短毛） -->
+  <path d="M170 150 l-18 -12 M186 122 l-14 -16 M340 148 l18 -12 M326 120 l14 -16 M212 102 l-8 -18 M300 102 l8 -18" stroke="#FCFAEF" stroke-width="7" stroke-linecap="round"/>
+  <!-- 大眼睛 -->
+  <ellipse cx="222" cy="200" rx="19" ry="24" fill="#2C4222"/>
+  <circle cx="216" cy="191" r="7.5" fill="#FFFFFF"/><circle cx="227" cy="209" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="290" cy="200" rx="19" ry="24" fill="#2C4222"/>
+  <circle cx="284" cy="191" r="7.5" fill="#FFFFFF"/><circle cx="295" cy="209" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M242 234 q14 12 28 0" stroke="#2C4222" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <ellipse cx="194" cy="236" rx="14" ry="9" fill="#F09A9C" opacity="0.65"/>
+  <ellipse cx="318" cy="236" rx="14" ry="9" fill="#F09A9C" opacity="0.65"/>
+  <ellipse cx="214" cy="150" rx="26" ry="15" fill="#FFFFFF" opacity="0.4" transform="rotate(-20 214 150)"/>
 </svg>

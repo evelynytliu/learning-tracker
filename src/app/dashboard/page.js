@@ -19,6 +19,7 @@ export default async function DashboardPage() {
     .from('profiles')
     .select('id, display_name')
     .eq('role', 'student')
+    .order('created_at', { ascending: true })
     .limit(1)
     .maybeSingle();
 
@@ -67,7 +68,7 @@ export default async function DashboardPage() {
 
   // streak
   const since = new Date();
-  since.setDate(since.getDate() - 60);
+  since.setDate(since.getDate() - 200);
   const { data: history } = await supabase
     .from('daily_checkins')
     .select('date, tasks_total, tasks_done, is_rest_day')

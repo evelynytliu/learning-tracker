@@ -1,16 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 蟲卵 -->
-  <ellipse cx="256" cy="430" rx="96" ry="16" fill="#000000" opacity="0.06"/>
-  <g transform="translate(256 372)">
-    <path d="M-92 0 C -52 -36 52 -36 92 0 C 52 36 -52 36 -92 0 Z" fill="#8BB789"/>
-    <path d="M-92 0 L92 0" stroke="#7FAE80" stroke-width="3"/>
-    <path d="M-50 -14 L-30 0 M-10 -16 L4 0 M28 -12 L18 0" stroke="#7FAE80" stroke-width="2" opacity="0.7"/>
-    <g fill="#EFF4E2" stroke="#D8E2C2" stroke-width="1.5">
-      <circle cx="-10" cy="-6" r="7"/>
-      <circle cx="6" cy="-8" r="7"/>
-      <circle cx="20" cy="-4" r="7"/>
-      <circle cx="2" cy="4" r="7"/>
-      <circle cx="-20" cy="2" r="7"/>
-    </g>
-  </g>
+  <defs>
+    <linearGradient id="fl0-leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9CD37E"/><stop offset="1" stop-color="#5FA34B"/>
+    </linearGradient>
+    <radialGradient id="fl0-egg" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#FFFEF6"/><stop offset="1" stop-color="#EFE7C2"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="440" rx="150" ry="20" fill="#3F6E33" opacity="0.13"/>
+  <!-- 大葉子 -->
+  <path d="M76 330 C 120 220 240 180 436 220 C 420 330 320 396 180 388 C 130 384 92 362 76 330 Z"
+        fill="url(#fl0-leaf)" stroke="#3F7A38" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M96 330 Q 250 320 420 232" stroke="#4F8A3C" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M180 332 q10 -28 2 -52 M250 318 q12 -30 4 -58 M320 296 q14 -28 8 -54" stroke="#4F8A3C" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <!-- 三顆珍珠卵（一顆睡著的有臉） -->
+  <circle cx="208" cy="248" r="44" fill="url(#fl0-egg)" stroke="#C9BD8C" stroke-width="9"/>
+  <circle cx="196" cy="234" r="10" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="300" cy="226" r="36" fill="url(#fl0-egg)" stroke="#C9BD8C" stroke-width="9"/>
+  <circle cx="290" cy="214" r="8" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="262" cy="296" r="40" fill="url(#fl0-egg)" stroke="#C9BD8C" stroke-width="9"/>
+  <circle cx="251" cy="283" r="9" fill="#FFFFFF" opacity="0.9"/>
+  <!-- 睡臉 -->
+  <path d="M246 300 q6 6 12 0 M272 300 q6 6 12 0" stroke="#8A7B4A" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M258 314 q6 5 12 0" stroke="#8A7B4A" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="240" cy="312" rx="8" ry="5" fill="#F09A9C" opacity="0.5"/>
+  <ellipse cx="288" cy="312" rx="8" ry="5" fill="#F09A9C" opacity="0.5"/>
+  <path d="M404 150 l6 15 15 6 -15 6 -6 15 -6 -15 -15 -6 15 -6 z" fill="#B795EC"/>
 </svg>

@@ -1,14 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 抽枝 -->
-  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
-  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
-  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
-  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
-  <path d="M256 388 C254 352 258 332 256 318" stroke="#9C6F4E" stroke-width="10" stroke-linecap="round"/>
-  <path d="M256 344 Q236 338 224 322" stroke="#9C6F4E" stroke-width="6" fill="none" stroke-linecap="round"/>
-  <path d="M256 336 Q278 330 290 316" stroke="#9C6F4E" stroke-width="6" fill="none" stroke-linecap="round"/>
-  <circle cx="220" cy="316" r="19" fill="#8BB789"/>
-  <circle cx="292" cy="310" r="19" fill="#9CC39A"/>
-  <circle cx="256" cy="300" r="22" fill="#7FAE80"/>
-  <circle cx="248" cy="294" r="7" fill="#9CC39A" opacity="0.5"/>
+  <defs>
+    <radialGradient id="bn2-pot" cx="0.35" cy="0.2" r="1.1">
+      <stop offset="0" stop-color="#C2DCD2"/><stop offset="0.6" stop-color="#9DBFB4"/><stop offset="1" stop-color="#7FA396"/>
+    </radialGradient>
+    <radialGradient id="bn2-trunk" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#C39A72"/><stop offset="1" stop-color="#8E6240"/>
+    </radialGradient>
+    <radialGradient id="bn2-leaf" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#A8D49A"/><stop offset="1" stop-color="#6FA268"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="460" rx="150" ry="16" fill="#3E5C50" opacity="0.14"/>
+  <path d="M104 352 L 408 352 L 392 434 Q 390 454 364 454 L 148 454 Q 122 454 120 434 Z"
+        fill="url(#bn2-pot)" stroke="#5E7E72" stroke-width="11" stroke-linejoin="round"/>
+  <rect x="88" y="328" width="336" height="40" rx="20" fill="#B4D2C6" stroke="#5E7E72" stroke-width="11"/>
+  <path d="M150 386 q-4 26 4 46" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" opacity="0.35"/>
+  <ellipse cx="256" cy="342" rx="142" ry="24" fill="#6B4A33"/>
+  <ellipse cx="256" cy="338" rx="142" ry="22" fill="#7E5A40"/>
+  <!-- 樹冠 -->
+  <circle cx="256" cy="120" r="80" fill="url(#bn2-leaf)" stroke="#4A7A4E" stroke-width="10"/>
+  <circle cx="196" cy="150" r="46" fill="url(#bn2-leaf)" stroke="#4A7A4E" stroke-width="10"/>
+  <circle cx="320" cy="150" r="46" fill="url(#bn2-leaf)" stroke="#4A7A4E" stroke-width="10"/>
+  <ellipse cx="232" cy="92" rx="26" ry="15" fill="#FFFFFF" opacity="0.35" transform="rotate(-18 232 92)"/>
+  <!-- 軀幹（有臉） -->
+  <path d="M256 198 C 224 198 208 228 208 262 C 208 298 230 326 256 326 C 282 326 304 298 304 262 C 304 228 288 198 256 198 Z"
+        fill="url(#bn2-trunk)" stroke="#6E4426" stroke-width="10"/>
+  <path d="M240 200 L 244 182 M 272 200 L 268 182" stroke="#6E4426" stroke-width="9" stroke-linecap="round"/>
+  <!-- 臉 -->
+  <ellipse cx="232" cy="252" rx="17" ry="22" fill="#3D2A18"/>
+  <circle cx="227" cy="244" r="6.5" fill="#FFFFFF"/><circle cx="237" cy="260" r="3" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="280" cy="252" rx="17" ry="22" fill="#3D2A18"/>
+  <circle cx="275" cy="244" r="6.5" fill="#FFFFFF"/><circle cx="285" cy="260" r="3" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M244 284 q12 10 24 0" stroke="#3D2A18" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="208" cy="282" rx="12" ry="8" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="304" cy="282" rx="12" ry="8" fill="#F09A9C" opacity="0.6"/>
 </svg>

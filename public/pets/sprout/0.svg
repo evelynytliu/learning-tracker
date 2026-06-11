@@ -1,14 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 種子 -->
-  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
-  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
-  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
-  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
-  <g transform="translate(256 366)">
-    <ellipse cx="0" cy="0" rx="19" ry="25" fill="#B5835C"/>
-    <ellipse cx="-6" cy="-7" rx="7" ry="11" fill="#CFA67E" opacity="0.75"/>
-    <path d="M0 -20 Q7 0 0 18" stroke="#8E6647" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  </g>
-  <circle cx="312" cy="350" r="4" fill="#9CC6A1"/>
-  <circle cx="300" cy="338" r="2.5" fill="#9CC6A1" opacity="0.7"/>
+  <defs>
+    <radialGradient id="sp0-pot" cx="0.35" cy="0.2" r="1.1">
+      <stop offset="0" stop-color="#F0B98C"/><stop offset="0.6" stop-color="#D98A5F"/><stop offset="1" stop-color="#B86A42"/>
+    </radialGradient>
+    <radialGradient id="sp0-seed" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#D9A86C"/><stop offset="1" stop-color="#9A6B3C"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="462" rx="140" ry="16" fill="#7E4A2C" opacity="0.14"/>
+  <!-- 盆 -->
+  <path d="M128 312 L 384 312 L 360 432 Q 358 456 330 456 L 182 456 Q 154 456 152 432 Z"
+        fill="url(#sp0-pot)" stroke="#9A5634" stroke-width="11" stroke-linejoin="round"/>
+  <rect x="108" y="284" width="296" height="44" rx="22" fill="#E8A77D" stroke="#9A5634" stroke-width="11"/>
+  <path d="M176 350 q-6 44 4 84" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" opacity="0.3"/>
+  <!-- 土 -->
+  <ellipse cx="256" cy="300" rx="116" ry="26" fill="#6B4A33"/>
+  <ellipse cx="256" cy="296" rx="116" ry="24" fill="#7E5A40"/>
+  <!-- 探出頭的種子（睡著） -->
+  <path d="M256 168 C 212 168 190 210 190 248 C 190 286 218 308 256 308 C 294 308 322 286 322 248 C 322 210 300 168 256 168 Z"
+        fill="url(#sp0-seed)" stroke="#7E5630" stroke-width="10"/>
+  <path d="M256 168 q-6 -26 10 -40" stroke="#7E5630" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <ellipse cx="232" cy="200" rx="16" ry="10" fill="#FFFFFF" opacity="0.4" transform="rotate(-22 232 200)"/>
+  <!-- 睡臉 -->
+  <path d="M226 244 q9 9 18 0 M268 244 q9 9 18 0" stroke="#5E3D22" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M246 274 q10 8 20 0" stroke="#5E3D22" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <ellipse cx="214" cy="268" rx="12" ry="8" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="298" cy="268" rx="12" ry="8" fill="#F09A9C" opacity="0.6"/>
+  <!-- zzz -->
+  <path d="M338 168 l22 0 -22 22 22 0 M368 130 l16 0 -16 16 16 0" stroke="#9AB8D8" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

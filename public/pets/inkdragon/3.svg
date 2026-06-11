@@ -1,25 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 少年龍 -->
-  <ellipse cx="256" cy="442" rx="100" ry="15" fill="#000000" opacity="0.06"/>
-  <!-- 尾 -->
-  <path d="M304 396 q56 10 60 -24 q2 -18 -16 -16" fill="none" stroke="#3E5C78" stroke-width="15" stroke-linecap="round"/>
-  <path d="M352 352 l18 -6 l-6 18 z" fill="#5B7B9A"/>
-  <!-- 翅膀 -->
-  <g fill="#5B7B9A">
-    <path d="M210 348 C 176 322 150 300 122 304 C 138 332 142 360 164 374 C 182 366 198 360 210 348 Z"/>
-    <g transform="matrix(-1 0 0 1 512 0)"><path d="M210 348 C 176 322 150 300 122 304 C 138 332 142 360 164 374 C 182 366 198 360 210 348 Z"/></g>
-  </g>
-  <g stroke="#456A88" stroke-width="2.5" fill="none" opacity="0.7">
-    <path d="M150 312 L160 366"/><path d="M362 312 L352 366"/>
-  </g>
-  <circle cx="256" cy="360" r="54" fill="#3E5C78"/>
-  <ellipse cx="256" cy="384" rx="26" ry="29" fill="#EAD9B0"/>
-  <path d="M230 312 l-8 -26 l16 12 z" fill="#EAD9B0"/>
-  <path d="M282 312 l8 -26 l-16 12 z" fill="#EAD9B0"/>
-  <g fill="#2E4860"><path d="M256 308 l-8 -16 l-8 16 z"/><path d="M240 312 l-6 -12 l-6 12 z"/><path d="M272 312 l6 -12 l6 12 z"/></g>
-  <circle cx="239" cy="352" r="9.5" fill="#fff"/><circle cx="273" cy="352" r="9.5" fill="#fff"/>
-  <circle cx="241" cy="353" r="5.2" fill="#2A2A2A"/><circle cx="271" cy="353" r="5.2" fill="#2A2A2A"/>
-  <circle cx="242.8" cy="351.2" r="1.9" fill="#fff"/><circle cx="272.8" cy="351.2" r="1.9" fill="#fff"/>
-  <path d="M246 378 q10 7 20 0" stroke="#2A485F" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <g fill="#3E5C78"><ellipse cx="238" cy="410" rx="13" ry="9"/><ellipse cx="276" cy="410" rx="13" ry="9"/></g>
+  <defs>
+    <radialGradient id="id3-body" cx="0.36" cy="0.28" r="1">
+      <stop offset="0" stop-color="#6E96BC"/><stop offset="0.55" stop-color="#3E6386"/><stop offset="1" stop-color="#2C4A68"/>
+    </radialGradient>
+    <radialGradient id="id3-belly" cx="0.5" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#FCF3DC"/><stop offset="1" stop-color="#EFD9A8"/>
+    </radialGradient>
+    <linearGradient id="id3-wing" x1="0.2" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#7FA8CC"/><stop offset="1" stop-color="#44688C"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="256" cy="454" rx="126" ry="17" fill="#1C3553" opacity="0.14"/>
+  <!-- 展開一半的翅膀 -->
+  <path d="M150 280 C 104 222 64 198 28 202 C 40 254 56 304 104 330 C 124 318 140 300 150 280 Z"
+        fill="url(#id3-wing)" stroke="#1C3553" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M60 222 L 100 312 M 92 210 L 122 296" stroke="#2C4A68" stroke-width="6" stroke-linecap="round" opacity="0.65"/>
+  <path d="M362 280 C 408 222 448 198 484 202 C 472 254 456 304 408 330 C 388 318 372 300 362 280 Z"
+        fill="url(#id3-wing)" stroke="#1C3553" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M452 222 L 412 312 M 420 210 L 390 296" stroke="#2C4A68" stroke-width="6" stroke-linecap="round" opacity="0.65"/>
+  <!-- 尾巴（墨筆尾） -->
+  <path d="M352 398 q84 16 88 -52 q2 -30 -26 -28" stroke="#2C4A68" stroke-width="25" fill="none" stroke-linecap="round"/>
+  <path d="M430 300 q-14 24 -28 22 q4 -34 12 -48 q14 8 16 26 z" fill="#16263C" stroke="#16263C" stroke-width="5" stroke-linejoin="round"/>
+  <!-- 背刺 -->
+  <path d="M206 140 l-14 -38 32 18 z" fill="#57809F" stroke="#1C3553" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M306 140 l14 -38 -32 18 z" fill="#57809F" stroke="#1C3553" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M256 130 l-2 -44 22 30 z" fill="#57809F" stroke="#1C3553" stroke-width="7" stroke-linejoin="round"/>
+  <!-- 身體 -->
+  <path d="M256 126 C 156 126 116 230 116 320 C 116 408 178 458 256 458 C 334 458 396 408 396 320 C 396 230 356 126 256 126 Z"
+        fill="url(#id3-body)" stroke="#1C3553" stroke-width="11"/>
+  <ellipse cx="256" cy="388" rx="78" ry="58" fill="url(#id3-belly)"/>
+  <path d="M194 372 q62 18 124 0 M202 406 q54 16 108 0" stroke="#D9BC85" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <!-- 角（變長） -->
+  <path d="M192 150 q-26 -34 -22 -68 q34 14 44 50 z" fill="#F0CF82" stroke="#C9994A" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M320 150 q26 -34 22 -68 q-34 14 -44 50 z" fill="#F0CF82" stroke="#C9994A" stroke-width="7" stroke-linejoin="round"/>
+  <!-- 自信的眼睛（上眼皮斜線） -->
+  <path d="M178 262 l52 10" stroke="#16263C" stroke-width="9" stroke-linecap="round"/>
+  <ellipse cx="206" cy="290" rx="22" ry="25" fill="#16263C"/>
+  <circle cx="199" cy="281" r="9" fill="#FFFFFF"/><circle cx="213" cy="300" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M334 262 l-52 10" stroke="#16263C" stroke-width="9" stroke-linecap="round"/>
+  <ellipse cx="306" cy="290" rx="22" ry="25" fill="#16263C"/>
+  <circle cx="299" cy="281" r="9" fill="#FFFFFF"/><circle cx="313" cy="300" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="168" cy="326" rx="15" ry="10" fill="#F09A9C" opacity="0.55"/>
+  <ellipse cx="344" cy="326" rx="15" ry="10" fill="#F09A9C" opacity="0.55"/>
+  <!-- 嘴角上揚 -->
+  <path d="M234 326 q22 20 44 0 l10 -8" stroke="#16263C" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M266 330 l7 12 7 -12" fill="#FFFFFF" stroke="#16263C" stroke-width="4" stroke-linejoin="round"/>
+  <ellipse cx="202" cy="452" rx="28" ry="14" fill="#3E6386" stroke="#1C3553" stroke-width="8"/>
+  <ellipse cx="310" cy="452" rx="28" ry="14" fill="#3E6386" stroke="#1C3553" stroke-width="8"/>
+  <ellipse cx="196" cy="198" rx="32" ry="19" fill="#FFFFFF" opacity="0.28" transform="rotate(-20 196 198)"/>
 </svg>

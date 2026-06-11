@@ -21,10 +21,23 @@ export default async function WeeklyPage() {
 
   const wkStart = weekStartYMD();
 
+  // 家長看的是學生的目標，不是自己的
+  let targetId = user.id;
+  if (profile?.role === 'parent') {
+    const { data: student } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('role', 'student')
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (student) targetId = student.id;
+  }
+
   const { data: goals } = await supabase
     .from('weekly_goals')
     .select('*')
-    .eq('user_id', user.id)
+    .eq('user_id', targetId)
     .eq('week_start', wkStart)
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: true });
@@ -42,7 +55,7 @@ export default async function WeeklyPage() {
       </header>
 
       <WeeklyGoals
-        userId={user.id}
+        userId={targetId}
         weekStart={wkStart}
         initial={goals ?? []}
         readOnly={profile?.role === 'parent'}

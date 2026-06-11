@@ -34,6 +34,7 @@ export default function PetSprite({ species, stage = 0, size = 'lg', className }
     sm: 'h-9 w-9 text-2xl',
     md: 'h-24 w-24 text-5xl',
     lg: 'h-36 w-36 text-7xl',
+    xl: 'h-52 w-52 text-8xl',
   };
 
   const resolvedSize = sizeClasses[size] || sizeClasses.lg;

@@ -23,7 +23,7 @@ export default async function StreakPage() {
     .maybeSingle();
 
   const since = new Date();
-  since.setDate(since.getDate() - 60);
+  since.setDate(since.getDate() - 200);
 
   const { data: rows } = await supabase
     .from('daily_checkins')

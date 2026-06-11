@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
 
 export default function WeeklyGoals({ userId, weekStart, initial, readOnly }) {
   const [goals, setGoals] = useState(initial);
@@ -10,6 +11,7 @@ export default function WeeklyGoals({ userId, weekStart, initial, readOnly }) {
   const [err, setErr] = useState(null);
 
   const supabase = createClient();
+  const { status, errMsg, run } = useSaveRunner();
   const doneCount = goals.filter((g) => g.progress >= g.target).length;
 
   async function addGoal(e) {
@@ -28,25 +30,35 @@ export default function WeeklyGoals({ userId, weekStart, initial, readOnly }) {
       progress: 0,
       sort_order: goals.length,
     };
-    const { data, error } = await supabase.from('weekly_goals').insert(payload).select().single();
+    let created;
+    const ok = await run(async () => {
+      const { data, error } = await supabase.from('weekly_goals').insert(payload).select().single();
+      created = data;
+      return error;
+    });
     setBusy(false);
-    if (error) {
-      setErr(error.message);
-      return;
-    }
-    setGoals((prev) => [...prev, data]);
+    if (!ok) return;
+    setGoals((prev) => [...prev, created]);
     setDraft({ title: '', target: 1 });
   }
 
   async function setProgress(goal, next) {
     const clamped = Math.max(0, Math.min(goal.target, next));
-    setGoals((prev) => prev.map((g) => (g.id === goal.id ? { ...g, progress: clamped } : g)));
-    await supabase.from('weekly_goals').update({ progress: clamped }).eq('id', goal.id);
+    const prev = goals;
+    setGoals((p) => p.map((g) => (g.id === goal.id ? { ...g, progress: clamped } : g)));
+    await run(
+      async () => (await supabase.from('weekly_goals').update({ progress: clamped }).eq('id', goal.id)).error,
+      { rollback: () => setGoals(prev) },
+    );
   }
 
   async function deleteGoal(id) {
-    setGoals((prev) => prev.filter((g) => g.id !== id));
-    await supabase.from('weekly_goals').delete().eq('id', id);
+    const prev = goals;
+    setGoals((p) => p.filter((g) => g.id !== id));
+    await run(
+      async () => (await supabase.from('weekly_goals').delete().eq('id', id)).error,
+      { rollback: () => setGoals(prev) },
+    );
   }
 
   return (
@@ -153,6 +165,8 @@ export default function WeeklyGoals({ userId, weekStart, initial, readOnly }) {
           </button>
         </form>
       )}
+
+      <SaveStatusPill status={status} errMsg={errMsg} />
     </div>
   );
 }

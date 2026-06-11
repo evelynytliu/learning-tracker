@@ -1,12 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 蛋 -->
-  <ellipse cx="256" cy="438" rx="108" ry="18" fill="#000000" opacity="0.06"/>
-  <path d="M256 300 C296 300 318 346 318 384 C318 420 292 440 256 440 C220 440 194 420 194 384 C194 346 216 300 256 300 Z" fill="#FBF0D2"/>
-  <ellipse cx="232" cy="346" rx="12" ry="20" fill="#FFFFFF" opacity="0.35"/>
-  <g fill="#E9D6A8">
-    <ellipse cx="240" cy="362" rx="9" ry="7"/>
-    <ellipse cx="278" cy="392" rx="7" ry="5"/>
-    <ellipse cx="262" cy="336" rx="5" ry="4"/>
-    <ellipse cx="226" cy="396" rx="6" ry="4"/>
-  </g>
+  <defs>
+    <radialGradient id="bd0-shell" cx="0.35" cy="0.28" r="1">
+      <stop offset="0" stop-color="#FFFDF4"/><stop offset="0.6" stop-color="#FBEFD0"/><stop offset="1" stop-color="#EFD9A8"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="446" rx="112" ry="18" fill="#8A6B3A" opacity="0.15"/>
+  <path d="M256 88 C 166 88 122 192 122 286 C 122 380 182 440 256 440 C 330 440 390 380 390 286 C 390 192 346 88 256 88 Z"
+        fill="url(#bd0-shell)" stroke="#C9AE7C" stroke-width="11"/>
+  <circle cx="216" cy="220" r="13" fill="#E8CD96"/>
+  <circle cx="300" cy="180" r="9" fill="#E8CD96"/>
+  <circle cx="312" cy="330" r="12" fill="#E8CD96"/>
+  <circle cx="196" cy="338" r="8" fill="#E8CD96"/>
+  <ellipse cx="206" cy="160" rx="34" ry="54" fill="#FFFFFF" opacity="0.6" transform="rotate(-18 206 160)"/>
+  <circle cx="244" cy="122" r="9" fill="#FFFFFF" opacity="0.8"/>
+  <path d="M404 122 l6 15 15 6 -15 6 -6 15 -6 -15 -15 -6 15 -6 z" fill="#F7C843"/>
 </svg>

@@ -1,12 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 發芽 -->
-  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
-  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
-  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
-  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
-  <path d="M256 388 C256 372 256 358 256 344" stroke="#7FA87D" stroke-width="9" stroke-linecap="round"/>
-  <g transform="translate(256 344)">
-    <ellipse cx="-19" cy="-3" rx="22" ry="13" transform="rotate(-22 -19 -3)" fill="#9CC39A"/>
-    <ellipse cx="19" cy="-3" rx="22" ry="13" transform="rotate(22 19 -3)" fill="#8BB789"/>
-  </g>
+  <defs>
+    <radialGradient id="sp1-pot" cx="0.35" cy="0.2" r="1.1">
+      <stop offset="0" stop-color="#F0B98C"/><stop offset="0.6" stop-color="#D98A5F"/><stop offset="1" stop-color="#B86A42"/>
+    </radialGradient>
+    <radialGradient id="sp1-head" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#C4E8A8"/><stop offset="0.6" stop-color="#9AD47C"/><stop offset="1" stop-color="#6FAE57"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="462" rx="140" ry="16" fill="#7E4A2C" opacity="0.14"/>
+  <path d="M128 312 L 384 312 L 360 432 Q 358 456 330 456 L 182 456 Q 154 456 152 432 Z"
+        fill="url(#sp1-pot)" stroke="#9A5634" stroke-width="11" stroke-linejoin="round"/>
+  <rect x="108" y="284" width="296" height="44" rx="22" fill="#E8A77D" stroke="#9A5634" stroke-width="11"/>
+  <path d="M176 350 q-6 44 4 84" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" opacity="0.3"/>
+  <ellipse cx="256" cy="300" rx="116" ry="26" fill="#6B4A33"/>
+  <ellipse cx="256" cy="296" rx="116" ry="24" fill="#7E5A40"/>
+  <!-- 嫩芽頭 -->
+  <circle cx="256" cy="208" r="86" fill="url(#sp1-head)" stroke="#4F8A3C" stroke-width="11"/>
+  <!-- 頭頂小芽 -->
+  <path d="M256 122 q-4 -30 12 -44" stroke="#4F8A3C" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <path d="M268 78 C 296 64 322 68 336 84 C 322 106 296 112 272 100 C 268 94 266 86 268 78 Z"
+        fill="#9AD47C" stroke="#4F8A3C" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M250 80 C 226 62 200 62 184 76 C 194 100 218 110 244 102 C 248 95 250 88 250 80 Z"
+        fill="#B8E29B" stroke="#4F8A3C" stroke-width="8" stroke-linejoin="round"/>
+  <!-- 大眼睛 -->
+  <ellipse cx="222" cy="200" rx="19" ry="24" fill="#2C4222"/>
+  <circle cx="216" cy="191" r="7.5" fill="#FFFFFF"/><circle cx="227" cy="209" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="290" cy="200" rx="19" ry="24" fill="#2C4222"/>
+  <circle cx="284" cy="191" r="7.5" fill="#FFFFFF"/><circle cx="295" cy="209" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M242 234 q14 12 28 0" stroke="#2C4222" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <ellipse cx="194" cy="236" rx="14" ry="9" fill="#F09A9C" opacity="0.65"/>
+  <ellipse cx="318" cy="236" rx="14" ry="9" fill="#F09A9C" opacity="0.65"/>
+  <ellipse cx="214" cy="152" rx="26" ry="15" fill="#FFFFFF" opacity="0.4" transform="rotate(-20 214 152)"/>
 </svg>

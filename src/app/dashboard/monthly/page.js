@@ -21,6 +21,7 @@ export default async function MonthlyReviewPage() {
     .from('profiles')
     .select('id, display_name')
     .eq('role', 'student')
+    .order('created_at', { ascending: true })
     .limit(1)
     .maybeSingle();
 
@@ -76,7 +77,8 @@ export default async function MonthlyReviewPage() {
     { label: '錯題本有在記', value: `${mistakeCount ?? 0} 筆`, target: '≥ 8 筆', pass: (mistakeCount ?? 0) >= 8 },
   ];
 
-  const passed = checks.filter((c) => c.pass).length >= 2;
+  // 規格：三項全部達標才維持自主學習權（兩項以下達標 → 需介入）
+  const passed = checks.every((c) => c.pass);
 
   return (
     <AppShell role="parent" email={user.email}>
@@ -90,7 +92,7 @@ export default async function MonthlyReviewPage() {
           passed ? 'bg-green-50 text-green-800' : 'bg-orange-50 text-orange-800'
         }`}
       >
-        <p className="text-sm font-medium">{passed ? '達標（三項中至少兩項）' : '未達標'}</p>
+        <p className="text-sm font-medium">{passed ? '三項全數達標' : '未全數達標'}</p>
         <p className="mt-1 text-2xl font-bold">
           {passed ? '維持自主學習權' : '下個月需介入'}
         </p>

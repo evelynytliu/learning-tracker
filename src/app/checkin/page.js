@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import CheckinForm from '../CheckinForm';
 import AppShell from '@/components/AppShell';
-import { toYMD } from '@/lib/date';
+import { toYMD, weekStartYMD } from '@/lib/date';
 import { loadDayCheckin } from '@/lib/checkin-data';
 
 export const dynamic = 'force-dynamic';
@@ -22,6 +22,15 @@ export default async function CheckinPage() {
 
   const today = toYMD();
   const day = await loadDayCheckin(supabase, user.id, today);
+
+  // 本週（不含今天）已用掉的免讀日次數——一週只能用一次
+  const { count: restUsed } = await supabase
+    .from('daily_checkins')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .eq('is_rest_day', true)
+    .gte('date', weekStartYMD())
+    .neq('date', today);
 
   return (
     <AppShell
@@ -43,6 +52,7 @@ export default async function CheckinPage() {
         bonusTasks={day.bonusTasks}
         initialDone={day.doneMap}
         initialRest={day.isRest}
+        restUsedThisWeek={restUsed ?? 0}
       />
     </AppShell>
   );

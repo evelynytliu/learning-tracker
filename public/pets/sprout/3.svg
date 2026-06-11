@@ -1,14 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 成株 -->
-  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
-  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
-  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
-  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
-  <path d="M256 388 C252 340 260 300 256 268" stroke="#7FA87D" stroke-width="10" stroke-linecap="round"/>
-  <g transform="translate(256 360) rotate(-62)"><path d="M0 0 C -15 -7 -15 -32 0 -44 C 15 -32 15 -7 0 0 Z" fill="#7FAE80"/></g>
-  <g transform="translate(256 360) rotate(62)"><path d="M0 0 C -15 -7 -15 -32 0 -44 C 15 -32 15 -7 0 0 Z" fill="#8BB789"/></g>
-  <g transform="translate(256 322) rotate(-52)"><path d="M0 0 C -14 -6 -14 -30 0 -40 C 14 -30 14 -6 0 0 Z" fill="#8BB789"/></g>
-  <g transform="translate(256 322) rotate(52)"><path d="M0 0 C -14 -6 -14 -30 0 -40 C 14 -30 14 -6 0 0 Z" fill="#9CC39A"/></g>
-  <g transform="translate(256 286) rotate(-42) scale(0.85)"><path d="M0 0 C -13 -6 -13 -28 0 -38 C 13 -28 13 -6 0 0 Z" fill="#9CC39A"/></g>
-  <g transform="translate(256 286) rotate(42) scale(0.85)"><path d="M0 0 C -13 -6 -13 -28 0 -38 C 13 -28 13 -6 0 0 Z" fill="#8BB789"/></g>
+  <defs>
+    <radialGradient id="sp3-pot" cx="0.35" cy="0.2" r="1.1">
+      <stop offset="0" stop-color="#F0B98C"/><stop offset="0.6" stop-color="#D98A5F"/><stop offset="1" stop-color="#B86A42"/>
+    </radialGradient>
+    <radialGradient id="sp3-head" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#C4E8A8"/><stop offset="0.6" stop-color="#9AD47C"/><stop offset="1" stop-color="#6FAE57"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="462" rx="140" ry="16" fill="#7E4A2C" opacity="0.14"/>
+  <path d="M136 330 L 376 330 L 356 440 Q 354 460 328 460 L 184 460 Q 158 460 156 440 Z"
+        fill="url(#sp3-pot)" stroke="#9A5634" stroke-width="11" stroke-linejoin="round"/>
+  <rect x="116" y="304" width="280" height="42" rx="21" fill="#E8A77D" stroke="#9A5634" stroke-width="11"/>
+  <path d="M184 366 q-6 38 4 74" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" opacity="0.3"/>
+  <ellipse cx="256" cy="318" rx="108" ry="23" fill="#6B4A33"/>
+  <ellipse cx="256" cy="314" rx="108" ry="21" fill="#7E5A40"/>
+  <!-- 莖 + 兩層葉 -->
+  <path d="M256 310 L 256 226" stroke="#4F8A3C" stroke-width="17" stroke-linecap="round"/>
+  <path d="M248 296 C 212 280 176 282 154 298 C 170 324 206 330 242 314 C 246 308 248 302 248 296 Z"
+        fill="#86C268" stroke="#4F8A3C" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M264 296 C 300 280 336 282 358 298 C 342 324 306 330 270 314 C 266 308 264 302 264 296 Z"
+        fill="#86C268" stroke="#4F8A3C" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M250 252 C 222 234 192 234 172 248 C 186 272 216 278 246 266 C 249 261 250 256 250 252 Z"
+        fill="#9AD47C" stroke="#4F8A3C" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M262 252 C 290 234 320 234 340 248 C 326 272 296 278 266 266 C 263 261 262 256 262 252 Z"
+        fill="#9AD47C" stroke="#4F8A3C" stroke-width="9" stroke-linejoin="round"/>
+  <!-- 頭 -->
+  <circle cx="256" cy="158" r="94" fill="url(#sp3-head)" stroke="#4F8A3C" stroke-width="11"/>
+  <path d="M256 64 q-4 -26 12 -40" stroke="#4F8A3C" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <path d="M270 24 C 294 14 316 18 328 30 C 316 48 294 54 274 46 C 270 40 268 32 270 24 Z"
+        fill="#B8E29B" stroke="#4F8A3C" stroke-width="8" stroke-linejoin="round"/>
+  <ellipse cx="222" cy="150" rx="20" ry="25" fill="#2C4222"/>
+  <circle cx="216" cy="140" r="8" fill="#FFFFFF"/><circle cx="228" cy="159" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="290" cy="150" rx="20" ry="25" fill="#2C4222"/>
+  <circle cx="284" cy="140" r="8" fill="#FFFFFF"/><circle cx="296" cy="159" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M238 186 q18 16 36 0" stroke="#2C4222" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <ellipse cx="190" cy="188" rx="14" ry="9" fill="#F09A9C" opacity="0.65"/>
+  <ellipse cx="322" cy="188" rx="14" ry="9" fill="#F09A9C" opacity="0.65"/>
+  <ellipse cx="212" cy="102" rx="28" ry="16" fill="#FFFFFF" opacity="0.4" transform="rotate(-20 212 102)"/>
 </svg>

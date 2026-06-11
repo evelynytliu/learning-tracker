@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { SUBJECTS } from '@/lib/utils';
+import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
 
 export default function NotesManager({ userId, initial, readOnly }) {
   const [notes, setNotes] = useState(initial);
@@ -11,26 +12,36 @@ export default function NotesManager({ userId, initial, readOnly }) {
   const [subject, setSubject] = useState('');
   const [busy, setBusy] = useState(false);
   const supabase = createClient();
+  const { status, errMsg, run } = useSaveRunner();
 
   async function add(e) {
     e.preventDefault();
     if (!content.trim()) return;
     setBusy(true);
-    const { data, error } = await supabase
-      .from('notes')
-      .insert({ user_id: userId, subject: subject || null, content: content.trim() })
-      .select()
-      .single();
+    let created;
+    const ok = await run(async () => {
+      const { data, error } = await supabase
+        .from('notes')
+        .insert({ user_id: userId, subject: subject || null, content: content.trim() })
+        .select()
+        .single();
+      created = data;
+      return error;
+    });
     setBusy(false);
-    if (error) return alert(error.message);
-    setNotes((p) => [data, ...p]);
+    if (!ok) return;
+    setNotes((p) => [created, ...p]);
     setContent('');
     setSubject('');
   }
 
   async function remove(id) {
+    const prev = notes;
     setNotes((p) => p.filter((n) => n.id !== id));
-    await supabase.from('notes').delete().eq('id', id);
+    await run(
+      async () => (await supabase.from('notes').delete().eq('id', id)).error,
+      { rollback: () => setNotes(prev) },
+    );
   }
 
   return (
@@ -106,6 +117,8 @@ export default function NotesManager({ userId, initial, readOnly }) {
           </li>
         ))}
       </ul>
+
+      <SaveStatusPill status={status} errMsg={errMsg} />
     </div>
   );
 }

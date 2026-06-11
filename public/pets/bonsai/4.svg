@@ -1,20 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- 成樹 -->
-  <ellipse cx="256" cy="478" rx="98" ry="13" fill="#000000" opacity="0.05"/>
-  <rect x="168" y="372" width="176" height="26" rx="10" fill="#DCA988"/>
-  <path d="M182 398 L198 458 Q200 470 212 470 L300 470 Q312 470 314 458 L330 398 Z" fill="#CE9476"/>
-  <ellipse cx="256" cy="386" rx="74" ry="12" fill="#7A5C46"/>
-  <path d="M256 388 C248 350 264 332 256 312" stroke="#9C6F4E" stroke-width="15" stroke-linecap="round"/>
-  <path d="M256 342 Q226 336 206 314" stroke="#9C6F4E" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <path d="M256 332 Q288 326 308 306" stroke="#9C6F4E" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <g fill="#7FAE80">
-    <ellipse cx="204" cy="300" rx="38" ry="28"/>
-    <ellipse cx="308" cy="294" rx="36" ry="27"/>
-    <ellipse cx="256" cy="270" rx="46" ry="34"/>
-  </g>
-  <g fill="#8BB789">
-    <ellipse cx="232" cy="284" rx="26" ry="18"/>
-    <ellipse cx="284" cy="280" rx="24" ry="17"/>
-  </g>
-  <ellipse cx="248" cy="262" rx="18" ry="12" fill="#9CC39A" opacity="0.5"/>
+  <defs>
+    <radialGradient id="bn4-pot" cx="0.35" cy="0.2" r="1.1">
+      <stop offset="0" stop-color="#C2DCD2"/><stop offset="0.6" stop-color="#9DBFB4"/><stop offset="1" stop-color="#7FA396"/>
+    </radialGradient>
+    <radialGradient id="bn4-trunk" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#C39A72"/><stop offset="1" stop-color="#855A38"/>
+    </radialGradient>
+    <radialGradient id="bn4-leaf" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#A8D49A"/><stop offset="1" stop-color="#5E9258"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="460" rx="156" ry="16" fill="#3E5C50" opacity="0.14"/>
+  <path d="M100 356 L 412 356 L 396 438 Q 394 458 368 458 L 144 458 Q 118 458 116 438 Z"
+        fill="url(#bn4-pot)" stroke="#5E7E72" stroke-width="11" stroke-linejoin="round"/>
+  <rect x="84" y="332" width="344" height="40" rx="20" fill="#B4D2C6" stroke="#5E7E72" stroke-width="11"/>
+  <path d="M146 390 q-4 24 4 42" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" opacity="0.35"/>
+  <ellipse cx="256" cy="346" rx="148" ry="24" fill="#6B4A33"/>
+  <ellipse cx="256" cy="342" rx="148" ry="22" fill="#7E5A40"/>
+  <!-- 三層雲冠 -->
+  <path d="M268 214 Q 296 170 338 152 M 244 214 Q 208 186 178 184 M 258 208 Q 258 170 250 150" stroke="#855A38" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <ellipse cx="352" cy="124" rx="74" ry="52" fill="url(#bn4-leaf)" stroke="#4A7A4E" stroke-width="10"/>
+  <ellipse cx="238" cy="92" rx="84" ry="56" fill="url(#bn4-leaf)" stroke="#4A7A4E" stroke-width="10"/>
+  <ellipse cx="142" cy="170" rx="62" ry="46" fill="url(#bn4-leaf)" stroke="#4A7A4E" stroke-width="10"/>
+  <ellipse cx="208" cy="68" rx="28" ry="15" fill="#FFFFFF" opacity="0.4" transform="rotate(-16 208 68)"/>
+  <ellipse cx="330" cy="102" rx="22" ry="12" fill="#FFFFFF" opacity="0.35" transform="rotate(-16 330 102)"/>
+  <!-- 軀幹 -->
+  <path d="M256 206 C 220 206 202 238 202 272 C 202 308 226 336 256 336 C 286 336 310 308 310 272 C 310 238 292 206 256 206 Z"
+        fill="url(#bn4-trunk)" stroke="#6E4426" stroke-width="10"/>
+  <path d="M222 310 q12 8 24 4 M292 306 q-10 10 -20 8 M232 226 q10 -6 20 -2" stroke="#6E4426" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <!-- 苔蘚 -->
+  <circle cx="196" cy="330" r="13" fill="#86B05E"/>
+  <circle cx="318" cy="328" r="11" fill="#86B05E"/>
+  <!-- 臉 -->
+  <ellipse cx="232" cy="262" rx="17" ry="22" fill="#3D2A18"/>
+  <circle cx="227" cy="254" r="6.5" fill="#FFFFFF"/><circle cx="237" cy="270" r="3" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="280" cy="262" rx="17" ry="22" fill="#3D2A18"/>
+  <circle cx="275" cy="254" r="6.5" fill="#FFFFFF"/><circle cx="285" cy="270" r="3" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M244 294 q12 10 24 0" stroke="#3D2A18" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="208" cy="292" rx="12" ry="8" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="304" cy="292" rx="12" ry="8" fill="#F09A9C" opacity="0.6"/>
 </svg>

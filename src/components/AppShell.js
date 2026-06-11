@@ -64,7 +64,7 @@ export default function AppShell({
     // 手機：整個畫面是高度 100dvh 的直向 flex，底部列是「在文件流裡」的最後一個子元素，
     // 不用 position:fixed，所以 iOS Chrome 的工具列收合時不會浮起來。
     // 桌面：改為左右 flex（側邊欄 + 內容）。relative z-10 讓內容蓋在造型浮水印之上。
-    <div className="relative z-10 flex h-[100dvh] flex-col overflow-hidden lg:flex-row">
+    <div className="app-vh relative z-10 flex flex-col overflow-hidden lg:flex-row">
       {/* 切回視窗時自動更新資料，避免在過期畫面上操作 */}
       <RefreshOnFocus />
 

@@ -44,6 +44,7 @@ export default async function HomePage() {
     { data: pendingAssignments },
     { count: booksRead },
     { count: courseUnitsWeek },
+    { count: dueReviews },
   ] = await Promise.all([
     supabase
       .from('daily_checkins')
@@ -92,6 +93,12 @@ export default async function HomePage() {
       .select('id', { count: 'exact', head: true })
       .eq('user_id', user.id)
       .gte('done_at', weekStart().toISOString()),
+    supabase
+      .from('mistakes')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .is('mastered_at', null)
+      .lte('next_review_date', today),
   ]);
 
   const total = todayCheckin?.tasks_total ?? 0;
@@ -382,7 +389,12 @@ export default async function HomePage() {
         <FeatureCard href="/assignments" icon="📋" title="任務挑戰" subtitle={`待擊破 ${assignmentsLeft.length}`} />
         <FeatureCard href="/reading" icon="📖" title="傳奇書庫" subtitle={`已讀完 ${booksRead ?? 0} 本`} />
         <FeatureCard href="/calendar" icon="📆" title="日程地圖" subtitle="日程與行程" />
-        <FeatureCard href="/mistakes" icon="📝" title="弱點特訓" subtitle={`已收集 ${mistakeCount ?? 0} 筆`} />
+        <FeatureCard
+          href="/mistakes"
+          icon="📝"
+          title="弱點特訓"
+          subtitle={dueReviews > 0 ? `🔔 ${dueReviews} 題待複習！` : `已收集 ${mistakeCount ?? 0} 筆`}
+        />
         <FeatureCard href="/streak" icon="🔥" title="連勝火焰" subtitle="看連勝紀錄" />
         <FeatureCard href="/pet" icon="🌱" title="寵物養成" subtitle="養大你的夥伴" />
         <FeatureCard href="/schedule" icon="📅" title="訓練日程" subtitle="日常課表配置" />

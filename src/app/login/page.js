@@ -1,11 +1,21 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
+// useSearchParams 需要 Suspense 邊界，否則 build 會報錯
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [mode, setMode] = useState('signin'); // 'signin' | 'signup' | 'forgot'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,6 +23,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [info, setInfo] = useState(null);
+
+  // 被導回登入頁時（例如 auth callback 失敗）把 error query param 顯示出來
+  useEffect(() => {
+    const qpError = searchParams.get('error');
+    if (qpError) setError(translateError(qpError));
+  }, [searchParams]);
 
   function switchMode(next) {
     setMode(next);
@@ -52,8 +68,12 @@ export default function LoginPage() {
         setError(translateError(error.message));
         return;
       }
-      await ensureProfile(supabase, data.user);
+      const profileError = await ensureProfile(supabase, data.user);
       setLoading(false);
+      if (profileError) {
+        setError(translateError(profileError.message));
+        return;
+      }
       router.push('/');
       router.refresh();
       return;
@@ -75,7 +95,11 @@ export default function LoginPage() {
     }
     // 若專案已關閉 email 驗證，會直接拿到 session → 進首頁
     if (data.session) {
-      await ensureProfile(supabase, data.user, displayName);
+      const profileError = await ensureProfile(supabase, data.user, displayName);
+      if (profileError) {
+        setError(translateError(profileError.message));
+        return;
+      }
       router.push('/');
       router.refresh();
       return;
@@ -192,22 +216,24 @@ export default function LoginPage() {
 }
 
 // 第一次登入時若還沒有 profile，就建一筆（預設 student，不覆蓋既有 role）
+// 失敗時回傳 error，讓呼叫端顯示給使用者
 async function ensureProfile(supabase, user, displayName) {
-  if (!user) return;
+  if (!user) return null;
   const { data: existing } = await supabase
     .from('profiles')
     .select('id')
     .eq('id', user.id)
     .maybeSingle();
-  if (existing) return;
+  if (existing) return null;
   const name =
     displayName?.trim() ||
     user.user_metadata?.display_name ||
     user.email?.split('@')[0] ||
     '同學';
-  await supabase
+  const { error } = await supabase
     .from('profiles')
     .insert({ id: user.id, role: 'student', display_name: name });
+  return error;
 }
 
 // 把常見的 Supabase 英文錯誤訊息翻成中文
