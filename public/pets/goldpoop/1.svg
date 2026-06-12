@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="gp1-body" cx="0.36" cy="0.28" r="1">
+      <stop offset="0" stop-color="#C49A6C"/><stop offset="0.55" stop-color="#9A6B42"/><stop offset="1" stop-color="#73492A"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="448" rx="110" ry="16" fill="#4A2E18" opacity="0.15"/>
+  <!-- 害羞的小便便 -->
+  <path d="M170 446 C 142 446 132 414 148 392 C 136 372 150 344 176 342 C 178 314 208 300 232 312 C 248 292 282 292 296 312 C 322 300 350 316 352 342 C 378 346 390 372 378 392 C 394 414 384 446 356 446 Z"
+        fill="url(#gp1-body)" stroke="#4A2E18" stroke-width="11" stroke-linejoin="round"/>
+  <!-- 螺旋小頂 -->
+  <path d="M240 306 q0 -28 22 -36 q18 -6 28 6 q-18 4 -22 16 q18 -2 22 12" fill="none" stroke="#4A2E18" stroke-width="12" stroke-linecap="round"/>
+  <!-- 害羞大眼 -->
+  <ellipse cx="216" cy="384" rx="19" ry="24" fill="#2E1B0E"/>
+  <circle cx="210" cy="375" r="7.5" fill="#FFFFFF"/><circle cx="222" cy="393" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="296" cy="384" rx="19" ry="24" fill="#2E1B0E"/>
+  <circle cx="290" cy="375" r="7.5" fill="#FFFFFF"/><circle cx="302" cy="393" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <!-- 抿嘴 + 大腮紅 -->
+  <path d="M242 414 q14 8 28 0" stroke="#2E1B0E" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <ellipse cx="182" cy="412" rx="16" ry="10" fill="#F09A9C" opacity="0.75"/>
+  <ellipse cx="330" cy="412" rx="16" ry="10" fill="#F09A9C" opacity="0.75"/>
+  <!-- 汗滴 -->
+  <path d="M362 330 q14 18 4 32 q-8 10 -18 2 q-8 -8 0 -20 q6 -8 14 -14 z" fill="#9AC8E8" stroke="#5E94B8" stroke-width="6" stroke-linejoin="round"/>
+  <ellipse cx="200" cy="338" rx="22" ry="12" fill="#FFFFFF" opacity="0.25" transform="rotate(-18 200 338)"/>
+</svg>

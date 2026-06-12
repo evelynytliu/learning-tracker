@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="fa-body" cx="0.36" cy="0.28" r="1">
+      <stop offset="0" stop-color="#C49A6C"/><stop offset="0.55" stop-color="#9A6B42"/><stop offset="1" stop-color="#73492A"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="452" rx="130" ry="17" fill="#4A2E18" opacity="0.15"/>
+  <!-- 三層便便山 -->
+  <path d="M150 452 C 110 452 96 420 110 392 C 88 386 84 352 104 338 C 96 310 122 286 152 292 C 160 264 200 254 222 274 C 240 250 282 250 300 274 C 322 254 362 264 370 292 C 400 286 426 310 418 338 C 438 352 434 386 412 392 C 426 420 412 452 372 452 Z"
+        fill="url(#fa-body)" stroke="#4A2E18" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M196 300 q60 22 124 2 M160 358 q96 30 196 4" stroke="#73492A" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <!-- 螺旋頂 -->
+  <path d="M236 268 q-2 -36 24 -48 q20 -10 34 6 q-22 2 -28 18 q24 -6 30 12 q-26 -2 -34 12" fill="none" stroke="#4A2E18" stroke-width="13" stroke-linecap="round"/>
+  <!-- 皇冠 -->
+  <path d="M214 218 L 222 174 L 248 200 L 270 166 L 292 200 L 318 174 L 326 218 Z" fill="#FFD75E" stroke="#C9952D" stroke-width="8" stroke-linejoin="round" transform="rotate(8 270 192)"/>
+  <circle cx="270" cy="208" r="6" fill="#F45D8C"/>
+  <!-- 大眼睛 -->
+  <ellipse cx="216" cy="362" rx="21" ry="26" fill="#2E1B0E"/>
+  <circle cx="209" cy="352" r="8.5" fill="#FFFFFF"/><circle cx="223" cy="372" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="300" cy="362" rx="21" ry="26" fill="#2E1B0E"/>
+  <circle cx="293" cy="352" r="8.5" fill="#FFFFFF"/><circle cx="307" cy="372" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M236 398 q22 18 44 0" stroke="#2E1B0E" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <ellipse cx="182" cy="398" rx="14" ry="9" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="334" cy="398" rx="14" ry="9" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="196" cy="312" rx="26" ry="14" fill="#FFFFFF" opacity="0.25" transform="rotate(-18 196 312)"/>
+  <path d="M404 116 l6 15 15 6 -15 6 -6 15 -6 -15 -15 -6 15 -6 z" fill="#FFD75E"/>
+  <path d="M96 150 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z" fill="#FFD75E"/>
+</svg>

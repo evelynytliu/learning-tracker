@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="bb5-aura" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFE8C2" stop-opacity="0.65"/><stop offset="0.7" stop-color="#F2C84E" stop-opacity="0.25"/><stop offset="1" stop-color="#F2C84E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bb5-tea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F8E2BC"/><stop offset="0.55" stop-color="#E0B276"/><stop offset="1" stop-color="#BC8850"/>
+    </linearGradient>
+  </defs>
+  <circle cx="256" cy="266" r="232" fill="url(#bb5-aura)"/>
+  <ellipse cx="256" cy="462" rx="130" ry="14" fill="#5E3D22" opacity="0.14"/>
+  <!-- 霸王杯 -->
+  <path d="M142 140 L 370 140 L 346 434 Q 344 464 310 464 L 202 464 Q 168 464 166 434 Z"
+        fill="url(#bb5-tea)" stroke="#5E3D22" stroke-width="11" stroke-linejoin="round"/>
+  <rect x="128" y="112" width="256" height="38" rx="19" fill="#FFF4D6" stroke="#D9B36C" stroke-width="9"/>
+  <!-- 蓋上的小皇冠 -->
+  <path d="M216 96 L 224 56 L 248 80 L 268 48 L 288 80 L 312 56 L 320 96 Z" fill="#FFD75E" stroke="#C9952D" stroke-width="8" stroke-linejoin="round"/>
+  <!-- 雙金吸管 -->
+  <rect x="300" y="16" width="32" height="130" rx="15" fill="#FFD75E" stroke="#C9952D" stroke-width="8" transform="rotate(14 316 81)"/>
+  <rect x="180" y="20" width="32" height="126" rx="15" fill="#FFD75E" stroke="#C9952D" stroke-width="8" transform="rotate(-12 196 83)"/>
+  <path d="M178 164 q-8 120 8 270" stroke="#FFF6E8" stroke-width="14" stroke-linecap="round" opacity="0.55"/>
+  <!-- 金珍珠 -->
+  <g stroke="#A87C1E" stroke-width="6">
+    <circle cx="200" cy="428" r="21" fill="#F2C84E"/>
+    <circle cx="252" cy="434" r="21" fill="#F2C84E"/>
+    <circle cx="302" cy="428" r="19" fill="#F2C84E"/>
+    <circle cx="228" cy="390" r="17" fill="#F2C84E"/>
+    <circle cx="276" cy="388" r="16" fill="#F2C84E"/>
+  </g>
+  <circle cx="194" cy="421" r="6" fill="#FFFFFF" opacity="0.85"/>
+  <circle cx="246" cy="427" r="6" fill="#FFFFFF" opacity="0.85"/>
+  <circle cx="296" cy="421" r="6" fill="#FFFFFF" opacity="0.85"/>
+  <!-- 星星眼 -->
+  <path d="M218 238 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 z" fill="#3A2414"/>
+  <path d="M294 238 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 z" fill="#3A2414"/>
+  <path d="M232 296 q24 20 48 0" stroke="#3A2414" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <ellipse cx="182" cy="292" rx="14" ry="9" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="330" cy="292" rx="14" ry="9" fill="#F09A9C" opacity="0.6"/>
+  <!-- 星光 -->
+  <path d="M84 120 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 z" fill="#FFD75E"/>
+  <path d="M434 110 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z" fill="#F45D8C"/>
+  <path d="M446 330 l4 11 11 4 -11 4 -4 11 -4 -11 -11 -4 11 -4 z" fill="#FFE9A0"/>
+  <path d="M64 330 l4 11 11 4 -11 4 -4 11 -4 -11 -11 -4 11 -4 z" fill="#FFD75E"/>
+</svg>

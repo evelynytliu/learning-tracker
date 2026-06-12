@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="bb0-leaf" cx="0.36" cy="0.28" r="1">
+      <stop offset="0" stop-color="#9CC288"/><stop offset="1" stop-color="#5E8A4E"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="446" rx="150" ry="18" fill="#3A4E2E" opacity="0.14"/>
+  <!-- 小碟子 -->
+  <ellipse cx="256" cy="420" rx="160" ry="34" fill="#F8F2E2" stroke="#C9AE7C" stroke-width="10"/>
+  <!-- 一撮茶葉（睡著） -->
+  <path d="M150 408 C 146 364 176 330 222 322 C 236 296 274 290 296 308 C 332 300 366 326 366 360 C 384 380 374 408 352 414 Z"
+        fill="url(#bb0-leaf)" stroke="#3E6232" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M196 356 q30 14 64 6 M260 380 q34 10 70 0" stroke="#4E7A40" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <!-- 翹起來的小葉芽 -->
+  <path d="M268 300 q0 -26 20 -34" stroke="#3E6232" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M290 264 C 312 252 334 256 346 270 C 334 290 312 294 292 284 C 289 278 288 270 290 264 Z"
+        fill="#9CC288" stroke="#3E6232" stroke-width="8" stroke-linejoin="round"/>
+  <!-- 睡臉 -->
+  <path d="M218 380 q9 8 18 0 M282 376 q9 8 18 0" stroke="#2C4222" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <ellipse cx="196" cy="396" rx="12" ry="8" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="318" cy="392" rx="12" ry="8" fill="#F09A9C" opacity="0.6"/>
+  <path d="M346 196 l20 0 -20 20 20 0 M374 162 l15 0 -15 15 15 0" stroke="#9AB8D8" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

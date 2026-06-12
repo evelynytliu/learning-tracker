@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="gp4-body" cx="0.36" cy="0.28" r="1">
+      <stop offset="0" stop-color="#FFE9A0"/><stop offset="0.55" stop-color="#F2C84E"/><stop offset="1" stop-color="#D9A437"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="452" rx="130" ry="17" fill="#8A6B1E" opacity="0.18"/>
+  <path d="M150 452 C 110 452 96 420 110 392 C 88 386 84 352 104 338 C 96 310 122 286 152 292 C 160 264 200 254 222 274 C 240 250 282 250 300 274 C 322 254 362 264 370 292 C 400 286 426 310 418 338 C 438 352 434 386 412 392 C 426 420 412 452 372 452 Z"
+        fill="url(#gp4-body)" stroke="#A87C1E" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M196 300 q60 22 124 2 M160 358 q96 30 196 4" stroke="#D9A437" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M236 268 q-2 -36 24 -48 q20 -10 34 6 q-22 2 -28 18 q24 -6 30 12 q-26 -2 -34 12" fill="none" stroke="#A87C1E" stroke-width="13" stroke-linecap="round"/>
+  <!-- 得意瞇眼笑 -->
+  <path d="M196 360 q18 -14 38 0" stroke="#6E5012" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M278 360 q18 -14 38 0" stroke="#6E5012" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M234 396 q22 18 44 0" stroke="#6E5012" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <ellipse cx="180" cy="394" rx="14" ry="9" fill="#F0A06C" opacity="0.7"/>
+  <ellipse cx="336" cy="394" rx="14" ry="9" fill="#F0A06C" opacity="0.7"/>
+  <ellipse cx="194" cy="310" rx="28" ry="15" fill="#FFFFFF" opacity="0.45" transform="rotate(-18 194 310)"/>
+  <!-- 金幣與星光 -->
+  <circle cx="118" cy="226" r="20" fill="#FFD75E" stroke="#C9952D" stroke-width="7"/>
+  <text x="118" y="234" font-size="22" font-weight="900" text-anchor="middle" fill="#9A6B1E" font-family="sans-serif">$</text>
+  <circle cx="402" cy="206" r="16" fill="#FFD75E" stroke="#C9952D" stroke-width="6"/>
+  <path d="M404 96 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 z" fill="#FFD75E"/>
+  <path d="M86 130 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z" fill="#FFE9A0"/>
+  <path d="M448 330 l4 11 11 4 -11 4 -4 11 -4 -11 -11 -4 11 -4 z" fill="#FFD75E"/>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="sr5-aura" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#C2E2F8" stop-opacity="0.6"/><stop offset="0.7" stop-color="#94B6D8" stop-opacity="0.25"/><stop offset="1" stop-color="#94B6D8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sr5-rock" cx="0.36" cy="0.28" r="1">
+      <stop offset="0" stop-color="#D2DAE4"/><stop offset="0.55" stop-color="#9AA8B8"/><stop offset="1" stop-color="#6E7A88"/>
+    </radialGradient>
+  </defs>
+  <circle cx="256" cy="270" r="228" fill="url(#sr5-aura)"/>
+  <!-- 浮空（影子和本體分離） -->
+  <ellipse cx="256" cy="466" rx="110" ry="14" fill="#3A434E" opacity="0.18"/>
+  <g transform="translate(0 -28)">
+    <path d="M132 380 C 108 320 130 240 188 200 C 240 164 320 168 366 212 C 412 254 416 330 384 384 C 352 434 256 446 188 428 C 158 420 140 404 132 380 Z"
+          fill="url(#sr5-rock)" stroke="#3A434E" stroke-width="11" stroke-linejoin="round"/>
+    <path d="M180 250 q20 -16 44 -10 M330 396 q-30 14 -62 8" stroke="#6E7A88" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <ellipse cx="196" cy="226" rx="30" ry="17" fill="#FFFFFF" opacity="0.45" transform="rotate(-20 196 226)"/>
+    <g stroke="#101820" stroke-width="9" stroke-linejoin="round">
+      <path d="M156 286 L 372 278"/>
+      <path d="M178 286 q0 44 42 44 q40 0 40 -42" fill="#101820"/>
+      <path d="M280 282 q0 44 42 44 q40 0 40 -42" fill="#101820"/>
+    </g>
+    <circle cx="206" cy="304" r="8" fill="#FFFFFF" opacity="0.5"/>
+    <circle cx="308" cy="300" r="8" fill="#FFFFFF" opacity="0.5"/>
+    <path d="M180 392 q76 44 156 -6" stroke="#FFD75E" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <circle cx="258" cy="412" r="20" fill="#FFD75E" stroke="#C9952D" stroke-width="7"/>
+    <text x="258" y="421" font-size="24" font-weight="900" text-anchor="middle" fill="#9A6B1E" font-family="sans-serif">石</text>
+    <path d="M240 366 l36 -2" stroke="#3A434E" stroke-width="8" stroke-linecap="round"/>
+    <ellipse cx="170" cy="352" rx="13" ry="9" fill="#F09A9C" opacity="0.5"/>
+    <ellipse cx="346" cy="346" rx="13" ry="9" fill="#F09A9C" opacity="0.5"/>
+  </g>
+  <!-- 小石頭衛星 -->
+  <circle cx="92" cy="240" r="16" fill="#9AA8B8" stroke="#3A434E" stroke-width="7"/>
+  <circle cx="424" cy="220" r="12" fill="#9AA8B8" stroke="#3A434E" stroke-width="6"/>
+  <circle cx="438" cy="350" r="9" fill="#B8C4D0" stroke="#3A434E" stroke-width="5"/>
+  <path d="M86 110 l6 15 15 6 -15 6 -6 15 -6 -15 -15 -6 15 -6 z" fill="#C2E2F8"/>
+  <path d="M428 96 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z" fill="#FFD75E"/>
+</svg>

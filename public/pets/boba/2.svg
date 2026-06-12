@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bb2-tea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#EED4B0"/><stop offset="1" stop-color="#C8945E"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="256" cy="456" rx="120" ry="16" fill="#5E3D22" opacity="0.14"/>
+  <!-- 杯身（半杯茶） -->
+  <path d="M158 150 L 354 150 L 332 428 Q 330 456 300 456 L 212 456 Q 182 456 180 428 Z"
+        fill="#F4F8FB" fill-opacity="0.55" stroke="#7E8A98" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M170 300 L 342 300 L 332 428 Q 330 456 300 456 L 212 456 Q 182 456 180 428 Z"
+        fill="url(#bb2-tea)" stroke="none"/>
+  <path d="M170 300 L 342 300" stroke="#A87848" stroke-width="7" stroke-linecap="round" opacity="0.7"/>
+  <ellipse cx="256" cy="150" rx="98" ry="20" fill="#F4F8FB" stroke="#7E8A98" stroke-width="9"/>
+  <path d="M188 174 q-8 110 8 250" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" opacity="0.7"/>
+  <!-- 三顆珍珠 -->
+  <g stroke="#1E1410" stroke-width="6">
+    <circle cx="216" cy="420" r="19" fill="#3A2A20"/>
+    <circle cx="262" cy="426" r="19" fill="#3A2A20"/>
+    <circle cx="306" cy="416" r="19" fill="#3A2A20"/>
+  </g>
+  <circle cx="210" cy="414" r="6" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="256" cy="420" r="6" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="300" cy="410" r="6" fill="#FFFFFF" opacity="0.7"/>
+  <!-- 臉（在茶面上） -->
+  <ellipse cx="218" cy="346" rx="19" ry="24" fill="#3A2414"/>
+  <circle cx="212" cy="337" r="7.5" fill="#FFFFFF"/><circle cx="224" cy="355" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="294" cy="346" rx="19" ry="24" fill="#3A2414"/>
+  <circle cx="288" cy="337" r="7.5" fill="#FFFFFF"/><circle cx="300" cy="355" r="3.5" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M236 378 q20 16 40 0" stroke="#3A2414" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <ellipse cx="188" cy="376" rx="13" ry="9" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="324" cy="376" rx="13" ry="9" fill="#F09A9C" opacity="0.6"/>
+</svg>

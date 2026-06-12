@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="gp0-dirt" cx="0.36" cy="0.28" r="1">
+      <stop offset="0" stop-color="#B08A60"/><stop offset="0.6" stop-color="#8A6240"/><stop offset="1" stop-color="#6B4A2E"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="448" rx="150" ry="18" fill="#4A2E18" opacity="0.15"/>
+  <!-- 神祕土堆 -->
+  <path d="M120 444 C 116 396 140 352 182 330 C 200 296 240 280 274 294 C 318 282 366 308 380 350 C 404 376 404 416 388 444 Z"
+        fill="url(#gp0-dirt)" stroke="#4A2E18" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M170 386 q40 18 84 8 M250 410 q44 14 92 2" stroke="#6B4A2E" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="206" cy="354" r="9" fill="#6B4A2E"/>
+  <circle cx="318" cy="372" r="8" fill="#6B4A2E"/>
+  <ellipse cx="196" cy="330" rx="24" ry="13" fill="#FFFFFF" opacity="0.22" transform="rotate(-16 196 330)"/>
+  <!-- 冒出的熱氣（有東西要孵化的預感） -->
+  <path d="M226 268 q-12 -26 6 -44 q16 -16 8 -38" stroke="#C2B49A" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M292 276 q12 -24 -4 -42 q-14 -16 -6 -36" stroke="#C2B49A" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <!-- 睡臉（半埋著） -->
+  <path d="M218 416 q9 8 18 0 M282 416 q9 8 18 0" stroke="#3A2414" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M338 200 l20 0 -20 20 20 0 M366 166 l15 0 -15 15 15 0" stroke="#9AB8D8" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

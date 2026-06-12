@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bb4-tea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#EED4B0"/><stop offset="0.55" stop-color="#D4A26E"/><stop offset="1" stop-color="#B07C46"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="256" cy="460" rx="130" ry="15" fill="#5E3D22" opacity="0.15"/>
+  <!-- 大杯 -->
+  <path d="M146 132 L 366 132 L 342 432 Q 340 462 308 462 L 204 462 Q 172 462 170 432 Z"
+        fill="url(#bb4-tea)" stroke="#5E3D22" stroke-width="11" stroke-linejoin="round"/>
+  <rect x="132" y="104" width="248" height="38" rx="19" fill="#F8F2E2" stroke="#C9AE7C" stroke-width="9"/>
+  <path d="M158 104 q98 -28 196 0" fill="#F8F2E2" stroke="#C9AE7C" stroke-width="9" stroke-linejoin="round"/>
+  <!-- 雙吸管 -->
+  <rect x="284" y="20" width="32" height="140" rx="15" fill="#F45D8C" stroke="#C23A66" stroke-width="8" transform="rotate(12 300 90)"/>
+  <rect x="196" y="26" width="32" height="134" rx="15" fill="#7CC2DC" stroke="#4F8AA8" stroke-width="8" transform="rotate(-10 212 93)"/>
+  <path d="M182 156 q-8 120 8 270" stroke="#FFF6E8" stroke-width="14" stroke-linecap="round" opacity="0.5"/>
+  <!-- 布丁 -->
+  <path d="M150 360 q24 -34 58 -22 q20 8 18 34 q-40 14 -76 -12 z" fill="#F2C84E" stroke="#C9952D" stroke-width="8" stroke-linejoin="round"/>
+  <!-- 椰果 -->
+  <rect x="318" y="340" width="34" height="34" rx="9" fill="#FFFDF4" stroke="#C9BD8C" stroke-width="7" transform="rotate(14 335 357)"/>
+  <rect x="300" y="392" width="30" height="30" rx="8" fill="#FFFDF4" stroke="#C9BD8C" stroke-width="7" transform="rotate(-12 315 407)"/>
+  <!-- 珍珠群 -->
+  <g stroke="#1E1410" stroke-width="6">
+    <circle cx="200" cy="426" r="20" fill="#3A2A20"/>
+    <circle cx="250" cy="432" r="20" fill="#3A2A20"/>
+    <circle cx="298" cy="430" r="18" fill="#3A2A20"/>
+    <circle cx="226" cy="392" r="17" fill="#3A2A20"/>
+    <circle cx="270" cy="390" r="16" fill="#3A2A20"/>
+  </g>
+  <circle cx="194" cy="420" r="6" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="244" cy="426" r="6" fill="#FFFFFF" opacity="0.7"/>
+  <!-- 臉 -->
+  <ellipse cx="216" cy="250" rx="21" ry="26" fill="#3A2414"/>
+  <circle cx="209" cy="240" r="8.5" fill="#FFFFFF"/><circle cx="223" cy="260" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="296" cy="250" rx="21" ry="26" fill="#3A2414"/>
+  <circle cx="289" cy="240" r="8.5" fill="#FFFFFF"/><circle cx="303" cy="260" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M232 286 q24 20 48 0" stroke="#3A2414" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <ellipse cx="182" cy="284" rx="14" ry="9" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="330" cy="284" rx="14" ry="9" fill="#F09A9C" opacity="0.6"/>
+  <path d="M418 200 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z" fill="#F45D8C"/>
+</svg>

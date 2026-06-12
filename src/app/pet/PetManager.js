@@ -11,6 +11,7 @@ import {
   PETS,
   PLANT_LIST,
   CREATURE_LIST,
+  FUNNY_LIST,
   stageFromGrowth,
   stageProgress,
   nextThreshold,
@@ -94,6 +95,7 @@ export default function PetManager({ userId, initialBalance, initialPets, earned
           from: beforeStage,
           to: afterStage,
           name: PETS[active.species].stages[afterStage].name,
+          quote: PETS[active.species].stages[afterStage].quote,
           petName: PETS[active.species].name,
         });
       }
@@ -434,6 +436,11 @@ function EvolutionShow({ evo, onClose }) {
             <p className="mt-1.5 text-sm font-bold text-emerald-300">
               {evo.petName} 進化成「{evo.name}」
             </p>
+            {evo.quote && (
+              <p className="mt-4 max-w-[260px] rounded-2xl bg-white/95 px-4 py-2.5 text-center text-sm font-black text-slate-700 shadow-lg animate-pop">
+                「{evo.quote}」
+              </p>
+            )}
             <button
               onClick={onClose}
               className="mt-6 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-2.5 text-sm font-black text-white shadow-lg active:scale-95"
@@ -463,6 +470,8 @@ function AdoptPanel({ onPick, busy, canCancel, onCancel }) {
       <Section title="🌱 植物線" list={PLANT_LIST} onPick={onPick} busy={busy} />
       <div className="h-4" />
       <Section title="🥚 生物線" list={CREATURE_LIST} onPick={onPick} busy={busy} />
+      <div className="h-4" />
+      <Section title="🤣 搞笑線" list={FUNNY_LIST} onPick={onPick} busy={busy} />
     </div>
   );
 }

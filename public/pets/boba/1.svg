@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="bb1-cup" cx="0.35" cy="0.2" r="1.2">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.65"/><stop offset="1" stop-color="#E2EAF2" stop-opacity="0.4"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="256" cy="456" rx="120" ry="16" fill="#3A434E" opacity="0.13"/>
+  <!-- 空杯（滿懷期待） -->
+  <path d="M158 150 L 354 150 L 332 428 Q 330 456 300 456 L 212 456 Q 182 456 180 428 Z"
+        fill="url(#bb1-cup)" stroke="#7E8A98" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M188 174 q-8 110 8 250" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+  <!-- 杯口（沒蓋蓋子） -->
+  <ellipse cx="256" cy="150" rx="98" ry="20" fill="#F4F8FB" stroke="#7E8A98" stroke-width="9"/>
+  <!-- 期待的星星大眼 -->
+  <ellipse cx="218" cy="280" rx="21" ry="26" fill="#3A434E"/>
+  <circle cx="211" cy="270" r="8.5" fill="#FFFFFF"/><circle cx="225" cy="290" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M212 252 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 z" fill="#FFFFFF" opacity="0.9" transform="translate(8 18)"/>
+  <ellipse cx="294" cy="280" rx="21" ry="26" fill="#3A434E"/>
+  <circle cx="287" cy="270" r="8.5" fill="#FFFFFF"/><circle cx="301" cy="290" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <!-- 流口水的笑 -->
+  <path d="M232 318 q24 20 48 0" stroke="#3A434E" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M278 326 q10 14 2 26" stroke="#7CC2DC" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <ellipse cx="184" cy="316" rx="13" ry="9" fill="#F09A9C" opacity="0.6"/>
+  <ellipse cx="328" cy="316" rx="13" ry="9" fill="#F09A9C" opacity="0.6"/>
+  <!-- 想像中的珍珠（思考泡泡） -->
+  <circle cx="396" cy="142" r="10" fill="#E2EAF2" stroke="#A8B6C4" stroke-width="5"/>
+  <circle cx="420" cy="108" r="14" fill="#E2EAF2" stroke="#A8B6C4" stroke-width="5"/>
+  <circle cx="452" cy="66" r="22" fill="#E2EAF2" stroke="#A8B6C4" stroke-width="6"/>
+  <circle cx="452" cy="66" r="9" fill="#3A2A20"/>
+</svg>

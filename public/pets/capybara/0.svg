@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+<defs><radialGradient id="cp0-water" cx="0.5" cy="0.2" r="1"><stop offset="0" stop-color="#BFE6F2"/><stop offset="1" stop-color="#7CC2DC"/></radialGradient></defs>
+<path d="M104 330 L 408 330 L 392 436 Q 390 458 362 458 L 150 458 Q 122 458 120 436 Z" fill="#A9744C" stroke="#6E4426" stroke-width="11" stroke-linejoin="round"/><path d="M134 330 v110 M186 330 v122 M256 330 v124 M326 330 v122 M378 330 v110" stroke="#8A5A34" stroke-width="7" opacity="0.7"/>
+<ellipse cx="256" cy="330" rx="152" ry="30" fill="url(#cp0-water)" stroke="#4F8AA8" stroke-width="9"/>
+<circle cx="256" cy="300" r="26" fill="#F7973C" stroke="#C76A1B" stroke-width="8"/><path d="M 256 274 q2 -10 10 -13" stroke="#4A7A4E" stroke-width="7" stroke-linecap="round"/><ellipse cx="248" cy="292" rx="8" ry="5" fill="#FFFFFF" opacity="0.5"/>
+<path d="M170 318 q20 8 42 2 M310 320 q22 8 44 0" stroke="#5EA8C2" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.8"/>
+<text x="350" y="240" font-size="64" font-weight="900" fill="#7CA8BC" font-family="sans-serif">?</text>
+<path d="M150 250 q-12 -24 4 -42" stroke="#C2DCE8" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.8"/>
+</svg>

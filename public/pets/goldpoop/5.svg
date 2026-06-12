@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="gp5-aura" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#C8ECF8" stop-opacity="0.65"/><stop offset="0.6" stop-color="#E8C8F4" stop-opacity="0.3"/><stop offset="1" stop-color="#E8C8F4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gp5-body" cx="0.36" cy="0.28" r="1">
+      <stop offset="0" stop-color="#FFFFFF"/><stop offset="0.5" stop-color="#CDEAF4"/><stop offset="1" stop-color="#9CC8E8"/>
+    </radialGradient>
+  </defs>
+  <circle cx="256" cy="280" r="230" fill="url(#gp5-aura)"/>
+  <ellipse cx="256" cy="456" rx="124" ry="15" fill="#3A5E78" opacity="0.15"/>
+  <path d="M150 452 C 110 452 96 420 110 392 C 88 386 84 352 104 338 C 96 310 122 286 152 292 C 160 264 200 254 222 274 C 240 250 282 250 300 274 C 322 254 362 264 370 292 C 400 286 426 310 418 338 C 438 352 434 386 412 392 C 426 420 412 452 372 452 Z"
+        fill="url(#gp5-body)" stroke="#5E88B0" stroke-width="11" stroke-linejoin="round"/>
+  <!-- 鑽石切面 -->
+  <path d="M150 360 L 220 300 L 290 364 L 360 304 M 190 440 L 250 380 L 312 438" stroke="#FFFFFF" stroke-width="6" fill="none" opacity="0.8" stroke-linecap="round"/>
+  <path d="M236 268 q-2 -36 24 -48 q20 -10 34 6 q-22 2 -28 18 q24 -6 30 12 q-26 -2 -34 12" fill="none" stroke="#5E88B0" stroke-width="13" stroke-linecap="round"/>
+  <!-- 閃亮星星眼 -->
+  <path d="M216 340 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 z" fill="#2E4A66"/>
+  <path d="M296 340 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 z" fill="#2E4A66"/>
+  <path d="M234 398 q22 18 44 0" stroke="#2E4A66" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <ellipse cx="180" cy="396" rx="14" ry="9" fill="#F0A0C8" opacity="0.6"/>
+  <ellipse cx="336" cy="396" rx="14" ry="9" fill="#F0A0C8" opacity="0.6"/>
+  <ellipse cx="192" cy="312" rx="30" ry="16" fill="#FFFFFF" opacity="0.7" transform="rotate(-18 192 312)"/>
+  <!-- 小皇冠（升級成鑽石皇冠） -->
+  <path d="M222 226 L 230 186 L 254 210 L 274 178 L 294 210 L 318 186 L 326 226 Z" fill="#CDEAF4" stroke="#5E88B0" stroke-width="8" stroke-linejoin="round" transform="rotate(6 274 202)"/>
+  <!-- 彩虹星光 -->
+  <path d="M92 110 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 z" fill="#F45D8C"/>
+  <path d="M420 90 l6 15 15 6 -15 6 -6 15 -6 -15 -15 -6 15 -6 z" fill="#7CC2DC"/>
+  <path d="M448 300 l4 11 11 4 -11 4 -4 11 -4 -11 -11 -4 11 -4 z" fill="#FFD75E"/>
+  <path d="M62 320 l4 11 11 4 -11 4 -4 11 -4 -11 -11 -4 11 -4 z" fill="#B795EC"/>
+</svg>

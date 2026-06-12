@@ -94,7 +94,7 @@ export default async function PetGalleryPage() {
               <h3 className="flex items-center gap-1.5 text-sm font-black text-slate-800">
                 <span>{def.name}</span>
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
-                  {def.kind === 'plant' ? '植物' : '生物'}
+                  {def.kind === 'plant' ? '植物' : def.kind === 'funny' ? '搞笑' : '生物'}
                 </span>
               </h3>
               <p className="text-[11px] text-slate-500">{def.tagline}</p>

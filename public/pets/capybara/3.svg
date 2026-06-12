@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="fd-body" cx="0.36" cy="0.28" r="1">
+      <stop offset="0" stop-color="#D9B88C"/><stop offset="0.55" stop-color="#B98F5E"/><stop offset="1" stop-color="#94683C"/>
+    </radialGradient>
+    <radialGradient id="fd-water" cx="0.5" cy="0.2" r="1">
+      <stop offset="0" stop-color="#BFE6F2"/><stop offset="1" stop-color="#7CC2DC"/>
+    </radialGradient>
+  </defs>
+  <!-- 溫泉桶 -->
+  <path d="M104 330 L 408 330 L 392 436 Q 390 458 362 458 L 150 458 Q 122 458 120 436 Z"
+        fill="#A9744C" stroke="#6E4426" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M134 330 v110 M186 330 v122 M256 330 v124 M326 330 v122 M378 330 v110" stroke="#8A5A34" stroke-width="7" opacity="0.7"/>
+  <ellipse cx="256" cy="330" rx="152" ry="30" fill="url(#fd-water)" stroke="#4F8AA8" stroke-width="9"/>
+  <!-- 蒸氣 -->
+  <path d="M120 250 q-14 -28 6 -48 M392 250 q14 -28 -6 -48" stroke="#C2DCE8" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <!-- 水豚頭 -->
+  <path d="M256 132 C 174 132 136 188 136 250 C 136 308 188 342 256 342 C 324 342 376 308 376 250 C 376 188 338 132 256 132 Z"
+        fill="url(#fd-body)" stroke="#5E3D22" stroke-width="11"/>
+  <!-- 小耳朵 -->
+  <path d="M170 162 q-12 -28 10 -40 q18 12 14 38" fill="#B98F5E" stroke="#5E3D22" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M342 162 q12 -28 -10 -40 q-18 12 -14 38" fill="#B98F5E" stroke="#5E3D22" stroke-width="8" stroke-linejoin="round"/>
+  <!-- 頭頂橘子 -->
+  <circle cx="256" cy="106" r="38" fill="#F7973C" stroke="#C76A1B" stroke-width="9"/>
+  <path d="M256 70 q2 -14 14 -18" stroke="#4A7A4E" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="244" cy="94" rx="11" ry="7" fill="#FFFFFF" opacity="0.5" transform="rotate(-20 244 94)"/>
+  <!-- 瞇瞇眼（無所謂臉） -->
+  <path d="M196 240 q14 10 28 0" stroke="#3A2414" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M288 240 q14 10 28 0" stroke="#3A2414" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- 方鼻吻 -->
+  <rect x="222" y="272" width="68" height="44" rx="20" fill="#D9B88C" stroke="#5E3D22" stroke-width="8"/>
+  <circle cx="242" cy="288" r="5" fill="#3A2414"/><circle cx="270" cy="288" r="5" fill="#3A2414"/>
+  <path d="M248 304 q8 6 16 0" stroke="#3A2414" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="178" cy="272" rx="13" ry="9" fill="#F09A9C" opacity="0.55"/>
+  <ellipse cx="334" cy="272" rx="13" ry="9" fill="#F09A9C" opacity="0.55"/>
+  <ellipse cx="196" cy="180" rx="26" ry="15" fill="#FFFFFF" opacity="0.3" transform="rotate(-20 196 180)"/>
+  <path d="M420 110 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z" fill="#F7973C"/>
+</svg>
