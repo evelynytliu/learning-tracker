@@ -1,17 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
   <defs>
-    <linearGradient id="tile" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2563EB"/>
-      <stop offset="1" stop-color="#06B6D4"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6D6AF8"/>
+      <stop offset="0.55" stop-color="#5B4BE8"/>
+      <stop offset="1" stop-color="#8B3DD8"/>
     </linearGradient>
-    <linearGradient id="fire" x1="32" y1="7" x2="32" y2="54" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FDBA74"/>
-      <stop offset="0.5" stop-color="#FB923C"/>
-      <stop offset="1" stop-color="#F97316"/>
+    <radialGradient id="glow" cx="0.3" cy="0.18" r="0.9">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.32"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flame" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#FFD166"/>
+      <stop offset="0.45" stop-color="#FF9A3C"/>
+      <stop offset="1" stop-color="#F43F5E"/>
+    </linearGradient>
+    <linearGradient id="inner" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#FFE190"/>
+      <stop offset="1" stop-color="#FF9E48"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="18" fill="url(#tile)"/>
-  <path d="M32 7 C 42 21 47 31 44 41 C 41.5 49.5 37.5 54 32 54 C 26.5 54 22.5 49.5 20 41 C 17 31 22 21 32 7 Z" fill="url(#fire)"/>
-  <path d="M32 26 C 37.5 33 39 40 35 46 C 33.2 48.6 32 48.6 30 46 C 25.5 40 27 33 32 26 Z" fill="#FCD34D"/>
-  <circle cx="30" cy="44" r="3" fill="#FEF3C7"/>
+  <!-- 圓角方形底 -->
+  <rect width="512" height="512" rx="118" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="118" fill="url(#glow)"/>
+  <!-- 火焰（連勝） -->
+  <path d="M256 78 C 282 132 330 162 352 216 C 374 270 368 330 332 372 C 300 408 280 422 256 426 C 232 422 212 408 180 372 C 144 330 138 270 160 216 C 174 182 198 158 218 130 C 232 110 246 94 256 78 Z"
+        fill="url(#flame)"/>
+  <!-- 內焰 -->
+  <path d="M256 196 C 274 230 304 250 312 290 C 320 332 296 374 256 382 C 216 374 192 332 200 290 C 208 250 238 230 256 196 Z"
+        fill="url(#inner)"/>
+  <!-- 打勾（完成挑戰） -->
+  <path d="M210 302 L 246 338 L 310 262"
+        stroke="#E8633C" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+  <path d="M210 302 L 246 338 L 310 262"
+        stroke="#FFFFFF" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 星光 -->
+  <path d="M392 96 l8 22 22 8 -22 8 -8 22 -8 -22 -22 -8 22 -8 z" fill="#FFE9A0"/>
+  <path d="M118 392 l5 14 14 5 -14 5 -5 14 -5 -14 -14 -5 14 -5 z" fill="#FFFFFF" opacity="0.8"/>
 </svg>
