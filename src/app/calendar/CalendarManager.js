@@ -3,12 +3,18 @@
 import { useState } from 'react';
 import { Trash2, Clock, CalendarDays } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import MiniCalendar from '@/components/MiniCalendar';
+import MiniCalendar, { eventStyle } from '@/components/MiniCalendar';
 import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
 
 const EMPTY = { title: '', event_date: '', end_date: '', start_time: '', end_time: '', note: '', is_exam: false, exam_subjects: [] };
 
 const EXAM_SUBJECTS = ['國文', '英文', '數學', '理化', '社會'];
+
+function fmtDay(ymd) {
+  const d = new Date(ymd + 'T00:00:00');
+  const wd = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+  return `${d.getMonth() + 1} 月 ${d.getDate()} 日（${wd}）`;
+}
 
 export default function CalendarManager({ userId, initialEvents, doneDates, todayStr, canEdit }) {
   const [events, setEvents] = useState(initialEvents);
@@ -93,15 +99,25 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
           events={events}
           doneDates={doneDates}
           todayStr={todayStr}
+          selectedDate={selected}
           onSelectDate={selectDate}
         />
-        <p className="mt-3 text-xs text-slate-400">· 綠點 = 當天打卡完成　· 黃底 = 有行程</p>
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400">
+          <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-green-500" />打卡完成</span>
+          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-rose-400" />段考</span>
+          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-violet-400" />跨天活動</span>
+          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-sky-400" />定時行程</span>
+          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-amber-400" />全天行程</span>
+        </div>
       </div>
 
       <div>
-        <h2 className="mb-3 flex items-center gap-2 font-bold text-slate-800">
+        <h2 className="mb-3 flex items-center gap-2 text-lg font-extrabold text-slate-800">
           <CalendarDays size={18} className="text-blue-600" />
-          {selected} 的行程
+          {fmtDay(selected)} 的行程
+          {selected === todayStr && (
+            <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-black text-indigo-600">今天</span>
+          )}
         </h2>
         <ul className="flex flex-col gap-2">
           {selectedEvents.length === 0 && (
@@ -115,7 +131,7 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
             return (
               <li
                 key={e.id}
-                className="flex items-stretch gap-3 overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
+                className={`flex items-stretch gap-3 overflow-hidden rounded-2xl border border-l-4 border-slate-200 bg-white p-3 shadow-sm ${eventStyle(e).bar}`}
               >
                 {/* 時間欄 */}
                 <div

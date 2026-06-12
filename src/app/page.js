@@ -335,7 +335,7 @@ export default async function HomePage() {
             <Link href="/calendar" className="text-xs font-bold text-blue-600 hover:underline">管理日程 →</Link>
           </div>
           <MiniCalendar events={events ?? []} doneDates={doneDates} todayStr={today} compact />
-          <p className="mt-3 text-xs text-slate-400 font-medium">· 🟩 綠點 = 挑戰成功　· 🟧 黃點 = 有特殊行程</p>
+          <p className="mt-3 text-xs text-slate-400 font-medium">· 🟩 綠點 = 挑戰成功　· 彩色點 = 有行程（紅＝段考）</p>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-blue-200 transition-colors flex flex-col justify-between">

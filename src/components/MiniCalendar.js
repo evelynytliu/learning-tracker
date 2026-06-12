@@ -12,10 +12,19 @@ function addMonth(y, m, delta) {
   return { y: y + Math.floor(t / 12), m: ((t % 12) + 12) % 12 };
 }
 
+// 事件類型 → 顏色（格子色塊、清單左邊條、首頁小點共用）
+export function eventStyle(e) {
+  if (e.is_exam) return { pill: 'bg-rose-100 text-rose-700', dot: 'bg-rose-500', bar: 'border-l-rose-400' };
+  if (e.end_date && e.end_date !== e.event_date)
+    return { pill: 'bg-violet-100 text-violet-700', dot: 'bg-violet-500', bar: 'border-l-violet-400' };
+  if (e.start_time) return { pill: 'bg-sky-100 text-sky-700', dot: 'bg-sky-500', bar: 'border-l-sky-400' };
+  return { pill: 'bg-amber-100 text-amber-700', dot: 'bg-amber-500', bar: 'border-l-amber-400' };
+}
+
 // 用「百分比 + CSS transform」做月份滑動，不量像素寬度，避免 RWD 量測時機問題。
 // track 寬 300%（三個月），每個面板 33.3333%（= 一個視窗寬）。
 // 平時顯示中間面板：translateX(-33.3333%)。
-export default function MiniCalendar({ events = [], doneDates, todayStr, onSelectDate, compact }) {
+export default function MiniCalendar({ events = [], doneDates, todayStr, selectedDate, onSelectDate, compact }) {
   const today = todayStr ? new Date(todayStr + 'T00:00:00') : new Date();
   const [cursor, setCursor] = useState({ y: today.getFullYear(), m: today.getMonth() });
   const [dragPx, setDragPx] = useState(0); // 拖曳中的像素位移
@@ -107,25 +116,25 @@ export default function MiniCalendar({ events = [], doneDates, todayStr, onSelec
     }
   }
 
-  const panelProps = { eventsByDate, doneSet, todayStr, onSelectDate, compact };
+  const panelProps = { eventsByDate, doneSet, todayStr, selectedDate, onSelectDate, compact };
 
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <span className="font-semibold text-slate-800">
+        <span className="text-lg font-extrabold tracking-wide text-slate-800">
           {cursor.y} 年 {MONTHS[cursor.m]}
         </span>
         <div className="flex gap-1">
           <button
             onClick={() => animateTo(-1)}
-            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100"
+            className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100"
             aria-label="上個月"
           >
             <ChevronLeft size={18} />
           </button>
           <button
             onClick={() => animateTo(1)}
-            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100"
+            className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100"
             aria-label="下個月"
           >
             <ChevronRight size={18} />
@@ -133,10 +142,10 @@ export default function MiniCalendar({ events = [], doneDates, todayStr, onSelec
         </div>
       </div>
 
-      {/* 星期列（固定） */}
-      <div className="grid grid-cols-7 gap-1 text-center text-xs text-slate-400">
-        {WD.map((d) => (
-          <div key={d} className="py-1">{d}</div>
+      {/* 星期列（固定）；週末微微帶色 */}
+      <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold">
+        {WD.map((d, i) => (
+          <div key={d} className={`py-1 ${i >= 5 ? 'text-rose-300' : 'text-slate-400'}`}>{d}</div>
         ))}
       </div>
 
@@ -175,7 +184,7 @@ export default function MiniCalendar({ events = [], doneDates, todayStr, onSelec
   );
 }
 
-function DayGrid({ y, m, eventsByDate, doneSet, todayStr, onSelectDate, compact }) {
+function DayGrid({ y, m, eventsByDate, doneSet, todayStr, selectedDate, onSelectDate, compact }) {
   const first = new Date(y, m, 1);
   const startWd = (first.getDay() + 6) % 7; // 週一為 0
   const daysInMonth = new Date(y, m + 1, 0).getDate();
@@ -185,45 +194,80 @@ function DayGrid({ y, m, eventsByDate, doneSet, todayStr, onSelectDate, compact 
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
   return (
-    <div className="grid grid-cols-7 gap-1 px-0.5">
+    <div className={`grid grid-cols-7 px-0.5 ${compact ? 'gap-1' : 'gap-0.5 sm:gap-1'}`}>
       {cells.map((d, i) => {
         if (d === null) return <div key={`e${i}`} />;
         const ymd = toYMD(new Date(y, m, d));
         const isToday = ymd === (todayStr || toYMD());
+        const isSelected = selectedDate === ymd;
         const dayEvents = eventsByDate[ymd] || [];
         const isDone = doneSet.has(ymd);
+
+        if (compact) {
+          // 首頁迷你版：日期 + 事件彩點（最多 3 顆）
+          return (
+            <button
+              key={ymd}
+              onClick={() => onSelectDate?.(ymd)}
+              className={`relative flex h-9 flex-col items-center justify-start rounded-lg py-1 text-sm transition ${
+                isToday ? 'bg-indigo-600 text-white shadow-sm' : 'hover:bg-slate-100'
+              }`}
+            >
+              <span className="flex items-center gap-0.5 leading-tight">
+                {d}
+                {isDone && <span className={isToday ? 'text-white' : 'text-green-500'}>·</span>}
+              </span>
+              {dayEvents.length > 0 && (
+                <span className="absolute bottom-1 flex gap-0.5">
+                  {dayEvents.slice(0, 3).map((ev, j) => (
+                    <span
+                      key={j}
+                      className={`h-1 w-1 rounded-full ${isToday ? 'bg-white/80' : eventStyle(ev).dot}`}
+                    />
+                  ))}
+                </span>
+              )}
+            </button>
+          );
+        }
+
+        // 完整版（/calendar）：格子裡直接顯示事件名稱色塊
         return (
           <button
             key={ymd}
             onClick={() => onSelectDate?.(ymd)}
-            className={`relative flex flex-col items-center rounded-lg ${
-              compact ? 'h-9' : 'h-14'
-            } justify-start py-1 text-sm transition ${
-              isToday ? 'bg-indigo-600 text-white' : 'hover:bg-slate-100'
+            className={`flex min-h-[4.6rem] flex-col items-stretch rounded-xl border p-1 text-left transition ${
+              isSelected
+                ? 'border-indigo-300 bg-indigo-50/80 shadow-sm ring-2 ring-indigo-200'
+                : 'border-transparent hover:bg-slate-100/80'
             }`}
           >
-            <span className="flex items-center gap-0.5">
-              {d}
-              {isDone && <span className={isToday ? 'text-white' : 'text-green-500'}>·</span>}
-            </span>
-            {!compact && dayEvents.length > 0 && (
-              <span className="mt-0.5 w-full truncate px-1 text-xs leading-tight">
-                <span
-                  className={`rounded px-1 ${
-                    isToday ? 'bg-white/20' : 'bg-amber-100 text-amber-700'
-                  }`}
-                >
-                  {dayEvents[0].start_time ? `${dayEvents[0].start_time.slice(0, 5)} ` : ''}
-                  {dayEvents[0].title}
-                </span>
-                {dayEvents.length > 1 && (
-                  <span className={isToday ? 'text-white/70' : 'text-amber-500'}> +{dayEvents.length - 1}</span>
-                )}
+            <span className="flex w-full items-center justify-between px-0.5">
+              <span
+                className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${
+                  isToday ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600'
+                }`}
+              >
+                {d}
               </span>
-            )}
-            {compact && dayEvents.length > 0 && (
-              <span className="absolute bottom-1 h-1 w-1 rounded-full bg-amber-500" />
-            )}
+              {isDone && <span className="h-1.5 w-1.5 rounded-full bg-green-500" title="當天打卡完成" />}
+            </span>
+            <span className="mt-0.5 flex w-full flex-col gap-0.5">
+              {dayEvents.slice(0, 2).map((ev) => (
+                <span
+                  key={ev.id}
+                  className={`block w-full overflow-hidden whitespace-nowrap text-clip rounded-md px-0.5 text-[10px] font-bold leading-4 sm:text-ellipsis sm:px-1 ${eventStyle(ev).pill}`}
+                >
+                  {ev.is_exam ? '🔥' : ''}
+                  {ev.title}
+                </span>
+              ))}
+              {dayEvents.length > 2 && (
+                <span className="px-0.5 text-[9px] font-semibold text-slate-400 sm:px-1">
+                  +{dayEvents.length - 2}
+                </span>
+              )}
+            </span>
           </button>
         );
       })}
