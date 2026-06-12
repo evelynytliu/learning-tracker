@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { Coins } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import MiniCalendar from '@/components/MiniCalendar';
 import { toYMD, weekStart, weekStartYMD, isoDayOfWeek, DAY_LABELS } from '@/lib/date';
@@ -189,7 +190,7 @@ export default async function HomePage() {
           <div className="flex items-center gap-2">
             <span className="text-xs font-black uppercase tracking-widest text-emerald-600">我的寵物</span>
             <span className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-2 py-0.5 text-[11px] font-black text-white">
-              🪙 {balance}
+              <Coins size={12} strokeWidth={2.5} /> {balance}
             </span>
           </div>
           {petDef ? (

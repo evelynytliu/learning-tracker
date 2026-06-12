@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
+  Coins,
   Plus,
   Pencil,
   Trash2,
@@ -177,7 +178,7 @@ export default function CourseManager({ userId, initialCourses, initialProgress 
         </div>
         <div className="hidden text-right sm:block">
           <p className="section-label">獎勵</p>
-          <p className="mt-1 text-sm font-bold text-amber-600">🪙 每集 +5 點</p>
+          <p className="mt-1 flex items-center justify-end gap-1 text-sm font-bold text-amber-600"><Coins size={14} /> 每集 +5 點</p>
         </div>
       </div>
 
