@@ -78,6 +78,7 @@ export const PARENT_NAV = [
   { href: '/dashboard', label: '總覽', icon: LayoutDashboard, exact: true },
   { href: '/dashboard/mistakes', label: '錯題', icon: NotebookPen },
   { href: '/dashboard/monthly', label: '月報', icon: CalendarDays },
+  { href: '/dashboard/pets', label: '圖鑑', icon: Sprout },
   { href: '/courses', label: '課程', icon: MonitorPlay },
   { href: '/calendar', label: '行事曆', icon: CalendarRange },
   { href: '/assignments', label: '作業', icon: ClipboardList },
