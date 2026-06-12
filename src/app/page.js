@@ -68,7 +68,7 @@ export default async function HomePage() {
     supabase.from('mistakes').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
     supabase
       .from('calendar_events')
-      .select('id, title, event_date, end_date, start_time, end_time')
+      .select('id, title, event_date, end_date, start_time, end_time, is_exam, exam_subjects')
       .eq('user_id', user.id)
       .gte('event_date', toYMD(since)),
     supabase
@@ -123,6 +123,17 @@ export default async function HomePage() {
         (a.start_time || '').localeCompare(b.start_time || ''),
     )
     .slice(0, 4);
+
+  // 下一場段考（21 天內顯示倒數；7 天內進入衝刺模式）
+  const nextExam = (events ?? [])
+    .filter((e) => e.is_exam && e.event_date >= today)
+    .sort((a, b) => a.event_date.localeCompare(b.event_date))[0];
+  const examDays = nextExam
+    ? Math.round(
+        (new Date(`${nextExam.event_date}T00:00:00+08:00`) - new Date(`${today}T00:00:00+08:00`)) /
+          86400000,
+      )
+    : null;
 
   // 寵物 + 點數：先對帳補發，再讀餘額與目前正在養的寵物
   await supabase.rpc('award_points', { p_user_id: user.id, p_today: today });
@@ -217,6 +228,43 @@ export default async function HomePage() {
           去照顧 →
         </span>
       </Link>
+
+      {/* 段考倒數 */}
+      {nextExam && examDays !== null && examDays <= 21 && (
+        <Link
+          href={examDays <= 7 ? '/mistakes' : '/calendar'}
+          className={`mb-4 flex items-center justify-between gap-3 rounded-2xl border p-4 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md ${
+            examDays <= 7
+              ? 'border-rose-200 bg-gradient-to-r from-rose-50 via-orange-50 to-white'
+              : 'border-amber-200 bg-gradient-to-r from-amber-50 to-white'
+          }`}
+        >
+          <div className="min-w-0">
+            <p className={`text-xs font-black uppercase tracking-widest ${examDays <= 7 ? 'text-rose-500' : 'text-amber-600'}`}>
+              {examDays <= 7 ? '🔥 衝刺模式啟動' : '⏳ 段考倒數'}
+            </p>
+            <p className="mt-0.5 truncate text-lg font-black text-slate-800">
+              {nextExam.title}
+              {nextExam.exam_subjects?.length > 0 && (
+                <span className="ml-1.5 text-xs font-bold text-slate-400">
+                  {nextExam.exam_subjects.join('・')}
+                </span>
+              )}
+            </p>
+            <p className="mt-0.5 text-xs font-semibold text-slate-500">
+              {examDays <= 7
+                ? '該科錯題已全部排入今日複習，每天清一輪！→'
+                : '提早準備，每天複習一點點就好'}
+            </p>
+          </div>
+          <div className={`flex h-16 w-16 flex-shrink-0 flex-col items-center justify-center rounded-2xl text-white shadow-md ${
+            examDays <= 7 ? 'bg-gradient-to-br from-rose-500 to-orange-500' : 'bg-gradient-to-br from-amber-400 to-orange-400'
+          }`}>
+            <span className="text-2xl font-black leading-none">{examDays}</span>
+            <span className="text-[10px] font-bold opacity-90">天</span>
+          </div>
+        </Link>
+      )}
 
       {/* 第一排：今日任務 (XP) + 連勝火焰 + 每週挑戰 */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

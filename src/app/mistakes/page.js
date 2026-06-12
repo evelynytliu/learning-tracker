@@ -48,9 +48,40 @@ export default async function MistakesPage() {
 
   // 今日待複習（間隔複習：登記後 3 天 → 7 天 → 14 天，連對 3 次精熟畢業）
   const today = toYMD();
-  const due = (mistakes || []).filter(
+  const normalDue = (mistakes || []).filter(
     (m) => !m.mastered_at && m.next_review_date && m.next_review_date <= today,
   );
+
+  // 段考衝刺：考前 7 天，把考科所有未精熟錯題全部排入複習
+  const sevenDaysLater = toYMD(new Date(new Date(`${today}T00:00:00+08:00`).getTime() + 7 * 86400000));
+  const { data: exams } = await supabase
+    .from('calendar_events')
+    .select('title, event_date, exam_subjects')
+    .eq('user_id', user.id)
+    .eq('is_exam', true)
+    .gte('event_date', today)
+    .lte('event_date', sevenDaysLater)
+    .order('event_date', { ascending: true });
+  const sprintExam = (exams ?? [])[0] ?? null;
+  const sprintSubjects = new Set();
+  let sprintAll = false;
+  for (const ex of exams ?? []) {
+    if (!ex.exam_subjects || ex.exam_subjects.length === 0) sprintAll = true;
+    for (const sub of ex.exam_subjects ?? []) sprintSubjects.add(sub);
+  }
+  const dueIds = new Set(normalDue.map((m) => m.id));
+  const sprintDue = sprintExam
+    ? (mistakes || []).filter(
+        (m) => !m.mastered_at && !dueIds.has(m.id) && (sprintAll || sprintSubjects.has(m.subject)),
+      )
+    : [];
+  const due = [...normalDue, ...sprintDue];
+  const examDays = sprintExam
+    ? Math.round(
+        (new Date(`${sprintExam.event_date}T00:00:00+08:00`) - new Date(`${today}T00:00:00+08:00`)) /
+          86400000,
+      )
+    : null;
   const masteredCount = (mistakes || []).filter((m) => m.mastered_at).length;
 
   return (
@@ -72,6 +103,15 @@ export default async function MistakesPage() {
       </p>
 
       <div className="mt-5">
+        {sprintExam && due.length > 0 && (
+          <div className="mb-3 flex items-center gap-3 rounded-2xl border border-rose-200 bg-gradient-to-r from-rose-50 to-orange-50 p-3.5">
+            <span className="text-2xl">🔥</span>
+            <p className="text-sm font-bold text-rose-700">
+              段考衝刺中！「{sprintExam.title}」還有 {examDays} 天——
+              {sprintAll ? '全科' : [...sprintSubjects].join('、')}未精熟的錯題已全部排入今日複習
+            </p>
+          </div>
+        )}
         <ReviewQueue due={due} signedMap={signedMap} />
       </div>
 

@@ -6,7 +6,9 @@ import { createClient } from '@/lib/supabase/client';
 import MiniCalendar from '@/components/MiniCalendar';
 import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
 
-const EMPTY = { title: '', event_date: '', end_date: '', start_time: '', end_time: '', note: '' };
+const EMPTY = { title: '', event_date: '', end_date: '', start_time: '', end_time: '', note: '', is_exam: false, exam_subjects: [] };
+
+const EXAM_SUBJECTS = ['國文', '英文', '數學', '理化', '社會'];
 
 export default function CalendarManager({ userId, initialEvents, doneDates, todayStr, canEdit }) {
   const [events, setEvents] = useState(initialEvents);
@@ -55,6 +57,8 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
       start_time: draft.start_time || null,
       end_time: draft.end_time || null,
       note: draft.note.trim() || null,
+      is_exam: !!draft.is_exam,
+      exam_subjects: draft.is_exam ? draft.exam_subjects : [],
     };
     let created;
     const ok = await run(async () => {
@@ -134,7 +138,14 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
                 </div>
                 {/* 內容 */}
                 <div className="min-w-0 flex-1">
-                  <div className="font-bold text-slate-800">{e.title}</div>
+                  <div className="flex items-center gap-1.5 font-bold text-slate-800">
+                    {e.title}
+                    {e.is_exam && (
+                      <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-black text-rose-600">
+                        🔥 段考{e.exam_subjects?.length ? `・${e.exam_subjects.join('')}` : ''}
+                      </span>
+                    )}
+                  </div>
                   {multiDay && (
                     <div className="mt-0.5 flex items-center gap-1 text-xs font-medium text-amber-600">
                       <CalendarDays size={12} />
@@ -210,6 +221,41 @@ export default function CalendarManager({ userId, initialEvents, doneDates, toda
               />
               <span className="text-xs text-slate-400">跨多天才填</span>
             </div>
+
+            <label className="mt-3 flex items-center gap-2 text-sm font-bold text-slate-600">
+              <input
+                type="checkbox"
+                checked={draft.is_exam}
+                onChange={(e) => setDraft({ ...draft, is_exam: e.target.checked })}
+                className="h-4 w-4 accent-rose-500"
+              />
+              🔥 這是段考／大考（考前 7 天自動啟動錯題衝刺）
+            </label>
+            {draft.is_exam && (
+              <div className="mt-2 flex flex-wrap gap-1.5 pl-6">
+                {EXAM_SUBJECTS.map((sub) => {
+                  const on = draft.exam_subjects.includes(sub);
+                  return (
+                    <button
+                      key={sub}
+                      type="button"
+                      onClick={() =>
+                        setDraft({
+                          ...draft,
+                          exam_subjects: on
+                            ? draft.exam_subjects.filter((x) => x !== sub)
+                            : [...draft.exam_subjects, sub],
+                        })
+                      }
+                      className={`chip px-3 py-1.5 text-xs ${on ? 'chip-on' : ''}`}
+                    >
+                      {sub}
+                    </button>
+                  );
+                })}
+                <span className="self-center text-[10px] text-slate-400">不選 = 全科</span>
+              </div>
+            )}
 
             <input
               type="text"

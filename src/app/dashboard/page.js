@@ -35,7 +35,13 @@ export default async function DashboardPage() {
   // mistakes.created_at 是 timestamptz，用週一的本地 00:00 當下界
   const weekStartTs = weekStartDate().toISOString();
 
-  const [{ data: checkins }, { data: mistakes }, { data: courses }, { data: courseProgress }] =
+  const [
+    { data: checkins },
+    { data: mistakes },
+    { data: courses },
+    { data: courseProgress },
+    { data: focusSessions },
+  ] =
     await Promise.all([
       supabase.from('daily_checkins').select('*').eq('user_id', student.id).gte('date', weekStart),
       supabase
@@ -52,7 +58,14 @@ export default async function DashboardPage() {
         .from('course_progress')
         .select('course_id, done_at')
         .eq('user_id', student.id),
+      supabase
+        .from('focus_sessions')
+        .select('minutes')
+        .eq('user_id', student.id)
+        .gte('started_at', weekStartTs),
     ]);
+
+  const focusMinutesWeek = (focusSessions || []).reduce((sum, s) => sum + (s.minutes || 0), 0);
 
   const fullDays = (checkins || []).filter(isDayComplete).length;
   const today = new Date();
@@ -107,7 +120,7 @@ export default async function DashboardPage() {
       </header>
 
       {/* 重點數字 */}
-      <section className="stagger grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <section className="stagger grid grid-cols-2 gap-3 lg:grid-cols-5">
         <div className="card p-4">
           <p className="section-label">本週打卡率</p>
           <p className="mt-2 text-3xl font-black text-slate-900">{rate}%</p>
@@ -142,6 +155,12 @@ export default async function DashboardPage() {
           <Link href="/courses" className="mt-2 inline-block text-xs font-bold text-indigo-500 hover:underline">
             集／堂・看進度 →
           </Link>
+        </div>
+
+        <div className="card p-4">
+          <p className="section-label">本週專注</p>
+          <p className="mt-2 text-3xl font-black text-slate-900">{focusMinutesWeek}</p>
+          <p className="mt-2 text-xs font-semibold text-slate-400">分鐘</p>
         </div>
       </section>
 

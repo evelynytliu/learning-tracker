@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   Sprout,
   MonitorPlay,
+  Timer,
 } from 'lucide-react';
 
 // 學生：側邊欄（分組讓動線更清楚）
@@ -24,6 +25,7 @@ export const STUDENT_NAV_GROUPS = [
     items: [
       { href: '/', label: '主控中心', icon: Home, exact: true },
       { href: '/checkin', label: '每日挑戰', icon: CheckCircle2 },
+      { href: '/focus', label: '專注時間', icon: Timer },
       { href: '/assignments', label: '任務挑戰', icon: ClipboardList },
       { href: '/weekly', label: '每週挑戰', icon: Target },
     ],
