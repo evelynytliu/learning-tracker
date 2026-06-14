@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { ACHIEVEMENT_MAP } from '@/lib/achievements';
 import AchievementToast from '@/components/AchievementToast';
 import { useSaveRunner, SaveStatusPill } from '@/components/SaveStatus';
+import { syncDailySummary } from '@/lib/checkin-actions';
 import { toYMD } from '@/lib/date';
 
 // props:
@@ -55,21 +56,14 @@ export default function CheckinForm({
   // 同時回寫 pinxuetang_done：有勾任何名稱含「品學堂」的項目就算，
   // 讓品學堂的點數（+3/天）與徽章能正常累積。
   function syncSummary(supabase, nextDone, nextRest) {
-    const doneCount = tasks.filter((t) => nextDone[t.id]).length;
-    const pinxDone = [...tasks, ...bonusTasks].some(
-      (t) => nextDone[t.id] && (t.label || '').includes('品學堂'),
-    );
-    return supabase.from('daily_checkins').upsert(
-      {
-        user_id: userId,
-        date,
-        is_rest_day: nextRest,
-        tasks_total: tasks.length,
-        tasks_done: doneCount,
-        pinxuetang_done: pinxDone,
-      },
-      { onConflict: 'user_id,date' },
-    );
+    return syncDailySummary(supabase, {
+      userId,
+      date,
+      tasks,
+      bonusTasks,
+      done: nextDone,
+      rest: nextRest,
+    });
   }
 
   function toggleTask(taskId) {

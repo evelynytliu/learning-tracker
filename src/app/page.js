@@ -11,6 +11,7 @@ import { loadDayCheckin } from '@/lib/checkin-data';
 import { ACHIEVEMENT_MAP } from '@/lib/achievements';
 import { PETS, stageFromGrowth, stageProgress, nextThreshold, MAX_STAGE } from '@/lib/pets';
 import PetSprite from '@/components/PetSprite';
+import TodayCard from '@/components/TodayCard';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,7 +37,6 @@ export default async function HomePage() {
   since.setMonth(since.getMonth() - 2);
 
   const [
-    { data: todayCheckin },
     { data: checkins },
     { data: goals },
     { data: todayClasses },
@@ -48,12 +48,6 @@ export default async function HomePage() {
     { count: courseUnitsWeek },
     { count: dueReviews },
   ] = await Promise.all([
-    supabase
-      .from('daily_checkins')
-      .select('tasks_total, tasks_done, is_rest_day')
-      .eq('user_id', user.id)
-      .eq('date', today)
-      .maybeSingle(),
     supabase
       .from('daily_checkins')
       .select('date, tasks_total, tasks_done, is_rest_day')
@@ -103,13 +97,9 @@ export default async function HomePage() {
       .lte('next_review_date', today),
   ]);
 
-  // 今天實際要做的清單（套用暑假平日/假日等規則），首頁一進來就看到待完成項目
+  // 今天實際要做的清單（套用暑假平日/假日等規則）；TodayCard 會用它做可勾選清單
   const todayPlan = await loadDayCheckin(supabase, user.id, today);
-  const todayPending = todayPlan.tasks.filter((t) => !todayPlan.doneMap[t.id]);
 
-  const total = todayCheckin?.tasks_total ?? 0;
-  const doneCount = todayCheckin?.tasks_done ?? 0;
-  const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
   const streak = computeStreakFromSummary(checkins ?? [], today);
   const goalsTotal = goals?.length ?? 0;
   const goalsDone = (goals ?? []).filter((g) => g.progress >= g.target).length;
@@ -160,8 +150,6 @@ export default async function HomePage() {
   const petPct = activePet ? Math.round(stageProgress(activePet.growth) * 100) : 0;
   const petNext = activePet ? nextThreshold(activePet.growth) : null;
 
-  const allDone = total > 0 && doneCount >= total;
-
   return (
     <AppShell role={profile?.role ?? 'student'} email={user.email} displayName={profile?.display_name}>
       {/* 標題 */}
@@ -177,175 +165,79 @@ export default async function HomePage() {
         </p>
       </header>
 
-      {/* ───────── ① 今天任務中心（主角，放大置頂）───────── */}
-      <section className="mb-6 overflow-hidden rounded-3xl border border-blue-200 bg-white shadow-md">
-        <div className="bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 px-5 py-4 text-white">
-          <div className="flex items-center justify-between">
-            <h2 className="flex items-center gap-2 text-lg font-black">
-              📌 今天要做什麼
-              {todayPlan.setName && (
-                <span className="rounded bg-white/20 px-2 py-0.5 text-[11px] font-bold">
-                  {todayPlan.setName}
-                </span>
-              )}
-            </h2>
-            <span className="rounded-full bg-blue-900/40 px-3 py-0.5 text-sm font-black">
-              {doneCount}/{total || '—'}
-            </span>
-          </div>
-          <div className="mt-3 h-3 w-full overflow-hidden rounded-full border border-blue-400/20 bg-blue-900/40 p-0.5">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-500"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
+      {/* ───────── ① 今天要做什麼 ＋ ② 我的寵物（左右並排）───────── */}
+      <div className="mb-3 grid gap-4 lg:grid-cols-5 lg:items-stretch">
+        {/* ① 今天要做什麼：可直接在這裡點項目打勾，不必進打卡頁 */}
+        <div className="lg:col-span-3">
+          <TodayCard
+            userId={user.id}
+            date={today}
+            setName={todayPlan.setName}
+            tasks={todayPlan.tasks}
+            bonusTasks={todayPlan.bonusTasks}
+            initialDone={todayPlan.doneMap}
+            isRest={todayPlan.isRest}
+            todayClasses={todayClasses ?? []}
+            dueReviews={dueReviews ?? 0}
+            assignmentsCount={assignmentsLeft.length}
+          />
         </div>
 
-        <div className="p-5">
-          {todayPlan.isRest ? (
-            <p className="py-4 text-center text-sm font-bold text-slate-500">😌 今天是免讀日，好好休息！</p>
-          ) : todayPlan.tasks.length === 0 ? (
-            <p className="py-4 text-center text-sm font-medium text-slate-400">
-              還沒設定今天的清單，
-              <Link href="/settings/tasks" className="font-bold text-blue-600">
-                去設定 →
-              </Link>
-            </p>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {todayPlan.tasks.map((t) => {
-                const done = !!todayPlan.doneMap[t.id];
-                return (
-                  <li
-                    key={t.id}
-                    className={`flex items-start gap-3 rounded-xl border p-2.5 ${
-                      done ? 'border-slate-100 bg-slate-50/40' : 'border-blue-100 bg-blue-50/40'
-                    }`}
-                  >
-                    <span className="mt-0.5 text-lg leading-none">{done ? '✅' : '⬜'}</span>
-                    <div className="min-w-0 flex-1">
-                      <span
-                        className={`text-sm font-bold ${
-                          done ? 'text-slate-400 line-through' : 'text-slate-800'
-                        }`}
-                      >
-                        {t.label}
-                      </span>
-                      {t.hint && (
-                        <span
-                          className={`mt-0.5 block text-[11px] font-medium ${
-                            done ? 'text-slate-300' : 'text-slate-500'
-                          }`}
-                        >
-                          {t.hint}
-                        </span>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+        {/* ② 我的寵物：直立主角卡，與「今天」並排 */}
+        <Link
+          href="/pet"
+          className="group relative flex flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-6 text-center shadow-md transition-all duration-150 hover:-translate-y-0.5 hover:shadow-lg lg:col-span-2"
+        >
+          {/* 背景裝飾漂浮 emoji */}
+          <span className="pointer-events-none absolute -right-3 -top-2 select-none text-7xl opacity-[0.08]">🌿</span>
+          <span className="pointer-events-none absolute bottom-2 left-2 select-none text-4xl opacity-[0.10]">✨</span>
 
-          {/* 今日時間表（從課表抓今天的時段，一行帶過）*/}
-          {todayClasses && todayClasses.length > 0 && (
-            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-slate-50 px-3 py-2 text-[11px] font-bold text-slate-500">
-              <span className="text-slate-400">⏰ 今日時間</span>
-              {todayClasses.map((c) => (
-                <span key={c.period}>
-                  {c.start_time ? c.start_time.slice(0, 5) + ' ' : ''}
-                  {c.subject}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* 真有急事才跳出來 */}
-          {(dueReviews > 0 || assignmentsLeft.length > 0) && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {dueReviews > 0 && (
-                <Link
-                  href="/mistakes"
-                  className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-bold text-rose-600"
-                >
-                  🔔 錯題 {dueReviews} 題待複習
-                </Link>
-              )}
-              {assignmentsLeft.length > 0 && (
-                <Link
-                  href="/assignments"
-                  className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-600"
-                >
-                  📋 {assignmentsLeft.length} 項作業待繳
-                </Link>
-              )}
-            </div>
-          )}
-
-          <Link
-            href="/checkin"
-            className="mt-4 flex items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-3 font-black text-white shadow-sm transition hover:shadow-md hover:brightness-105"
-          >
-            {allDone ? '今天的挑戰完成了！再看一次 🏆' : `去打卡完成今天（還剩 ${todayPending.length} 項）→`}
-          </Link>
-        </div>
-      </section>
-
-      {/* ───────── ② 我的寵物（主角 hero，放大置中）───────── */}
-      <Link
-        href="/pet"
-        className="group relative mb-3 flex items-center gap-5 overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-5 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md sm:gap-8 sm:p-7"
-      >
-        {/* 背景裝飾漂浮 emoji */}
-        <span className="pointer-events-none absolute -right-3 -top-2 select-none text-7xl opacity-[0.08]">🌿</span>
-        <span className="pointer-events-none absolute bottom-1 right-16 select-none text-4xl opacity-[0.10]">✨</span>
-
-        <div className="flex h-28 w-28 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/70 shadow-inner ring-4 ring-white/60 sm:h-40 sm:w-40">
-          {activePet ? (
-            <PetSprite species={activePet.species} stage={petStage} size="lg" />
-          ) : (
-            <span className="animate-float text-6xl drop-shadow-sm sm:text-8xl">🥚</span>
-          )}
-        </div>
-
-        <div className="relative min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="relative flex items-center gap-2">
             <span className="text-xs font-black uppercase tracking-widest text-emerald-600">我的寵物</span>
             <span className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-2.5 py-0.5 text-xs font-black text-white">
               <Coins size={13} strokeWidth={2.5} /> {balance}
             </span>
           </div>
-          {petDef ? (
-            <>
-              <p className="mt-1 text-2xl font-black text-slate-800 sm:text-3xl">
-                {petDef.name}
-                <span className="ml-2 text-sm font-bold text-slate-400">
+
+          <div className="relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-white/70 shadow-inner ring-4 ring-white/60 sm:h-44 sm:w-44">
+            {activePet ? (
+              <PetSprite species={activePet.species} stage={petStage} size="lg" />
+            ) : (
+              <span className="animate-float text-7xl drop-shadow-sm sm:text-8xl">🥚</span>
+            )}
+          </div>
+
+          <div className="relative w-full">
+            {petDef ? (
+              <>
+                <p className="text-xl font-black text-slate-800 sm:text-2xl">{petDef.name}</p>
+                <p className="mt-0.5 text-xs font-bold text-slate-400">
                   {petDef.stages[petStage].name}・階段 {petStage + 1}/{MAX_STAGE + 1}
-                </span>
-              </p>
-              {petStage >= MAX_STAGE ? (
-                <p className="mt-2 text-sm font-black text-amber-600">🏆 已經完全長大了！</p>
-              ) : (
-                <div className="mt-3 max-w-md">
-                  <div className="h-3 w-full overflow-hidden rounded-full bg-white/80 shadow-inner">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-500"
-                      style={{ width: `${petPct}%` }}
-                    />
+                </p>
+                {petStage >= MAX_STAGE ? (
+                  <p className="mt-2 text-sm font-black text-amber-600">🏆 已經完全長大了！</p>
+                ) : (
+                  <div className="mx-auto mt-3 max-w-[15rem]">
+                    <div className="h-3 w-full overflow-hidden rounded-full bg-white/80 shadow-inner">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-500"
+                        style={{ width: `${petPct}%` }}
+                      />
+                    </div>
+                    <p className="mt-1.5 text-[11px] font-bold text-slate-500">
+                      成長 {activePet.growth} / 下一階段 {petNext}　·　用點數餵牠長大 →
+                    </p>
                   </div>
-                  <p className="mt-1.5 text-xs font-bold text-slate-500">
-                    成長 {activePet.growth} / 下一階段 {petNext}　·　用點數餵牠長大 →
-                  </p>
-                </div>
-              )}
-            </>
-          ) : (
-            <p className="mt-1 text-base font-bold text-slate-600 sm:text-lg">
-              還沒有夥伴！點我去<span className="text-emerald-600">領養一隻</span>，用學習點數養大牠 🌱
-            </p>
-          )}
-        </div>
-      </Link>
+                )}
+              </>
+            ) : (
+              <p className="text-sm font-bold text-slate-600">
+                還沒有夥伴！點我去<span className="text-emerald-600">領養一隻</span>，用學習點數養大牠 🌱
+              </p>
+            )}
+          </div>
+        </Link>
+      </div>
 
       {/* ③ 養成狀態列：連勝（醒目橘卡）＋點數／目標／勳章 */}
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
