@@ -291,87 +291,83 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ───────── ② 我的養成（寵物＋連勝，保持明顯）───────── */}
-      <div className="mb-3 grid gap-4 lg:grid-cols-3">
-        <Link
-          href="/pet"
-          className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-teal-50 to-white p-4 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md sm:gap-5 lg:col-span-2"
-        >
-          <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/70 shadow-inner sm:h-24 sm:w-24">
-            {activePet ? (
-              <PetSprite species={activePet.species} stage={petStage} size="md" />
-            ) : (
-              <span className="animate-float text-5xl drop-shadow-sm sm:text-6xl">🥚</span>
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-black uppercase tracking-widest text-emerald-600">我的寵物</span>
-              <span className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-2 py-0.5 text-[11px] font-black text-white">
-                <Coins size={12} strokeWidth={2.5} /> {balance}
-              </span>
-            </div>
-            {petDef ? (
-              <>
-                <p className="mt-0.5 truncate text-lg font-black text-slate-800">
-                  {petDef.name}
-                  <span className="ml-1.5 text-xs font-bold text-slate-400">
-                    {petDef.stages[petStage].name}・階段 {petStage + 1}/{MAX_STAGE + 1}
-                  </span>
-                </p>
-                {petStage >= MAX_STAGE ? (
-                  <p className="mt-1.5 text-xs font-black text-amber-600">🏆 已經完全長大了！</p>
-                ) : (
-                  <div className="mt-1.5">
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-white/80">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-500"
-                        style={{ width: `${petPct}%` }}
-                      />
-                    </div>
-                    <p className="mt-1 text-[11px] font-bold text-slate-400">
-                      成長 {activePet.growth} / 下一階段 {petNext}　·　用點數餵牠 →
-                    </p>
-                  </div>
-                )}
-              </>
-            ) : (
-              <p className="mt-0.5 text-sm font-bold text-slate-600">
-                還沒有夥伴！點我去<span className="text-emerald-600">領養一隻</span>，用學習點數養大牠 🌱
-              </p>
-            )}
-          </div>
-        </Link>
+      {/* ───────── ② 我的寵物（主角 hero，放大置中）───────── */}
+      <Link
+        href="/pet"
+        className="group relative mb-3 flex items-center gap-5 overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-5 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md sm:gap-8 sm:p-7"
+      >
+        {/* 背景裝飾漂浮 emoji */}
+        <span className="pointer-events-none absolute -right-3 -top-2 select-none text-7xl opacity-[0.08]">🌿</span>
+        <span className="pointer-events-none absolute bottom-1 right-16 select-none text-4xl opacity-[0.10]">✨</span>
 
+        <div className="flex h-28 w-28 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/70 shadow-inner ring-4 ring-white/60 sm:h-40 sm:w-40">
+          {activePet ? (
+            <PetSprite species={activePet.species} stage={petStage} size="lg" />
+          ) : (
+            <span className="animate-float text-6xl drop-shadow-sm sm:text-8xl">🥚</span>
+          )}
+        </div>
+
+        <div className="relative min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-black uppercase tracking-widest text-emerald-600">我的寵物</span>
+            <span className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-2.5 py-0.5 text-xs font-black text-white">
+              <Coins size={13} strokeWidth={2.5} /> {balance}
+            </span>
+          </div>
+          {petDef ? (
+            <>
+              <p className="mt-1 text-2xl font-black text-slate-800 sm:text-3xl">
+                {petDef.name}
+                <span className="ml-2 text-sm font-bold text-slate-400">
+                  {petDef.stages[petStage].name}・階段 {petStage + 1}/{MAX_STAGE + 1}
+                </span>
+              </p>
+              {petStage >= MAX_STAGE ? (
+                <p className="mt-2 text-sm font-black text-amber-600">🏆 已經完全長大了！</p>
+              ) : (
+                <div className="mt-3 max-w-md">
+                  <div className="h-3 w-full overflow-hidden rounded-full bg-white/80 shadow-inner">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-500"
+                      style={{ width: `${petPct}%` }}
+                    />
+                  </div>
+                  <p className="mt-1.5 text-xs font-bold text-slate-500">
+                    成長 {activePet.growth} / 下一階段 {petNext}　·　用點數餵牠長大 →
+                  </p>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="mt-1 text-base font-bold text-slate-600 sm:text-lg">
+              還沒有夥伴！點我去<span className="text-emerald-600">領養一隻</span>，用學習點數養大牠 🌱
+            </p>
+          )}
+        </div>
+      </Link>
+
+      {/* ③ 養成狀態列：連勝（醒目橘卡）＋點數／目標／勳章 */}
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Link
           href="/streak"
-          className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 p-5 text-white shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md"
+          className="flex flex-col justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 p-3 text-center text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
         >
-          <span className="self-start rounded bg-white/20 px-2.5 py-0.5 text-xs font-black uppercase tracking-widest">
-            連勝紀錄
-          </span>
-          <div className="mt-2 flex items-baseline gap-1">
-            <span className="text-4xl font-black tracking-tight">🔥 {streak}</span>
-            <span className="text-sm font-bold opacity-90">天連勝</span>
-          </div>
-          <span className="mt-1 block text-[10px] font-medium opacity-80">保持連勝以解鎖榮譽勳章！</span>
+          <div className="text-2xl font-black">🔥 {streak}</div>
+          <div className="text-[10px] font-bold opacity-90">天連勝</div>
         </Link>
-      </div>
-
-      {/* ③ 狀態小排：點數 · 本週目標 · 最新勳章 */}
-      <div className="mb-6 grid grid-cols-3 gap-3">
         <Link
           href="/pet"
           className="rounded-2xl border border-amber-200 bg-amber-50/60 p-3 text-center transition hover:shadow-sm"
         >
-          <div className="text-xl font-black text-amber-600">🪙 {balance}</div>
+          <div className="text-2xl font-black text-amber-600">🪙 {balance}</div>
           <div className="text-[10px] font-bold text-slate-400">學習點數</div>
         </Link>
         <Link
           href="/weekly"
           className="rounded-2xl border border-slate-200 bg-white p-3 text-center transition hover:shadow-sm"
         >
-          <div className="text-xl font-black text-slate-800">
+          <div className="text-2xl font-black text-slate-800">
             🎯 {goalsDone}/{goalsTotal || 0}
           </div>
           <div className="text-[10px] font-bold text-slate-400">本週目標</div>
@@ -380,7 +376,7 @@ export default async function HomePage() {
           href="/achievements"
           className="rounded-2xl border border-slate-200 bg-white p-3 text-center transition hover:shadow-sm"
         >
-          <div className="text-xl font-black text-slate-800">
+          <div className="text-2xl font-black text-slate-800">
             {badges.length > 0 ? badges[0].emoji : '🏅'} {badges.length}
           </div>
           <div className="text-[10px] font-bold text-slate-400">已得勳章</div>
