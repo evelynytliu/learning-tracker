@@ -7,6 +7,7 @@ import MiniCalendar from '@/components/MiniCalendar';
 import { toYMD, weekStart, weekStartYMD, isoDayOfWeek, DAY_LABELS } from '@/lib/date';
 import { EXTERNAL_LINKS } from '@/lib/links';
 import { isDayComplete, computeStreakFromSummary } from '@/lib/streak';
+import { loadDayCheckin } from '@/lib/checkin-data';
 import { ACHIEVEMENT_MAP } from '@/lib/achievements';
 import { PETS, stageFromGrowth, stageProgress, nextThreshold, MAX_STAGE } from '@/lib/pets';
 import PetSprite from '@/components/PetSprite';
@@ -102,6 +103,10 @@ export default async function HomePage() {
       .lte('next_review_date', today),
   ]);
 
+  // 今天實際要做的清單（套用暑假平日/假日等規則），讓首頁一進來就看到待完成項目
+  const todayPlan = await loadDayCheckin(supabase, user.id, today);
+  const todayPending = todayPlan.tasks.filter((t) => !todayPlan.doneMap[t.id]);
+
   const total = todayCheckin?.tasks_total ?? 0;
   const doneCount = todayCheckin?.tasks_done ?? 0;
   const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
@@ -173,6 +178,93 @@ export default async function HomePage() {
           </span>
         </div>
       </header>
+
+      {/* 今天要做什麼（一進首頁就看到今天待完成的項目）*/}
+      <div className="mb-4 rounded-2xl border border-blue-200 bg-white p-5 shadow-sm">
+        <div className="mb-3 flex items-center justify-between">
+          <span className="flex items-center gap-1.5 font-black text-slate-800">
+            📌 今天要做什麼
+            {todayPlan.setName && (
+              <span className="text-[11px] font-bold text-slate-400">（{todayPlan.setName}）</span>
+            )}
+          </span>
+          <Link href="/checkin" className="text-xs font-bold text-blue-600 hover:underline">
+            去打卡 →
+          </Link>
+        </div>
+
+        {todayPlan.isRest ? (
+          <p className="py-3 text-center text-sm font-bold text-slate-500">😌 今天是免讀日，好好休息！</p>
+        ) : todayPlan.tasks.length === 0 ? (
+          <p className="py-3 text-center text-xs font-medium text-slate-400">
+            還沒設定今天的清單，
+            <Link href="/settings/tasks" className="font-bold text-blue-600">
+              去設定 →
+            </Link>
+          </p>
+        ) : (
+          <>
+            <ul className="flex flex-col gap-2">
+              {todayPlan.tasks.map((t) => {
+                const done = !!todayPlan.doneMap[t.id];
+                return (
+                  <li
+                    key={t.id}
+                    className={`flex items-start gap-3 rounded-xl border p-2.5 transition-colors ${
+                      done ? 'border-slate-100 bg-slate-50/40' : 'border-blue-100 bg-blue-50/40'
+                    }`}
+                  >
+                    <span className="mt-0.5 text-lg leading-none">{done ? '✅' : '⬜'}</span>
+                    <div className="min-w-0 flex-1">
+                      <span
+                        className={`text-sm font-bold ${
+                          done ? 'text-slate-400 line-through' : 'text-slate-800'
+                        }`}
+                      >
+                        {t.label}
+                      </span>
+                      {t.hint && (
+                        <span
+                          className={`mt-0.5 block text-[11px] font-medium ${
+                            done ? 'text-slate-300' : 'text-slate-500'
+                          }`}
+                        >
+                          {t.hint}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="mt-3 text-center text-xs font-bold">
+              {todayPending.length === 0 ? (
+                <span className="text-emerald-600">🎉 今天的任務全部完成了！</span>
+              ) : (
+                <span className="text-slate-500">
+                  還有 <span className="text-blue-600">{todayPending.length}</span> 項待完成，點「去打卡」勾選
+                </span>
+              )}
+            </p>
+            {todayPlan.bonusTasks.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {todayPlan.bonusTasks.map((b) => (
+                  <span
+                    key={b.id}
+                    className={`rounded-full border px-2 py-0.5 text-[11px] font-bold ${
+                      todayPlan.doneMap[b.id]
+                        ? 'border-amber-200 bg-amber-50 text-amber-600'
+                        : 'border-slate-200 text-slate-400'
+                    }`}
+                  >
+                    {todayPlan.doneMap[b.id] ? '⭐' : '＋'} {b.label}（加分）
+                  </span>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       {/* 寵物養成（明顯置頂，顯示目前樣子）*/}
       <Link
